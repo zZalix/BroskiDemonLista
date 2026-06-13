@@ -1,0 +1,2511 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broski- Demon List </title>
+    <!-- Importazione dei font Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- LIBRERIE FIREBASE COMPAT PER FUNZIONAMENTO IN TEMPO REALE -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    
+    <style>
+        /* --- TEMA COLORI UFFICIALE --- */
+        :root {
+            --bg-dark: #0f0f12;          
+            --bg-header: #173180;        /* Blu reale originale della barra */
+            --bg-panel: #16161a;         
+            --bg-subpanel: #202024;      
+            --accent-red: #ff4a5a;       /* Rosso corallo della pillola */
+            --accent-blue: #2563eb;      
+            --accent-cyan: #00f0ff;      
+            --accent-yellow: #f6e05e;    /* Giallo per il testo attivo */
+            --border-thick: 3px solid #000000;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
+        /* Reset dei margini per unire gli elementi ai bordi della pagina */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 5rem;
+        }
+
+        /* Gestione visibilità elementi amministratore */
+        .admin-only {
+            display: none !important;
+        }
+        body.admin-mode .admin-only {
+            display: inline-flex !important;
+        }
+
+        /* --- SFONDO FISSO A PUNTI (NON SEGUE LO SCROLL) --- */
+        #fixed-background-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10;
+            pointer-events: none;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(#25252d 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+
+        /* Luci ambientali Rossa e Blu ai lati */
+        .ambient-glow {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            filter: blur(180px);
+            opacity: 0.16;
+        }
+        .glow-red {
+            background-color: var(--accent-red);
+            top: 15%;
+            left: -250px;
+        }
+        .glow-blue {
+            background-color: var(--accent-blue);
+            bottom: -150px;
+            right: -250px;
+        }
+
+        /* --- BARRA DI NAVIGAZIONE CON ANIMAZIONE CAPSULA FLUTTUANTE (INGRANDITA) --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%; 
+            z-index: 100;
+            background-color: transparent;
+            pointer-events: none; 
+        }
+
+        /* Barra superiore "Invia Record" (Sopra la Navbar) */
+        #top-submit-bar {
+            background-color: #0c0c10;
+            border-bottom: 2px solid #000;
+            width: 100%;
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+            pointer-events: auto;
+            transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease, border-bottom 0.3s ease;
+            max-height: 50px;
+            opacity: 1;
+            overflow: hidden;
+        }
+
+        header.scrolled #top-submit-bar {
+            max-height: 0px;
+            padding: 0;
+            opacity: 0;
+            border-bottom: none;
+        }
+
+        /* Contenitore interno che gestisce l'animazione dello scroll */
+        .header-inner {
+            pointer-events: auto; 
+            width: 100%;
+            max-width: 100%;
+            background-color: var(--bg-header);
+            
+            /* Bordo nero sempre attivo per evitare sfarfallii bianchi */
+            border: var(--border-thick); 
+            
+            margin: 0 auto;
+            border-radius: 0px;
+            
+            /* Ombra impostata su colore nero a dimensione 0 per evitare flash grigi */
+            box-shadow: 0px 0px 0px #000000;
+            
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Contenitore di navigazione configurato per la transizione fluida */
+        .nav-container {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.4rem 4rem; /* Padding generoso ai lati quando esteso */
+            transition: max-width 0.5s cubic-bezier(0.25, 1, 0.5, 1), padding 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Spacer flessibile per allineamento dinamico */
+        .nav-spacer {
+            flex-grow: 1;
+            transition: flex-grow 0.5s cubic-bezier(0.25, 1, 0.5, 1), width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Animazione di rimbalzo (squash & stretch) all'attivazione dello scroll */
+        @keyframes capsuleBounce {
+            0% {
+                transform: scale(1);
+            }
+            35% {
+                transform: scale(0.92, 0.86);
+            }
+            65% {
+                transform: scale(1.03, 1.04);
+            }
+            85% {
+                transform: scale(0.99, 0.99);
+            }
+            100% {
+                transform: scale(1, 1);
+            }
+        }
+
+        /* STATO SCROLLATO: Si trasforma in capsula fluttuante, allineandosi a 1100px con rimbalzo */
+        header.scrolled .header-inner {
+            width: calc(100% - 40px);
+            max-width: 1100px;
+            margin-top: 15px;
+            border-radius: 20px;
+            box-shadow: 6px 6px 0px #000000;
+            animation: capsuleBounce 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+        }
+
+        header.scrolled .nav-container {
+            max-width: 1100px;
+            padding: 0.8rem 1.8rem; /* Ingrandito da 0.6rem 1.5rem */
+        }
+
+        /* Quando scrollato lo spacer si azzera permettendo al menu di allinearsi al centro */
+        header.scrolled .nav-spacer {
+            flex-grow: 0;
+            width: 0;
+        }
+
+        /* Badge Logo */
+        .logo-badge {
+            background-color: var(--accent-red);
+            border: var(--border-thick);
+            border-radius: 18px;
+            padding: 0.45rem 1.35rem; /* Ottimizzato per logo più grande */
+            box-shadow: 4px 4px 0px #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .logo-badge:hover {
+            transform: scale(0.90); /* Riduzione all'hover */
+        }
+
+        .logo-img {
+            height: 32px; /* Ingrandito da 28px */
+            width: auto;
+            display: block;
+        }
+
+        /* Links navigazione */
+        .nav-links {
+            display: flex;
+            gap: 1.1rem;
+            align-items: center;
+            margin-right: 2.5rem; /* Margine per distanziare il menu dai controlli a destra */
+            transition: margin-right 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        header.scrolled .nav-links {
+            margin-right: 0; /* Centrato nel layout ristretto */
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.05rem; /* Ingrandito da 1rem */
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            text-shadow: 2px 2px 0px #000000;
+            padding: 0.6rem 1.5rem; /* Ingrandito da 0.5rem 1.4rem */
+            border-radius: 50px;
+            position: relative;
+            /* Gestione transizioni per fluidità ed effetto rimpicciolimento all'hover */
+            transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.15s ease, text-shadow 0.15s ease, color 0.15s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        /* Linea di sottolineatura per lo stato attivo */
+        .nav-item::after {
+            content: "";
+            position: absolute;
+            bottom: 2px;
+            left: 1.5rem;
+            right: 1.5rem;
+            height: 4px;
+            background-color: transparent;
+            transition: background-color 0.15s ease;
+        }
+
+        /* Rimpicciolimento generale all'hover per tutte le voci del menu */
+        .nav-item:hover {
+            transform: scale(0.90); 
+            text-shadow: none;
+        }
+
+        /* STATO 1: Hover su voce inattiva -> Pillola rossa, testo bianco, nessuna sottolineatura */
+        .nav-item:not(.active):hover {
+            background-color: var(--accent-red);
+            color: #ffffff;
+        }
+        .nav-item:not(.active):hover::after {
+            background-color: transparent;
+        }
+
+        /* STATO 2: Voce attiva non hovered -> Testo giallo e sottolineatura, senza pillola */
+        .nav-item.active {
+            color: var(--accent-yellow);
+            background-color: transparent;
+            text-shadow: 2px 2px 0px #000000;
+        }
+        .nav-item.active::after {
+            background-color: var(--accent-yellow);
+        }
+        
+        /* STATO 3: Hover su voce attiva -> Pillola rossa, testo giallo, nessuna sottolineatura */
+        .nav-item.active:hover {
+            background-color: var(--accent-red);
+            color: var(--accent-yellow);
+        }
+        .nav-item.active:hover::after {
+            background-color: transparent;
+        }
+
+        /* Utility destra */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        /* --- SELETTORE LINGUA INTERATTIVO CON ANIMAZIONE (INGRANDITO) --- */
+        .lang-switch {
+            background-color: #0c0c10;
+            border: var(--border-thick);
+            border-radius: 12px;
+            box-shadow: 3px 3px 0px #000000;
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            width: 88px; /* Ingrandito da 82px */
+            height: 38px; /* Ingrandito da 36px */
+            padding: 4px; /* Ottimizzato */
+            transition: transform 0.15s ease;
+            overflow: hidden;
+        }
+        .lang-switch:hover {
+            transform: scale(0.92);
+        }
+        .lang-indicator {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 37px; /* Adattato */
+            height: 24px;
+            background-color: var(--accent-cyan);
+            border-radius: 6px;
+            border: 2px solid #000000;
+            transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 1;
+        }
+        /* Slitta l'indicatore a destra se la classe lang-en è attiva su body */
+        body.lang-en .lang-indicator {
+            transform: translateX(37px); /* Adattato */
+        }
+        .lang-btn {
+            width: 37px; /* Adattato */
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem; /* Ingrandito da 0.75rem */
+            font-weight: 900;
+            color: #ffffff;
+            position: relative;
+            z-index: 2;
+            transition: color 0.2s ease;
+        }
+        /* Il colore del bottone attivo di diventa nero sopra l'indicatore ciano */
+        body:not(.lang-en) #lang-it,
+        body.lang-en #lang-en {
+            color: #000000;
+        }
+
+        .profile-pill {
+            background-color: #0c0c10;
+            border: var(--border-thick);
+            border-radius: 12px;
+            box-shadow: 3px 3px 0px #000000;
+            display: flex;
+            align-items: center;
+            padding: 6px 10px; /* Ingrandito da 4px 8px */
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+        .profile-pill:hover {
+            transform: scale(0.90);
+        }
+
+        .minecraft-avatar {
+            width: 26px; /* Ingrandito da 24px */
+            height: 26px;
+            background-color: #df9e82; 
+            border: 2px solid #000;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .minecraft-avatar::before {
+            content: "";
+            position: absolute;
+            top: 9px;
+            left: 3px;
+            width: 4px;
+            height: 4px;
+            background-color: #4364e8; 
+            box-shadow: 16px 0px 0px #4364e8; 
+        }
+
+        .dropdown-arrow {
+            color: #ffffff;
+            font-size: 0.8rem;
+        }
+
+        /* --- STILI PANNELLO AMMINISTRATORE (DASHBOARD) --- */
+        .admin-tab-btn {
+            background-color: var(--bg-subpanel);
+            color: #fff;
+            border: var(--border-thick);
+            border-radius: 16px;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 4px 4px 0px #000;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease, color 0.15s ease;
+            text-transform: uppercase;
+        }
+
+        .admin-tab-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
+        }
+
+        .admin-tab-btn.active {
+            background-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 2px 2px 0px #000;
+            transform: translate(2px, 2px);
+        }
+
+        .admin-subview {
+            display: none;
+        }
+
+        .admin-subview.active {
+            display: block;
+        }
+
+        .admin-list-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .admin-row {
+            background-color: var(--bg-subpanel);
+            border: var(--border-thick);
+            border-radius: 20px;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 4px 4px 0px #000;
+            transition: transform 0.15s ease;
+        }
+
+        .admin-row:hover {
+            transform: scale(1.01);
+        }
+
+        .admin-row-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .admin-row-actions {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .admin-row-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            border: 2px solid #000;
+            text-transform: uppercase;
+        }
+
+        .admin-badge-active {
+            background-color: #22c55e;
+            color: #fff;
+        }
+
+        .admin-badge-banned {
+            background-color: var(--accent-red);
+            color: #fff;
+        }
+
+        .admin-action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 2px 2px 0px #000;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .admin-action-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        .admin-action-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px #000;
+        }
+
+        .btn-edit { background-color: var(--accent-cyan); color: #000 !important; }
+        .btn-delete { background-color: var(--accent-red); color: #fff !important; }
+
+        /* Form Controls nel Modale */
+        .admin-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .admin-form-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .admin-form-input {
+            background-color: #202024;
+            color: #fff;
+            border: 3px solid #000;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.15s ease;
+        }
+
+        .admin-form-input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        /* --- CONTENUTO (1100px) --- */
+        main {
+            max-width: 1100px;
+            width: calc(100% - 40px);
+            margin: 11.5rem auto 0 auto; /* Spazio per alloggiare la barra superiore */
+            
+            /* Parametri base per la transizione di dissolvenza cambio pagina */
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px);
+            transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), filter 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Stato in cui la UI sparisce durante il cambio pagina */
+        main.page-transitioning {
+            opacity: 0;
+            transform: scale(0.97);
+            filter: blur(8px);
+        }
+
+        .page-content {
+            display: none;
+            grid-template-columns: 380px 1fr;
+            gap: 2.5rem;
+        }
+
+        .page-content.active {
+            display: grid;
+        }
+
+        /* --- PANNELLI --- */
+        .panel {
+            background-color: var(--bg-panel);
+            border: var(--border-thick);
+            border-radius: 28px;
+            box-shadow: 8px 8px 0px #000000;
+            padding: 2rem;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-badge {
+            background-color: var(--accent-red);
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            border: 2px solid #000;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .panel-title {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        /* --- SELEZIONI LISTA --- */
+        .list-container {
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            padding-right: 0.5rem;
+        }
+
+        .list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .list-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .list-container::-webkit-scrollbar-thumb {
+            background: #000000;
+            border-radius: 10px;
+        }
+
+        .list-item {
+            background-color: var(--bg-subpanel);
+            border: var(--border-thick);
+            border-radius: 24px;
+            padding: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 4px 4px 0px #000;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease;
+        }
+
+        .list-item:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px #000;
+        }
+
+        .list-item.selected {
+            border-color: var(--accent-yellow);
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .item-rank-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: var(--border-thick);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: #000;
+            box-shadow: 1px 1px 0px #000;
+        }
+        .rank-gold { background-color: var(--accent-yellow); }
+        .rank-silver { background-color: #cbd5e1; }
+        .rank-bronze { background-color: #fca5a5; }
+        .rank-default { background-color: #475569; color: #fff; }
+
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .item-badge-row {
+            display: flex;
+            gap: 0.4rem;
+            margin-top: 0.3rem;
+        }
+
+        .mini-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 0.2rem 0.5rem;
+            border-radius: 50px;
+            border: 1.5px solid #000;
+            text-transform: uppercase;
+        }
+        .badge-rookie { background-color: #475569; color: var(--accent-yellow); }
+        .badge-pts { background-color: var(--accent-blue); color: #fff; }
+
+        /* --- SCHEDA DETTAGLI --- */
+        .detail-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .sub-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .sub-card {
+            background-color: var(--bg-subpanel);
+            border: var(--border-thick);
+            border-radius: 20px;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 4px 4px 0px #000000;
+            position: relative;
+        }
+
+        .sub-card-data {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sub-card-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .sub-card-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-top: 0.3rem;
+        }
+
+        .sub-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #fff;
+            box-shadow: 2px 2px 0px #000;
+        }
+        .icon-blue { background-color: var(--accent-blue); }
+        .icon-red { background-color: var(--accent-red); }
+        .icon-cyan { background-color: var(--accent-cyan); }
+
+        /* VIDEO BOX CON COPERTINA INTERATTIVA */
+        .video-box {
+            width: 100%;
+            aspect-ratio: 18/9;
+            background-color: #0b0e14;
+            border: var(--border-thick);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 4px 4px 0px #000;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .video-box::before {
+            content: "ANTEPRIMA VIDEO NON DISPONIBILE";
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-size: 1rem;
+            z-index: 1;
+        }
+
+        .video-box.has-video::before {
+            display: none;
+        }
+
+        .video-play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            transition: background-color 0.2s ease;
+        }
+
+        .video-play-overlay:hover {
+            background-color: rgba(0, 0, 0, 0.25);
+        }
+
+        .video-play-icon {
+            font-size: 3.5rem;
+            color: #ffffff;
+            text-shadow: 0px 4px 10px rgba(0,0,0,0.6);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .video-play-overlay:hover .video-play-icon {
+            transform: scale(1.15);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-main {
+            background-color: var(--accent-red);
+            color: #fff;
+            border: var(--border-thick);
+            border-radius: 50px;
+            padding: 0.8rem 1.8rem;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 4px 4px 0px #000;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-main:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px #000;
+        }
+
+        .btn-sec {
+            background-color: var(--bg-subpanel);
+            color: #fff;
+            border: var(--border-thick);
+            border-radius: 50px;
+            padding: 0.8rem 1.8rem;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 4px 4px 0px #000;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-sec:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px #000;
+        }
+
+        .table-wrapper {
+            background-color: var(--bg-subpanel);
+            border: var(--border-thick);
+            border-radius: 20px;
+            padding: 1.2rem;
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        .record-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .record-table th {
+            text-align: left;
+            padding: 0.6rem;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            border-bottom: var(--border-thick);
+        }
+
+        .record-table td {
+            padding: 0.8rem 0.6rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-bottom: 2px solid #1c1c22;
+        }
+
+        .player-profile-card {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background-color: var(--bg-subpanel);
+            border: var(--border-thick);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        .player-avatar-large {
+            width: 70px;
+            height: 70px;
+            background-color: var(--accent-blue);
+            border: var(--border-thick);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+            box-shadow: 3px 3px 0px #000;
+        }
+
+        .progress-track {
+            background-color: #0b0e14;
+            height: 10px;
+            border-radius: 50px;
+            border: 2px solid #000;
+            overflow: hidden;
+            margin-top: 0.4rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--accent-red);
+        }
+
+        @media (max-width: 950px) {
+            .page-content {
+                grid-template-columns: 1fr;
+            }
+            .list-container {
+                height: 320px;
+            }
+            main {
+                margin-top: 8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SFONDO STATICO FISSO -->
+    <div id="fixed-background-wrapper">
+        <div class="ambient-glow glow-red"></div>
+        <div class="ambient-glow glow-blue"></div>
+    </div>
+
+    <!-- Barra di Navigazione superiore -->
+    <header id="main-header">
+        
+        <!-- Barra Superiore Invia Record (Sopra la Navbar) -->
+        <div id="top-submit-bar">
+            <button class="btn-main" onclick="openPublicSubmissionForm()" style="font-size: 0.85rem; padding: 0.4rem 1.4rem; border-radius: 8px; box-shadow: 2px 2px 0px #000;">
+                <i class="fa-solid fa-file-pen"></i> <span data-i18n="send_record">INVIA RECORD</span>
+            </button>
+        </div>
+
+        <div class="header-inner">
+            <div class="nav-container">
+                <!-- Logo originale -->
+                <div class="logo-badge">
+                    <img src="https://www.ibroski.net/logo/3d36j5v.svg" alt="Broski Logo" class="logo-img">
+                </div>
+                
+                <!-- Spacer flessibile per allineamento dinamico -->
+                <div class="nav-spacer"></div>
+                
+                <!-- Menu -->
+                <nav class="nav-links">
+                    <button class="nav-item active" onclick="switchTab('demonlist', this)">DEMON LIST</button>
+                    <button class="nav-item" onclick="switchTab('stats', this)">STATS viewer</button>
+                    <button class="nav-item admin-only" id="nav-btn-admin" onclick="switchTab('admin-dashboard', this)">DASHBOARD</button>
+                </nav>
+                
+                <!-- Elementi di Stato Destra -->
+                <div class="nav-right">
+                    <!-- Selettore di Lingua con Animazione di Scorrimento -->
+                    <div class="lang-switch" onclick="toggleLanguage()" title="Cambia Lingua / Switch Language">
+                        <div class="lang-indicator"></div>
+                        <span class="lang-btn" id="lang-it">IT</span>
+                        <span class="lang-btn" id="lang-en">EN</span>
+                    </div>
+                    
+                    <!-- Area Profilo (Sblocca la modalità amministratore con password "admin") -->
+                    <div class="profile-pill" onclick="toggleAdminMode()" title="Pannello Amministratore">
+                        <div class="minecraft-avatar"></div>
+                        <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenuto principale -->
+    <main>
+        
+        <!-- ================= PAGINA 1: DEMON LIST ================= -->
+        <div id="page-demonlist" class="page-content active">
+            <!-- Colonna Sinistra (Lista) -->
+            <div class="panel-wrapper">
+                <div class="panel">
+                    <div class="panel-badge">
+                        <i class="fa-solid fa-triangle-exclamation"></i> <span data-i18n="levels_badge">LIVELLI BATTUTI</span>
+                    </div>
+                    <h2 class="panel-title" data-i18n="levels_title">DEMON LISTA</h2>
+                    <div class="list-container" id="level-list">
+                        <!-- Popolato via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonna Destra (Dettagli) -->
+            <div class="detail-layout">
+                <div class="video-box" id="level-video-container"></div>
+
+                <div>
+                    <h2 class="panel-title" id="det-name" style="font-size: 3rem; font-weight: 950; line-height: 1; letter-spacing: -1px;">NOME DEMON</h2>
+                    <p style="font-weight: 700; color: var(--text-muted); margin-top: 0.4rem; font-size: 1rem; text-transform: uppercase;">
+                        <span id="det-creator-label">CREATO DA</span> <span id="det-creator" style="color: #fff;">CREATORE</span>
+                    </p>
+                </div>
+
+                <!-- Griglia Sub-Cards -->
+                <div class="sub-cards-grid">
+                    <div class="sub-card">
+                        <div class="sub-card-data">
+                            <span class="sub-card-value" id="det-pts" style="color: var(--accent-cyan);">150</span>
+                            <span class="sub-card-label" data-i18n="points">PUNTI LISTA</span>
+                        </div>
+                        <div class="sub-card-icon icon-blue">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="sub-card">
+                        <div class="sub-card-data">
+                            <span class="sub-card-value" id="det-verifier">PLAYER</span>
+                            <span class="sub-card-label" data-i18n="verifier">VERIFICATORE</span>
+                        </div>
+                        <div class="sub-card-icon icon-red">
+                            <i class="fa-solid fa-shield"></i>
+                        </div>
+                    </div>
+                    <div class="sub-card">
+                        <div class="sub-card-data">
+                            <span class="sub-card-value" id="det-min">100%</span>
+                            <span class="sub-card-label" data-i18n="requirement">REQUISITO RECORD</span>
+                        </div>
+                        <div class="sub-card-icon icon-cyan">
+                            <i class="fa-solid fa-flag"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-main" onclick="watchVideo()">
+                        <i class="fa-solid fa-play"></i> <span data-i18n="watch_video">GUARDA IL VIDEO</span>
+                    </button>
+                </div>
+
+                <!-- Tabella Record -->
+                <div>
+                    <h3 style="font-weight: 900; font-size: 1.2rem; margin-bottom: 0.8rem; text-transform: uppercase;" data-i18n="records_title">
+                        [ RECORD REGISTRATI ]
+                    </h3>
+                    <div class="table-wrapper">
+                        <table class="record-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="th_player">GIOCATORE</th>
+                                    <th data-i18n="th_pct">PERCENTUALE</th>
+                                    <th data-i18n="th_device">PIATTAFORMA / REFRESH</th>
+                                </tr>
+                            </thead>
+                            <tbody id="det-records">
+                                <!-- Popolato via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGINA 2: STATS VIEWER ================= -->
+        <div id="page-stats" class="page-content">
+            <!-- Colonna Sinistra (Lista Classifica) -->
+            <div class="panel-wrapper">
+                <div class="panel">
+                    <div class="panel-badge">
+                        <i class="fa-solid fa-trophy"></i> <span data-i18n="stats_badge">LEADERBOARD</span>
+                    </div>
+                    <h2 class="panel-title" data-i18n="stats_title">CLASSIFICA</h2>
+                    <div class="list-container" id="player-list">
+                        <!-- Popolato via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonna Destra (Dettagli Player) -->
+            <div class="detail-layout">
+                
+                <div class="player-profile-card">
+                    <div class="player-avatar-large" id="p-avatar">P</div>
+                    <div>
+                        <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 1px;" id="p-rank">RANGO #1</span>
+                        <h2 style="font-size: 2.2rem; font-weight: 950; line-height: 1.1;" id="p-name">NOME GIOCATORE</h2>
+                    </div>
+                </div>
+
+                <div class="sub-cards-grid">
+                    <div class="sub-card">
+                        <div class="sub-card-data">
+                            <span class="sub-card-value" id="p-pts" style="color: var(--accent-cyan);">0.00</span>
+                            <span class="sub-card-label" data-i18n="p_total_points">PUNTI TOTALI</span>
+                        </div>
+                        <div class="sub-card-icon icon-cyan">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                    </div>
+                    <div class="sub-card">
+                        <div class="sub-card-data">
+                            <span class="sub-card-value" id="p-count">0</span>
+                            <span class="sub-card-label" data-i18n="p_completed_demons">DEMONS SUPERATI</span>
+                        </div>
+                        <div class="sub-card-icon icon-red">
+                            <i class="fa-solid fa-check-double"></i>
+                        </div>
+                    </div>
+                    <div class="sub-card">
+                        <div class="sub-card-data">
+                            <span class="sub-card-value" id="p-highest" style="font-size: 1.2rem;">--</span>
+                            <span class="sub-card-label" data-i18n="p_hardest">DEMON PIÙ DIFFICILE</span>
+                        </div>
+                        <div class="sub-card-icon icon-blue">
+                            <i class="fa-solid fa-medal"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottoni Amministratore per i Giocatori (nascosti di default, collegano alla Dashboard) -->
+                <div class="btn-group">
+                    <button class="btn-sec admin-only" onclick="switchTab('admin-dashboard', document.getElementById('nav-btn-admin')); switchAdminTab('progress');" style="border-color: var(--accent-yellow); color: var(--accent-yellow);">
+                        <i class="fa-solid fa-user-pen"></i> <span data-i18n="admin_tab_percentage">MODIFICA PERCENTUALE</span>
+                    </button>
+                </div>
+
+                <div>
+                    <h3 style="font-weight: 900; font-size: 1.2rem; margin-bottom: 0.8rem; text-transform: uppercase;" data-i18n="p_progress_report">
+                        [ REPORT PROGRESSI E COMPLETAMENTI ]
+                    </h3>
+                    <div class="table-wrapper" style="display: flex; flex-direction: column; gap: 1.2rem;" id="p-completions">
+                        <!-- Progressi dinamici via JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= PAGINA 3: PANNELLO ADMIN (DASHBOARD) ================= -->
+        <div id="page-admin-dashboard" class="page-content" style="grid-template-columns: 1fr;">
+            <div class="panel" style="padding: 2.5rem; background-color: var(--bg-panel); border: var(--border-thick); border-radius: 28px; box-shadow: 8px 8px 0px #000000;">
+                
+                <!-- Admin Panel Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.5rem;">
+                    <div>
+                        <h1 style="font-size: 3rem; font-weight: 950; text-transform: uppercase; letter-spacing: -1px; line-height: 1;" data-i18n="admin_title">PANNELLO ADMIN</h1>
+                        <p style="font-weight: 700; color: var(--text-muted); margin-top: 0.5rem;" id="admin-status-subtitle">
+                            Gestisci Livelli, Record e Classifiche • Loggato come Admin
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn-main" onclick="switchTab('demonlist', document.querySelector('.nav-item'))" style="background-color: #202024; border-color: #000; color: #fff;">
+                            <i class="fa-solid fa-house"></i> <span data-i18n="back_to_home">TORNA ALLA HOME</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Navigation Tabs -->
+                <div style="display: flex; gap: 0.8rem; margin-bottom: 2.5rem; flex-wrap: wrap;" id="admin-tabs">
+                    <button class="admin-tab-btn active" onclick="switchAdminTab('levels')">
+                        <i class="fa-solid fa-layer-group"></i> <span data-i18n="admin_tab_levels">LIVELLI</span>
+                    </button>
+                    <button class="admin-tab-btn" onclick="switchAdminTab('records')">
+                        <i class="fa-solid fa-list-check"></i> <span data-i18n="admin_tab_records">RECORD</span>
+                    </button>
+                    <button class="admin-tab-btn" onclick="switchAdminTab('players')">
+                        <i class="fa-solid fa-users"></i> <span data-i18n="admin_tab_players">CLASSIFICA / PLAYER</span>
+                    </button>
+                    <button class="admin-tab-btn" onclick="switchAdminTab('progress')">
+                        <i class="fa-solid fa-chart-line"></i> <span data-i18n="admin_tab_percentage">PERCENTUALE</span>
+                    </button>
+                    <button class="admin-tab-btn" onclick="switchAdminTab('submissions')">
+                        <i class="fa-solid fa-clipboard-list"></i> <span data-i18n="admin_tab_submissions">RICHIESTE</span>
+                    </button>
+                </div>
+
+                <!-- Sub-view: LIVELLI -->
+                <div id="admin-subview-levels" class="admin-subview active">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase;">GESTIONE LIVELLI</h3>
+                        <button class="btn-main" onclick="openLevelForm()" style="background-color: var(--accent-cyan); color: #000;">
+                            <i class="fa-solid fa-plus"></i> NUOVO LIVELLO
+                        </button>
+                    </div>
+                    <div class="admin-list-wrapper" id="admin-levels-list">
+                        <!-- Popolato via JS -->
+                    </div>
+                </div>
+
+                <!-- Sub-view: RECORD -->
+                <div id="admin-subview-records" class="admin-subview">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase;">GESTIONE RECORD</h3>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <select id="admin-record-level-select" onchange="renderAdminRecords()" style="background-color: #202024; color: #fff; border: 3px solid #000; border-radius: 12px; padding: 0.5rem 1rem; font-weight: 700; font-family: inherit;">
+                                <!-- Popolato via JS -->
+                            </select>
+                            <button class="btn-main" onclick="openRecordForm()" style="background-color: var(--accent-cyan); color: #000;">
+                                <i class="fa-solid fa-plus"></i> NUOVO RECORD
+                            </button>
+                        </div>
+                    </div>
+                    <div class="admin-list-wrapper" id="admin-records-list">
+                        <!-- Popolato via JS -->
+                    </div>
+                </div>
+
+                <!-- Sub-view: PLAYERS -->
+                <div id="admin-subview-players" class="admin-subview">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase;">GESTIONE PLAYERS</h3>
+                        <button class="btn-main" onclick="openPlayerForm()" style="background-color: var(--accent-cyan); color: #000;">
+                            <i class="fa-solid fa-plus"></i> NUOVO GIOCATORE
+                        </button>
+                    </div>
+                    <div class="admin-list-wrapper" id="admin-players-list">
+                        <!-- Popolato via JS -->
+                    </div>
+                </div>
+
+                <!-- Sub-view: PERCENTUALE -->
+                <div id="admin-subview-progress" class="admin-subview">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase;" data-i18n="admin_percentage_title">GESTIONE PERCENTUALE</h3>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <select id="admin-progress-player-select" onchange="renderAdminProgress()" style="background-color: #202024; color: #fff; border: 3px solid #000; border-radius: 12px; padding: 0.5rem 1rem; font-weight: 700; font-family: inherit;">
+                                <!-- Popolato via JS -->
+                            </select>
+                            <button class="btn-main" onclick="openProgressForm()" style="background-color: var(--accent-cyan); color: #000;">
+                                <i class="fa-solid fa-plus"></i> <span data-i18n="admin_add_percentage">AGGIUNGI PERCENTUALE</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="admin-list-wrapper" id="admin-progress-list">
+                        <!-- Popolato via JS -->
+                    </div>
+                </div>
+
+                <!-- Sub-view: RICHIESTE -->
+                <div id="admin-subview-submissions" class="admin-subview">
+                    <h3 style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase;" data-i18n="admin_submissions_title">RICHIESTE RECORD IN CODA</h3>
+                    <div class="admin-list-wrapper" id="admin-submissions-list">
+                        <!-- Popolato via JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ================= MODALE DI GESTIONE FORM ADMIN / PUBLIC SUBMISSIONS ================= -->
+    <div id="admin-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.85); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="panel" style="max-width: 600px; width: calc(100% - 40px); background-color: var(--bg-panel); border: var(--border-thick); border-radius: 28px; box-shadow: 10px 10px 0px #000000; padding: 2.5rem; position: relative;">
+            <button onclick="closeAdminModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; transition: transform 0.15s ease;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="modal-title" style="font-size: 1.8rem; font-weight: 950; text-transform: uppercase; margin-bottom: 1.5rem; letter-spacing: -0.5px;">TITOLO FORM</h3>
+            <form id="modal-form" onsubmit="handleFormSubmit(event)" style="display: flex; flex-direction: column; gap: 1.2rem;">
+                <div id="modal-fields-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Campi generati dinamicamente via JS -->
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button type="submit" class="btn-main" style="flex: 1; justify-content: center; background-color: var(--accent-cyan); color: #000;">
+                        SALVA DATI
+                    </button>
+                    <button type="button" class="btn-sec" onclick="closeAdminModal()" style="flex: 1; justify-content: center;">
+                        ANNULLA
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURAZIONE FIREBASE IN REALTIME ---
+        // Sostituisci i seguenti campi con le chiavi del tuo progetto Firebase
+        const firebaseConfig = {
+            apiKey: "INSERISCI_LA_TUA_API_KEY",
+            authDomain: "INSERISCI_IL_TUO_AUTH_DOMAIN",
+            databaseURL: "INSERISCI_IL_TUO_DATABASE_URL",
+            projectId: "INSERISCI_IL_TUO_PROJECT_ID",
+            storageBucket: "INSERISCI_IL_TUO_STORAGE_BUCKET",
+            messagingSenderId: "INSERISCI_IL_TUO_MESSAGING_SENDER_ID",
+            appId: "INSERISCI_IL_TUA_APP_ID"
+        };
+
+        // Inizializzazione di Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- TRANSIZIONE DELLA NAVBAR AL SCROLL CON COOLDOWN E RIMBALZO ---
+        const header = document.getElementById('main-header');
+        let revertTimeout = null;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 30) {
+                if (revertTimeout) {
+                    clearTimeout(revertTimeout);
+                    revertTimeout = null;
+                }
+                header.classList.add('scrolled');
+            } else {
+                if (!revertTimeout && header.classList.contains('scrolled')) {
+                    revertTimeout = setTimeout(() => {
+                        if (window.scrollY <= 30) {
+                            header.classList.remove('scrolled');
+                        }
+                        revertTimeout = null;
+                    }, 300);
+                }
+            }
+        });
+
+        // --- DIZIONARIO TRADUZIONI (ITALIANO / INGLESE) ---
+        const translations = {
+            it: {
+                levels_title: "DEMON LISTA",
+                levels_badge: "LIVELLI BATTUTI",
+                stats_badge: "LEADERBOARD",
+                stats_title: "CLASSIFICA",
+                admin_title: "PANNELLO ADMIN",
+                back_to_home: "TORNA ALLA HOME",
+                points: "PUNTI LISTA",
+                verifier: "VERIFICATORE",
+                requirement: "REQUISITO RECORD",
+                watch_video: "GUARDA IL VIDEO",
+                send_record: "INVIA RECORD",
+                records_title: "[ RECORD REGISTRATI ]",
+                th_player: "GIOCATORE",
+                th_pct: "PERCENTUALE",
+                th_device: "PIATTAFORMA / REFRESH",
+                p_total_points: "PUNTI TOTALI",
+                p_completed_demons: "DEMONS SUPERATI",
+                p_hardest: "DEMON PIÙ DIFFICILE",
+                p_progress_report: "[ REPORT PROGRESSI E COMPLETAMENTI ]",
+                
+                // Traduzioni Interfaccia Admin
+                admin_tab_levels: "LIVELLI",
+                admin_tab_records: "RECORD",
+                admin_tab_players: "CLASSIFICA / PLAYER",
+                admin_tab_percentage: "PERCENTUALE",
+                admin_tab_submissions: "RICHIESTE",
+                admin_percentage_title: "GESTIONE PERCENTUALE",
+                admin_add_percentage: "AGGIUNGI PERCENTUALE",
+                admin_no_percentage: "NESSUNA PERCENTUALE REGISTRATA PER QUESTO GIOCATORE",
+                admin_submissions_title: "RICHIESTE RECORD IN CODA",
+                admin_no_submissions: "NESSUNA RICHIESTA IN CODA"
+            },
+            en: {
+                levels_title: "DEMON LIST",
+                levels_badge: "ACTIVE LEVELS",
+                stats_badge: "LEADERBOARD",
+                stats_title: "LEADERBOARD",
+                admin_title: "ADMIN PANEL",
+                back_to_home: "RETURN HOME",
+                points: "LIST POINTS",
+                verifier: "VERIFIER",
+                requirement: "RECORD REQUIREMENT",
+                watch_video: "WATCH VIDEO",
+                send_record: "SUBMIT RECORD",
+                records_title: "[ REGISTERED RECORDS ]",
+                th_player: "PLAYER",
+                th_pct: "PERCENTAGE",
+                th_device: "PLATFORM / REFRESH",
+                p_total_points: "TOTAL POINTS",
+                p_completed_demons: "DEMONS BEATEN",
+                p_hardest: "HARDEST DEMON",
+                p_progress_report: "[ PROGRESS AND COMPLETION REPORT ]",
+                
+                // English Admin Translations
+                admin_tab_levels: "LEVELS",
+                admin_tab_records: "RECORDS",
+                admin_tab_players: "LEADERBOARD / PLAYERS",
+                admin_tab_percentage: "PERCENTAGE",
+                admin_tab_submissions: "SUBMISSIONS",
+                admin_percentage_title: "MANAGE PERCENTAGE",
+                admin_add_percentage: "ADD PERCENTAGE",
+                admin_no_percentage: "NO PERCENTAGES REGISTERED FOR THIS PLAYER",
+                admin_submissions_title: "PENDING RECORD SUBMISSIONS",
+                admin_no_submissions: "NO PENDING SUBMISSIONS"
+            }
+        };
+
+        let currentLang = 'it';
+
+        function toggleLanguage() {
+            currentLang = (currentLang === 'it') ? 'en' : 'it';
+            
+            if (currentLang === 'en') {
+                document.body.classList.add('lang-en');
+            } else {
+                document.body.classList.remove('lang-en');
+            }
+            
+            updateLanguageDOM();
+            
+            if (selectedLevel) {
+                renderLevelDetails(selectedLevel);
+            }
+            
+            const activePlayerItem = document.querySelector('#player-list .list-item.selected');
+            if (activePlayerItem) {
+                const activeIndex = Array.from(document.querySelectorAll('#player-list .list-item')).indexOf(activePlayerItem);
+                if (activeIndex !== -1) {
+                    renderPlayerDetails(abstractPlayers[activeIndex]);
+                }
+            }
+
+            if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
+                renderAdminProgress();
+                renderAdminSubmissions();
+            }
+        }
+
+        function updateLanguageDOM() {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    el.innerText = translations[currentLang][key];
+                }
+            });
+        }
+
+        // --- CAMBIO TAB ---
+        function switchTab(pageId, btn) {
+            const activeNav = document.querySelector(`.nav-links .nav-item[onclick*="${pageId}"]`) || btn;
+            
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            if (activeNav) activeNav.classList.add('active');
+
+            const mainContent = document.querySelector('main');
+            mainContent.classList.add('page-transitioning');
+
+            setTimeout(() => {
+                document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+                document.getElementById(`page-${pageId}`).classList.add('active');
+
+                window.scrollTo({ top: 0, behavior: 'instant' });
+                mainContent.classList.remove('page-transitioning');
+            }, 250);
+        }
+
+        // --- GESTIONE AMMINISTRATORE (Dashboard Integrata) ---
+        let isAdmin = false;
+        let selectedLevel = null;
+        let selectedPlayer = null;
+
+        function toggleAdminMode() {
+            if (isAdmin) {
+                const action = confirm(currentLang === 'it' ? 
+                    "Sei già Amministratore.\n\n[OK] Vai al Pannello Admin\n[ANNULLA] Esci dalla modalità admin" : 
+                    "You are already Admin.\n\n[OK] Go to Admin Panel\n[CANCEL] Log out of admin mode");
+                if (action) {
+                    switchTab('admin-dashboard', document.getElementById('nav-btn-admin'));
+                    renderAdminLevels();
+                } else {
+                    isAdmin = false;
+                    document.body.classList.remove('admin-mode');
+                    const activeTab = document.querySelector('.nav-item.active');
+                    if (!activeTab || activeTab.id === "nav-btn-admin") {
+                        switchTab('demonlist', document.querySelector('.nav-item'));
+                    }
+                    alert(currentLang === 'it' ? "Sei uscito dalla modalità amministratore." : "Logged out of administrator mode.");
+                }
+                return;
+            }
+
+            const promptMsg = currentLang === 'it' ? "Inserisci la chiave d'accesso amministratore:" : "Enter administrator access key:";
+            const password = prompt(promptMsg);
+            if (password === "admin") {
+                isAdmin = true;
+                document.body.classList.add('admin-mode');
+                const successMsg = currentLang === 'it' ? "Accesso autorizzato. Apertura del Pannello Admin in corso..." : "Access granted. Opening Admin Panel...";
+                alert(successMsg);
+                switchTab('admin-dashboard', document.getElementById('nav-btn-admin'));
+                renderAdminLevels();
+            } else if (password !== null) {
+                const failMsg = currentLang === 'it' ? "Chiave errata. Accesso negato." : "Incorrect key. Access denied.";
+                alert(failMsg);
+            }
+        }
+
+        // --- HELPER STRUMENTI VIDEO (YOUTUBE) ---
+        function getYouTubeId(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function getYouTubeEmbedUrl(url) {
+            const id = getYouTubeId(url);
+            return id ? `https://www.youtube.com/embed/${id}` : url;
+        }
+
+        function loadIframeInline() {
+            if (!selectedLevel || !selectedLevel.video) return;
+            const videoBox = document.getElementById('level-video-container');
+            if (videoBox) {
+                const embedUrl = getYouTubeEmbedUrl(selectedLevel.video);
+                videoBox.innerHTML = `<iframe src="${embedUrl}?autoplay=1" style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            }
+        }
+
+        function watchVideo() {
+            if (selectedLevel && selectedLevel.video) {
+                window.open(selectedLevel.video, '_blank');
+            } else {
+                alert(currentLang === 'it' ? "Nessun video disponibile per questo livello." : "No video available for this level.");
+            }
+        }
+
+        // --- DATI DEFAULT INIZIALI ---
+        const defaultLevels = [
+            { rank: 1, name: "Cataclysm", creator: "Ggboy", points: 40, verifier: "Riot", min: "100%", video: "https://www.youtube.com/watch?v=0kL_f8b1q0I", cover: "", records: [
+                { player: "zZalix", pct: "100%", hz: "144Hz" }
+            ]},
+            { rank: 2, name: "tower descent", creator: "Pocke", points: 20, verifier: "Pocke", min: "100%", video: "", cover: "", records: [
+                { player: "robZeph", pct: "100%", hz: "360Hz" }
+            ]},
+            { rank: 3, name: "B", creator: "Motleyorc", points: 15, verifier: "Motleyorc", min: "100%", video: "https://www.youtube.com/watch?v=YfH9eS12sK0", cover: "", records: [
+                { player: "klockish", pct: "100%", hz: "240Hz" }
+            ]},
+            { rank: 4, name: "Skeletal Shenanigans", creator: "YoReid", points: 15, verifier: "YoReid", min: "100%", video: "", cover: "", records: [
+                { player: "UniversoMC", pct: "100%", hz: "165Hz" }
+            ]},
+            { rank: 5, name: "FlashBang", creator: "SomeRandomCow", points: 10, verifier: "SomeRandomCow", min: "100%", video: "", cover: "", records: [
+                { player: "b0bX2", pct: "100%", hz: "360Hz" }
+            ]},
+            { rank: 6, name: "DEMON_TEMPLATE_A", creator: "CREATORE_01", points: 20.00, verifier: "PLAYER_01", min: "100%", video: "", cover: "", records: [] },
+            { rank: 7, name: "DEMON_TEMPLATE_B", creator: "CREATORE_02", points: 10.00, verifier: "PLAYER_02", min: "100%", video: "", cover: [] }
+        ];
+
+        const defaultPlayers = [
+            { rank: 1, name: "zZalix", points: 525, count: 46, highest: "Cataclysm (144Hz)", banned: false, banReason: "", completions: [
+                { level: "Cataclysm", pct: 40 },
+                { level: "Nine Circles", pct: 20 },
+                { level: "FlashBang", pct: 10 }
+            ]},
+            { rank: 2, name: "robZeph", points: 185, count: 17, highest: "tower descent (360Hz)", banned: false, banReason: "", completions: [
+                { level: "tower descent", pct: 20 },
+                { level: "Skeletal Shenanigans", pct: 15 }
+            ]},
+            { rank: 3, name: "klockish", points: 125, count: 11, highest: "Depressure (240Hz)", banned: false, banReason: "", completions: [
+                { level: "B", pct: 15 },
+                { level: "Depressure", pct: 20 }
+            ]},
+            { rank: 4, name: "zleemm", points: 80, count: 8, highest: "FlashBang (144Hz)", banned: false, banReason: "", completions: [
+                { level: "FlashBang", pct: 10 }
+            ]},
+            { rank: 5, name: "UniversoMC", points: 75, count: 4, highest: "Skeletal Shenanigans (165Hz)", banned: false, banReason: "", completions: [
+                { level: "Skeletal Shenanigans", pct: 15 }
+            ]},
+            { rank: 6, name: "b0bX2", points: 30, count: 2, highest: "FlashBang (360Hz)", banned: false, banReason: "", completions: [
+                { level: "Depressure", pct: 10 }
+            ]},
+        ];
+
+        // --- DICHIARAZIONE VARIABILI GLOBALI ---
+        let abstractLevels = [];
+        let abstractPlayers = [];
+        let abstractSubmissions = [];
+
+        // --- ASCOLTO REALTIME SUI DATI FIREBASE ---
+        
+        // Sincronizzazione Live dei Livelli
+        db.ref('levels').on('value', (snapshot) => {
+            const val = snapshot.val();
+            if (val) {
+                abstractLevels = val;
+            } else {
+                abstractLevels = defaultLevels;
+                db.ref('levels').set(defaultLevels);
+            }
+            initLevels();
+            if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
+                if (currentAdminTab === 'levels') renderAdminLevels();
+                else if (currentAdminTab === 'records') renderAdminRecords();
+            }
+        });
+
+        // Sincronizzazione Live dei Giocatori
+        db.ref('players').on('value', (snapshot) => {
+            const val = snapshot.val();
+            if (val) {
+                abstractPlayers = val;
+            } else {
+                abstractPlayers = defaultPlayers;
+                db.ref('players').set(defaultPlayers);
+            }
+            initPlayers();
+            if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
+                if (currentAdminTab === 'players') renderAdminPlayers();
+                else if (currentAdminTab === 'progress') renderAdminProgress();
+            }
+        });
+
+        // Sincronizzazione Live delle Richieste
+        db.ref('submissions').on('value', (snapshot) => {
+            const val = snapshot.val();
+            abstractSubmissions = val || [];
+            if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'submissions') {
+                renderAdminSubmissions();
+            }
+        });
+
+        // --- SCRITTURA DATI SU FIREBASE ---
+
+        function saveAndNormalizeLevels() {
+            abstractLevels.forEach((l, idx) => {
+                l.rank = idx + 1;
+            });
+            db.ref('levels').set(abstractLevels);
+        }
+
+        function saveAndNormalizePlayers() {
+            abstractPlayers.sort((a, b) => b.points - a.points);
+            abstractPlayers.forEach((p, idx) => {
+                p.rank = idx + 1;
+            });
+            db.ref('players').set(abstractPlayers);
+        }
+
+        function saveSubmissions() {
+            db.ref('submissions').set(abstractSubmissions);
+        }
+
+        // --- GESTIONE COMPILAZIONE FORM DI INVIO RECORD PUBBLICO ---
+        function openPublicSubmissionForm() {
+            let levelOptions = '';
+            abstractLevels.forEach(lvl => {
+                levelOptions += `<option value="${lvl.name}">${lvl.name.toUpperCase()}</option>`;
+            });
+
+            const labelPlayer = currentLang === 'it' ? "Tuo Nome Giocatore" : "Your Player Name";
+            const labelLevel = currentLang === 'it' ? "Seleziona Livello" : "Select Level";
+            const labelPct = currentLang === 'it' ? "Percentuale (Deve essere esattamente 100%)" : "Percentage (Must be exactly 100%)";
+            const labelHz = currentLang === 'it' ? "Hz / Piattaforma" : "Hz / Platform";
+            const labelVideo = currentLang === 'it' ? "Link Prova Video (YouTube)" : "Video Proof Link (YouTube)";
+            const modalTitle = currentLang === 'it' ? "Invia Record a Broski" : "Submit Record to Broski";
+
+            const fieldsHTML = `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelPlayer}</label>
+                    <input type="text" name="sub_player" class="admin-form-input" required placeholder="Es. zZalix">
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelLevel}</label>
+                    <select name="sub_level" class="admin-form-input" required>
+                        ${levelOptions}
+                    </select>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelPct}</label>
+                    <input type="number" name="sub_pct" class="admin-form-input" value="100" min="100" max="100" required readonly style="opacity: 0.7; cursor: not-allowed;">
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelHz}</label>
+                    <input type="text" name="sub_hz" class="admin-form-input" placeholder="Es. 360Hz" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelVideo}</label>
+                    <input type="url" name="sub_video" class="admin-form-input" placeholder="https://www.youtube.com/..." required>
+                </div>
+            `;
+            openAdminModal(modalTitle, fieldsHTML, 'public_submission');
+        }
+
+        // --- POPOLAMENTO LIVELLI ---
+        function initLevels() {
+            const container = document.getElementById('level-list');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            abstractLevels.forEach((l, idx) => {
+                const item = document.createElement('div');
+                item.className = `list-item ${idx === 0 ? 'selected' : ''}`;
+                item.onclick = () => {
+                    document.querySelectorAll('#level-list .list-item').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    renderLevelDetails(l);
+                };
+
+                let rankClass = 'rank-default';
+                if (l.rank === 1) rankClass = 'rank-gold';
+                else if (l.rank === 2) rankClass = 'rank-silver';
+                else if (l.rank === 3) rankClass = 'rank-bronze';
+
+                const lvlPoints = parseFloat(l.points);
+                const displayPoints = isNaN(lvlPoints) ? 0 : lvlPoints;
+
+                item.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-rank-circle ${rankClass}">${l.rank}</div>
+                        <div>
+                            <div class="item-name">${l.name || "Senza Nome"}</div>
+                            <div class="item-badge-row">
+                                <span class="mini-badge badge-rookie">RANK #${l.rank}</span>
+                                <span class="mini-badge badge-pts">${displayPoints.toFixed(0)} PTS</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+            if(abstractLevels.length > 0 && !selectedLevel) renderLevelDetails(abstractLevels[0]);
+        }
+
+        function renderLevelDetails(l) {
+            if (!l) return;
+            selectedLevel = l;
+            
+            try {
+                const nameEl = document.getElementById('det-name');
+                if (nameEl) nameEl.innerText = l.name || "Senza Nome";
+                
+                const creatorText = currentLang === 'it' ? 'CREATO DA' : 'CREATED BY';
+                const creatorLabel = document.getElementById('det-creator-label');
+                if (creatorLabel) creatorLabel.innerText = creatorText;
+                
+                const creatorEl = document.getElementById('det-creator');
+                if (creatorEl) creatorEl.innerText = l.creator || "Sconosciuto";
+                
+                const ptsVal = parseFloat(l.points);
+                const ptsEl = document.getElementById('det-pts');
+                if (ptsEl) ptsEl.innerText = isNaN(ptsVal) ? "0" : ptsVal.toFixed(0);
+                
+                const verifierEl = document.getElementById('det-verifier');
+                if (verifierEl) verifierEl.innerText = l.verifier || "Sconosciuto";
+                
+                const minEl = document.getElementById('det-min');
+                if (minEl) minEl.innerText = l.min || "100%";
+
+                const videoBox = document.getElementById('level-video-container');
+                if (videoBox) {
+                    videoBox.classList.remove('has-video');
+                    videoBox.style.backgroundImage = 'none';
+                    videoBox.innerHTML = '';
+
+                    let targetCover = l.cover;
+                    const ytId = getYouTubeId(l.video);
+                    if (!targetCover && ytId) {
+                        targetCover = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+                    }
+
+                    if (l.video) {
+                        videoBox.classList.add('has-video');
+                        if (targetCover) {
+                            videoBox.style.backgroundImage = `url('${targetCover}')`;
+                            videoBox.innerHTML = `
+                                <div class="video-play-overlay" onclick="loadIframeInline()">
+                                    <i class="fa-solid fa-circle-play video-play-icon"></i>
+                                </div>
+                            `;
+                        } else {
+                            const embedUrl = getYouTubeEmbedUrl(l.video);
+                            videoBox.innerHTML = `<iframe src="${embedUrl}" style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" allowfullscreen></iframe>`;
+                        }
+                    }
+                }
+
+                const tbody = document.getElementById('det-records');
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    if(!l.records || l.records.length === 0) {
+                        const noRecordsText = currentLang === 'it' ? "Nessun record salvato" : "No records saved";
+                        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); font-weight: 700;">${noRecordsText}</td></tr>`;
+                        return;
+                    }
+                    l.records.forEach(r => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-weight: 800; color: #fff;">${r.player || "Sconosciuto"}</td>
+                            <td style="color: var(--accent-red); font-weight: 900;">${r.pct || "0%"}</td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">${r.hz || ""}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error("Errore nel rendering dei dettagli del livello:", err);
+            }
+        }
+
+        // --- POPOLAMENTO PLAYERS ---
+        function initPlayers() {
+            try {
+                const container = document.getElementById('player-list');
+                if (!container) return;
+                container.innerHTML = '';
+                
+                abstractPlayers.forEach((p, idx) => {
+                    const item = document.createElement('div');
+                    item.className = `list-item ${idx === 0 ? 'selected' : ''}`;
+                    
+                    const isBanned = p.banned || false;
+                    if (isBanned) {
+                        item.style.opacity = '0.55';
+                    }
+
+                    item.onclick = () => {
+                        document.querySelectorAll('#player-list .list-item').forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        renderPlayerDetails(p);
+                    };
+
+                    const rankVal = p.rank || (idx + 1);
+                    let rankClass = 'rank-default';
+                    if (rankVal === 1) rankClass = 'rank-gold';
+                    else if (rankVal === 2) rankClass = 'rank-silver';
+                    else if (rankVal === 3) rankClass = 'rank-bronze';
+
+                    let badgeRow = '';
+                    if (isBanned) {
+                        badgeRow = `<span class="mini-badge" style="background-color: var(--accent-red); color: #fff; border: 1.5px solid #000;">BANNED</span>`;
+                    } else {
+                        const pts = parseFloat(p.points);
+                        const ptsStr = isNaN(pts) ? "0" : pts.toFixed(0);
+                        badgeRow = `
+                            <span class="mini-badge badge-rookie">Rookie</span>
+                            <span class="mini-badge badge-pts">${ptsStr} PTS</span>
+                        `;
+                    }
+
+                    const pName = p.name || "Senza Nome";
+                    item.innerHTML = `
+                        <div class="item-info">
+                            <div class="item-rank-circle ${rankClass}">${rankVal}</div>
+                            <div>
+                                <div class="item-name" style="${isBanned ? 'text-decoration: line-through; color: var(--text-muted);' : ''}">${pName}</div>
+                                <div class="item-badge-row">
+                                    ${badgeRow}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+                if(abstractPlayers.length > 0 && !selectedPlayer) renderPlayerDetails(abstractPlayers[0]);
+            } catch (err) {
+                console.error("Errore nell'inizializzazione della lista giocatori:", err);
+            }
+        }
+
+        function renderPlayerDetails(p) {
+            if (!p) return;
+            selectedPlayer = p; 
+            
+            try {
+                const pName = p.name || "Senza Nome";
+                const avatarEl = document.getElementById('p-avatar');
+                if (avatarEl) avatarEl.innerText = pName.charAt(0).toUpperCase();
+                
+                const isBanned = p.banned || false;
+                if (isBanned) {
+                    const statusBanned = currentLang === 'it' ? "SQUALIFICATO" : "DISQUALIFIED";
+                    const rankEl = document.getElementById('p-rank');
+                    if (rankEl) {
+                        rankEl.innerText = statusBanned;
+                        rankEl.style.color = "var(--accent-red)";
+                    }
+                    const nameEl = document.getElementById('p-name');
+                    if (nameEl) nameEl.innerHTML = `<span style="text-decoration: line-through; color: var(--text-muted);">${pName}</span>`;
+                    
+                    if (document.getElementById('p-pts')) document.getElementById('p-pts').innerText = "0.00";
+                    if (document.getElementById('p-count')) document.getElementById('p-count').innerText = "0";
+                    if (document.getElementById('p-highest')) document.getElementById('p-highest').innerText = "--";
+
+                    const compContainer = document.getElementById('p-completions');
+                    if (compContainer) {
+                        compContainer.innerHTML = `
+                            <div style="background-color: rgba(255, 74, 90, 0.08); border: 3px solid var(--accent-red); border-radius: 20px; padding: 2rem; text-align: center; color: var(--accent-red); font-weight: 800;">
+                                <i class="fa-solid fa-user-slash" style="font-size: 2rem; margin-bottom: 0.8rem; display: block;"></i>
+                                <span style="font-size: 1.1rem; letter-spacing: 0.5px; text-transform: uppercase;">${p.banReason || "Squalifica generica"}</span>
+                            </div>
+                        `;
+                    }
+                } else {
+                    const rankVal = p.rank || 1;
+                    const labelRank = currentLang === 'it' ? 'RANGO' : 'RANK';
+                    const rankEl = document.getElementById('p-rank');
+                    if (rankEl) {
+                        rankEl.innerText = `${labelRank} #${rankVal} • ITALIA`;
+                        rankEl.style.color = "var(--accent-cyan)";
+                    }
+                    const nameEl = document.getElementById('p-name');
+                    if (nameEl) nameEl.innerText = pName;
+                    
+                    const pts = parseFloat(p.points);
+                    const ptsEl = document.getElementById('p-pts');
+                    if (ptsEl) ptsEl.innerText = isNaN(pts) ? "0.00" : pts.toFixed(2);
+                    
+                    const count = parseInt(p.count, 10);
+                    const countEl = document.getElementById('p-count');
+                    if (countEl) countEl.innerText = isNaN(count) ? "0" : count;
+                    
+                    const highestEl = document.getElementById('p-highest');
+                    if (highestEl) highestEl.innerText = p.highest || "--";
+
+                    const compContainer = document.getElementById('p-completions');
+                    if (compContainer) {
+                        compContainer.innerHTML = '';
+                        
+                        if (!p.completions || p.completions.length === 0) {
+                            const noCompletionsText = currentLang === 'it' ? "Nessun completamento" : "No completions";
+                            compContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-weight: 700; padding: 1rem;">${noCompletionsText}</div>`;
+                        } else {
+                            p.completions.forEach(c => {
+                                const row = document.createElement('div');
+                                const progressPct = parseFloat(c.pct);
+                                const displayPct = isNaN(progressPct) ? 0 : progressPct;
+                                row.innerHTML = `
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 800;">
+                                        <span>${c.level}</span>
+                                        <span style="color: var(--accent-red);">${displayPct}%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill" style="width: ${displayPct}%"></div>
+                                    </div>
+                                `;
+                                compContainer.appendChild(row);
+                            });
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Errore nel rendering dei dettagli del giocatore:", err);
+            }
+        }
+
+        // --- SISTEMA DASHBOARD AMMINISTRATORE INTERNA ---
+        let currentAdminTab = 'levels';
+        let currentEditingIndex = -1;
+        let currentFormType = ''; 
+
+        function switchAdminTab(tabId) {
+            currentAdminTab = tabId;
+            document.querySelectorAll('#admin-tabs .admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const tabButtons = document.querySelectorAll('#admin-tabs .admin-tab-btn');
+            const targetIndex = ['levels', 'records', 'players', 'progress', 'submissions'].indexOf(tabId);
+            if (tabButtons[targetIndex]) tabButtons[targetIndex].classList.add('active');
+
+            document.querySelectorAll('.admin-subview').forEach(view => view.classList.remove('active'));
+            document.getElementById(`admin-subview-${tabId}`).classList.add('active');
+
+            if (tabId === 'levels') renderAdminLevels();
+            else if (tabId === 'records') {
+                populateAdminLevelSelect();
+                renderAdminRecords();
+            }
+            else if (tabId === 'players') renderAdminPlayers();
+            else if (tabId === 'progress') {
+                populateAdminPlayerSelect();
+                renderAdminProgress();
+            }
+            else if (tabId === 'submissions') {
+                renderAdminSubmissions();
+            }
+        }
+
+        function openAdminModal(title, fieldsHTML, formType, editingIndex = -1) {
+            currentFormType = formType;
+            currentEditingIndex = editingIndex;
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-fields-container').innerHTML = fieldsHTML;
+            document.getElementById('admin-modal').style.display = 'flex';
+        }
+
+        // 1. GESTIONE LIVELLI (Con auto-ordinamento)
+        function renderAdminLevels() {
+            const container = document.getElementById('admin-levels-list');
+            container.innerHTML = '';
+            
+            abstractLevels.forEach((l, idx) => {
+                const row = document.createElement('div');
+                row.className = 'admin-row';
+                row.innerHTML = `
+                    <div class="admin-row-info">
+                        <div class="item-rank-circle rank-gold" style="width: 38px; height: 38px; font-size: 1rem;">${l.rank}</div>
+                        <div>
+                            <div style="font-weight: 900; text-transform: uppercase;">${l.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">DA ${l.creator} • ${parseFloat(l.points).toFixed(0)} PTS</div>
+                        </div>
+                    </div>
+                    <div class="admin-row-actions">
+                        <button class="admin-action-btn btn-edit" onclick="openLevelForm(${idx})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="admin-action-btn btn-delete" onclick="deleteLevel(${idx})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function openLevelForm(idx = -1) {
+            const l = idx !== -1 ? abstractLevels[idx] : { rank: abstractLevels.length + 1, name: '', creator: '', points: 10, verifier: '', min: '100%', video: '', cover: '' };
+            const fieldsHTML = `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Rango Posizione (1-Based)</label>
+                    <input type="number" name="rank" class="admin-form-input" value="${l.rank}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Nome Livello</label>
+                    <input type="text" name="name" class="admin-form-input" value="${l.name}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Creatore</label>
+                    <input type="text" name="creator" class="admin-form-input" value="${l.creator}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Punti Lista</label>
+                    <input type="number" name="points" class="admin-form-input" value="${l.points}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Verificatore</label>
+                    <input type="text" name="verifier" class="admin-form-input" value="${l.verifier}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Minimo Record (%)</label>
+                    <input type="text" name="min" class="admin-form-input" value="${l.min}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Link Video YouTube</label>
+                    <input type="text" name="video" class="admin-form-input" value="${l.video}">
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Link Copertina Personalizzata (Vuoto per auto-rilevare)</label>
+                    <input type="text" name="cover" class="admin-form-input" value="${l.cover}">
+                </div>
+            `;
+            openAdminModal(idx !== -1 ? 'Modifica Livello' : 'Nuovo Livello', fieldsHTML, 'level', idx);
+        }
+
+        function deleteLevel(idx) {
+            if(confirm("Sei sicuro di voler eliminare questo livello?")) {
+                abstractLevels.splice(idx, 1);
+                saveAndNormalizeLevels(); 
+            }
+        }
+
+        // 2. GESTIONE RECORD
+        function populateAdminLevelSelect() {
+            const select = document.getElementById('admin-record-level-select');
+            select.innerHTML = '';
+            abstractLevels.forEach((l, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.innerText = l.name.toUpperCase();
+                select.appendChild(opt);
+            });
+        }
+
+        function renderAdminRecords() {
+            const container = document.getElementById('admin-records-list');
+            container.innerHTML = '';
+            const select = document.getElementById('admin-record-level-select');
+            if (!select || select.value === "" || select.value === null) return;
+
+            const lvl = abstractLevels[parseInt(select.value, 10)];
+            if (!lvl) return;
+            
+            if (!lvl.records || lvl.records.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-weight: 800; padding: 2rem;">NESSUN RECORD REGISTRATO PER QUESTO LIVELLO</div>';
+                return;
+            }
+
+            lvl.records.forEach((r, idx) => {
+                const row = document.createElement('div');
+                row.className = 'admin-row';
+                row.innerHTML = `
+                    <div class="admin-row-info">
+                        <div style="font-weight: 900; text-transform: uppercase;">${r.player}</div>
+                        <div style="font-size: 0.8rem; color: var(--accent-red); font-weight: 900;">${r.pct} <span style="color: var(--text-muted); font-weight: 700;">(${r.hz})</span></div>
+                    </div>
+                    <div class="admin-row-actions">
+                        <button class="admin-action-btn btn-edit" onclick="openRecordForm(${idx})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="admin-action-btn btn-delete" onclick="deleteRecord(${idx})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function openRecordForm(idx = -1) {
+            const select = document.getElementById('admin-record-level-select');
+            const lvlIndex = parseInt(select.value, 10);
+            const lvl = abstractLevels[lvlIndex];
+            const r = idx !== -1 ? lvl.records[idx] : { player: '', pct: '100%', hz: '360Hz' };
+
+            const fieldsHTML = `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Nome Giocatore</label>
+                    <input type="text" name="player" class="admin-form-input" value="${r.player}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Percentuale Conseguita</label>
+                    <input type="text" name="pct" class="admin-form-input" value="${r.pct}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Refresh-Rate / Hz</label>
+                    <input type="text" name="hz" class="admin-form-input" value="${r.hz}" required>
+                </div>
+            `;
+            openAdminModal(idx !== -1 ? 'Modifica Record' : 'Nuovo Record', fieldsHTML, 'record', idx);
+        }
+
+        function deleteRecord(idx) {
+            if(confirm("Sei sicuro di voler eliminare questo record?")) {
+                const select = document.getElementById('admin-record-level-select');
+                const lvlIndex = parseInt(select.value, 10);
+                abstractLevels[lvlIndex].records.splice(idx, 1);
+                saveAndNormalizeLevels();
+            }
+        }
+
+        // 3. GESTIONE GIOCATORI
+        function renderAdminPlayers() {
+            const container = document.getElementById('admin-players-list');
+            container.innerHTML = '';
+            
+            abstractPlayers.forEach((p, idx) => {
+                const statusBadge = p.banned ? 
+                    `<span class="admin-row-badge admin-badge-banned">SQUALIFICATO</span>` : 
+                    `<span class="admin-row-badge admin-badge-active">ATTIVO</span>`;
+
+                const row = document.createElement('div');
+                row.className = 'admin-row';
+                row.innerHTML = `
+                    <div class="admin-row-info">
+                        <div class="player-avatar-large" style="width: 38px; height: 38px; font-size: 1rem; border-radius: 10px;">${p.name.charAt(0).toUpperCase()}</div>
+                        <div>
+                            <div style="font-weight: 900; text-transform: uppercase;">${p.name} ${statusBadge}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">RANGO #${p.rank} • ${parseFloat(p.points).toFixed(2)} PTS</div>
+                        </div>
+                    </div>
+                    <div class="admin-row-actions">
+                        <button class="admin-action-btn btn-edit" onclick="openPlayerForm(${idx})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="admin-action-btn btn-delete" onclick="deletePlayer(${idx})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function openPlayerForm(idx = -1) {
+            const p = idx !== -1 ? abstractPlayers[idx] : { rank: abstractPlayers.length + 1, name: '', points: 0, count: 0, highest: '--', banned: false, banReason: '' };
+            const fieldsHTML = `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Nome Giocatore</label>
+                    <input type="text" name="name" class="admin-form-input" value="${p.name}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Punti Totali (Verrà riordinato in graduatoria automaticamente)</label>
+                    <input type="number" step="0.01" name="points" class="admin-form-input" value="${p.points}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Demon superati (Conteggio)</label>
+                    <input type="number" name="count" class="admin-form-input" value="${p.count}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Demon più difficile</label>
+                    <input type="text" name="highest" class="admin-form-input" value="${p.highest}">
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Stato Squalifica</label>
+                    <select name="banned" class="admin-form-input">
+                        <option value="false" ${!p.banned ? 'selected' : ''}>ATTIVO / ABILITATO</option>
+                        <option value="true" ${p.banned ? 'selected' : ''}>SQUALIFICATO (BAN)</option>
+                    </select>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Motivazione Squalifica (Opzionale)</label>
+                    <input type="text" name="banReason" class="admin-form-input" value="${p.banReason || ''}">
+                </div>
+            `;
+            openAdminModal(idx !== -1 ? 'Modifica Giocatore' : 'Nuovo Giocatore', fieldsHTML, 'player', idx);
+        }
+
+        function deletePlayer(idx) {
+            if(confirm("Sei sicuro di voler eliminare questo giocatore?")) {
+                abstractPlayers.splice(idx, 1);
+                saveAndNormalizePlayers(); 
+            }
+        }
+
+        // 4. GESTIONE PERCENTUALE
+        function populateAdminPlayerSelect() {
+            const select = document.getElementById('admin-progress-player-select');
+            select.innerHTML = '';
+            abstractPlayers.forEach((p, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.innerText = p.name.toUpperCase();
+                select.appendChild(opt);
+            });
+        }
+
+        function renderAdminProgress() {
+            const container = document.getElementById('admin-progress-list');
+            container.innerHTML = '';
+            const select = document.getElementById('admin-progress-player-select');
+            if (!select || select.value === "" || select.value === null || select.value === undefined) return;
+
+            const p = abstractPlayers[parseInt(select.value, 10)];
+            if (!p) return;
+
+            if (!p.completions || p.completions.length === 0) {
+                const noProgressMsg = translations[currentLang].admin_no_percentage;
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-weight: 800; padding: 2rem;">${noProgressMsg}</div>`;
+                return;
+            }
+
+            const labelPctText = currentLang === 'it' ? "COMPLETAMENTO" : "COMPLETION";
+
+            p.completions.forEach((c, idx) => {
+                const row = document.createElement('div');
+                row.className = 'admin-row';
+                row.innerHTML = `
+                    <div class="admin-row-info">
+                        <div style="font-weight: 900; text-transform: uppercase;">${c.level}</div>
+                        <div style="font-size: 0.8rem; color: var(--accent-red); font-weight: 900;">${c.pct}% ${labelPctText}</div>
+                    </div>
+                    <div class="admin-row-actions">
+                        <button class="admin-action-btn btn-edit" onclick="openProgressForm(${idx})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="admin-action-btn btn-delete" onclick="deleteProgress(${idx})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Modale per configurare i progressi
+        function openProgressForm(idx = -1) {
+            const select = document.getElementById('admin-progress-player-select');
+            const pIndex = parseInt(select.value, 10);
+            const p = abstractPlayers[pIndex];
+            const c = idx !== -1 ? p.completions[idx] : { level: '', pct: 100 };
+
+            let levelOptions = '';
+            abstractLevels.forEach(lvl => {
+                const isSelected = c.level.toLowerCase() === lvl.name.toLowerCase() ? 'selected' : '';
+                levelOptions += `<option value="${lvl.name}" ${isSelected}>${lvl.name.toUpperCase()}</option>`;
+            });
+
+            const labelSelectLevel = currentLang === 'it' ? "Seleziona Livello" : "Select Level";
+            const labelProgressPercent = currentLang === 'it' ? "Percentuale Progresso (1-100%)" : "Progress Percentage (1-100%)";
+            const modalTitleText = idx !== -1 ? 
+                (currentLang === 'it' ? 'Modifica Percentuale' : 'Edit Percentage') : 
+                (currentLang === 'it' ? 'Aggiungi Percentuale' : 'Add Percentage');
+
+            const fieldsHTML = `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelSelectLevel}</label>
+                    <select name="level" class="admin-form-input" required>
+                        ${levelOptions}
+                    </select>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelProgressPercent}</label>
+                    <input type="number" name="pct" min="1" max="100" class="admin-form-input" value="${c.pct}" required>
+                </div>
+            `;
+            openAdminModal(modalTitleText, fieldsHTML, 'progress', idx);
+        }
+
+        function deleteProgress(idx) {
+            if(confirm("Sei sicuro di voler eliminare questo progresso?")) {
+                const select = document.getElementById('admin-progress-player-select');
+                const pIndex = parseInt(select.value, 10);
+                abstractPlayers[pIndex].completions.splice(idx, 1);
+                abstractPlayers[pIndex].count = abstractPlayers[pIndex].completions.filter(c => parseInt(c.pct, 10) === 100).length;
+                saveAndNormalizePlayers();
+            }
+        }
+
+        // 5. RICHIESTE (SUBMISSIONS QUEUE)
+        function renderAdminSubmissions() {
+            const container = document.getElementById('admin-submissions-list');
+            container.innerHTML = '';
+            
+            if (abstractSubmissions.length === 0) {
+                const noSubMsg = translations[currentLang].admin_no_submissions;
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-weight: 800; padding: 2rem;">${noSubMsg}</div>`;
+                return;
+            }
+
+            abstractSubmissions.forEach((sub, idx) => {
+                const row = document.createElement('div');
+                row.className = 'admin-row';
+                row.innerHTML = `
+                    <div class="admin-row-info">
+                        <div>
+                            <div style="font-weight: 900; text-transform: uppercase; color: var(--accent-cyan); font-size: 1.1rem;">${sub.player}</div>
+                            <div style="font-size: 0.95rem; font-weight: 800; margin-top: 0.2rem;">LIVELLO: <span style="color: #fff;">${sub.level.toUpperCase()}</span></div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700; margin-top: 0.2rem;">Hz/Piattaforma: ${sub.hz} • Pct: ${sub.pct}%</div>
+                            <a href="${sub.video}" target="_blank" style="display: inline-block; margin-top: 0.4rem; font-size: 0.85rem; color: var(--accent-blue); font-weight: 800; text-decoration: underline;">VIDEO PROOF <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i></a>
+                        </div>
+                    </div>
+                    <div class="admin-row-actions">
+                        <button class="admin-action-btn" style="background-color: #22c55e; color: #fff;" onclick="approveSubmission(${idx})" title="Approva e Aggiungi"><i class="fa-solid fa-check"></i></button>
+                        <button class="admin-action-btn btn-delete" onclick="rejectSubmission(${idx})" title="Rifiuta Richiesta"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function approveSubmission(idx) {
+            const sub = abstractSubmissions[idx];
+            const lvl = abstractLevels.find(l => l.name.toLowerCase() === sub.level.toLowerCase());
+            
+            if (lvl) {
+                if (!lvl.records) lvl.records = [];
+                lvl.records.push({
+                    player: sub.player,
+                    pct: sub.pct + "%",
+                    hz: sub.hz
+                });
+                saveAndNormalizeLevels();
+            }
+
+            abstractSubmissions.splice(idx, 1);
+            saveSubmissions();
+            alert(currentLang === 'it' ? "Richiesta approvata e record inserito con successo!" : "Submission approved and record added successfully!");
+        }
+
+        function rejectSubmission(idx) {
+            if (confirm(currentLang === 'it' ? "Sei sicuro di voler rifiutare questa richiesta?" : "Are you sure you want to reject this submission?")) {
+                abstractSubmissions.splice(idx, 1);
+                saveSubmissions();
+            }
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').style.display = 'none';
+        }
+
+        // --- INVIO E SALVATAGGIO DEI MODULI ---
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const form = document.getElementById('modal-form');
+            const formData = new FormData(form);
+
+            if (currentFormType === 'level') {
+                const targetRank = parseInt(formData.get('rank'), 10);
+                const name = formData.get('name').trim();
+                const creator = formData.get('creator').trim();
+                const points = parseFloat(formData.get('points'));
+                const verifier = formData.get('verifier').trim();
+                const min = formData.get('min').trim();
+                const video = formData.get('video').trim();
+                const cover = formData.get('cover').trim();
+
+                const newLvl = {
+                    rank: targetRank,
+                    name: name,
+                    creator: creator,
+                    points: points,
+                    verifier: verifier,
+                    min: min,
+                    video: video,
+                    cover: cover,
+                    records: currentEditingIndex !== -1 ? (abstractLevels[currentEditingIndex].records || []) : []
+                };
+
+                if (currentEditingIndex !== -1) {
+                    abstractLevels.splice(currentEditingIndex, 1);
+                }
+
+                let insertIdx = targetRank - 1;
+                if (insertIdx < 0) insertIdx = 0;
+                if (insertIdx > abstractLevels.length) insertIdx = abstractLevels.length;
+
+                abstractLevels.splice(insertIdx, 0, newLvl);
+                saveAndNormalizeLevels();
+
+            } else if (currentFormType === 'record') {
+                const select = document.getElementById('admin-record-level-select');
+                const lvlIndex = parseInt(select.value, 10);
+                const data = {
+                    player: formData.get('player').trim(),
+                    pct: formData.get('pct').trim(),
+                    hz: formData.get('hz').trim()
+                };
+
+                if (!abstractLevels[lvlIndex].records) abstractLevels[lvlIndex].records = [];
+
+                if (currentEditingIndex !== -1) {
+                    abstractLevels[lvlIndex].records[currentEditingIndex] = data;
+                } else {
+                    abstractLevels[lvlIndex].records.push(data);
+                }
+                saveAndNormalizeLevels();
+
+            } else if (currentFormType === 'player') {
+                const name = formData.get('name').trim();
+                const points = parseFloat(formData.get('points'));
+                const count = parseInt(formData.get('count'), 10);
+                const highest = formData.get('highest').trim();
+                const banned = formData.get('banned') === 'true';
+                const banReason = formData.get('banReason').trim();
+
+                const newPlayer = {
+                    rank: 999,
+                    name: name,
+                    points: points,
+                    count: count,
+                    highest: highest,
+                    banned: banned,
+                    banReason: banReason,
+                    completions: currentEditingIndex !== -1 ? (abstractPlayers[currentEditingIndex].completions || []) : []
+                };
+
+                if (currentEditingIndex !== -1) {
+                    abstractPlayers.splice(currentEditingIndex, 1);
+                }
+
+                abstractPlayers.push(newPlayer);
+                saveAndNormalizePlayers();
+
+            } else if (currentFormType === 'progress') {
+                const select = document.getElementById('admin-progress-player-select');
+                const pIndex = parseInt(select.value, 10);
+                const data = {
+                    level: formData.get('level').trim(),
+                    pct: parseInt(formData.get('pct'), 10)
+                };
+
+                if (!abstractPlayers[pIndex].completions) abstractPlayers[pIndex].completions = [];
+
+                if (currentEditingIndex !== -1) {
+                    abstractPlayers[pIndex].completions[currentEditingIndex] = data;
+                } else {
+                    abstractPlayers[pIndex].completions.push(data);
+                }
+
+                abstractPlayers[pIndex].count = abstractPlayers[pIndex].completions.filter(c => parseInt(c.pct, 10) === 100).length;
+                saveAndNormalizePlayers();
+                
+            } else if (currentFormType === 'public_submission') {
+                const pctVal = parseInt(formData.get('sub_pct'), 10);
+                
+                if (pctVal !== 100) {
+                    const errorPctMsg = currentLang === 'it' ? "La percentuale deve essere esattamente 100%!" : "The percentage must be exactly 100%!";
+                    alert(errorPctMsg);
+                    return;
+                }
+
+                const data = {
+                    player: formData.get('sub_player').trim(),
+                    level: formData.get('sub_level').trim(),
+                    pct: pctVal,
+                    hz: formData.get('sub_hz').trim(),
+                    video: formData.get('sub_video').trim()
+                };
+
+                abstractSubmissions.push(data);
+                saveSubmissions();
+                closeAdminModal();
+
+                const successMsg = currentLang === 'it' ? 
+                    "Richiesta inviata con successo! Verrà esaminata nel Pannello Admin." : 
+                    "Submission sent successfully! It will be reviewed in the Admin Panel.";
+                alert(successMsg);
+            }
+
+            closeAdminModal();
+        }
+    </script>
+</body>
+</html>
