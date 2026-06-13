@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Broski- Demon List </title>
+    <title>Broski - Demon List</title>
     <!-- Importazione dei font Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- FontAwesome per le icone -->
@@ -1320,6 +1320,72 @@
         const tokenPart2 = "INSERISCI_QUI_LA_SECONDA_PARTE_DEL_TUO_TOKEN"; 
         const ghToken = tokenPart1 + tokenPart2;
 
+        // Dizionario traduzioni per evitare errori di traduzione sul DOM
+        const translations = {
+            it: {
+                send_record: "INVIA RECORD",
+                levels_badge: "LIVELLI BATTUTI",
+                levels_title: "DEMON LISTA",
+                points: "PUNTI LISTA",
+                verifier: "VERIFICATORE",
+                requirement: "REQUISITO RECORD",
+                watch_video: "GUARDA IL VIDEO",
+                records_title: "[ RECORD REGISTRATI ]",
+                th_player: "GIOCATORE",
+                th_pct: "PERCENTUALE",
+                th_device: "PIATTAFORMA / REFRESH",
+                stats_badge: "LEADERBOARD",
+                stats_title: "CLASSIFICA",
+                p_total_points: "PUNTI TOTALI",
+                p_completed_demons: "DEMONS SUPERATI",
+                p_hardest: "DEMON PIÙ DIFFICILE",
+                admin_tab_percentage: "PERCENTUALE",
+                p_progress_report: "[ REPORT PROGRESSI E COMPLETAMENTI ]",
+                admin_title: "PANNELLO ADMIN",
+                back_to_home: "TORNA ALLA HOME",
+                admin_tab_levels: "LIVELLI",
+                admin_tab_records: "RECORD",
+                admin_tab_players: "CLASSIFICA / PLAYER",
+                admin_tab_submissions: "RICHIESTE",
+                admin_percentage_title: "GESTIONE PERCENTUALE",
+                admin_add_percentage: "AGGIUNGI PERCENTUALE",
+                admin_submissions_title: "RICHIESTE RECORD IN CODA",
+                admin_no_percentage: "NESSUN PROGRESSO REGISTRATO",
+                admin_no_submissions: "NESSUNA RICHIESTA IN CODA"
+            },
+            en: {
+                send_record: "SUBMIT RECORD",
+                levels_badge: "COMPLETED LEVELS",
+                levels_title: "DEMON LIST",
+                points: "LIST POINTS",
+                verifier: "VERIFIER",
+                requirement: "RECORD REQUIREMENT",
+                watch_video: "WATCH VIDEO",
+                records_title: "[ RECORDED RECORDS ]",
+                th_player: "PLAYER",
+                th_pct: "PERCENTAGE",
+                th_device: "PLATFORM / REFRESH",
+                stats_badge: "LEADERBOARD",
+                stats_title: "LEADERBOARD",
+                p_total_points: "TOTAL POINTS",
+                p_completed_demons: "DEMONS BEATEN",
+                p_hardest: "HARDEST DEMON",
+                admin_tab_percentage: "PERCENTAGE",
+                p_progress_report: "[ PROGRESS AND COMPLETIONS REPORT ]",
+                admin_title: "ADMIN PANEL",
+                back_to_home: "BACK TO HOME",
+                admin_tab_levels: "LEVELS",
+                admin_tab_records: "RECORDS",
+                admin_tab_players: "LEADERBOARD / PLAYERS",
+                admin_tab_submissions: "SUBMISSIONS",
+                admin_percentage_title: "PERCENTAGE MANAGEMENT",
+                admin_add_percentage: "ADD PERCENTAGE",
+                admin_submissions_title: "SUBMISSIONS IN QUEUE",
+                admin_no_percentage: "NO PROGRESS RECORDED",
+                admin_no_submissions: "NO SUBMISSIONS IN QUEUE"
+            }
+        };
+
         // =========================================================================
         // 2. FUNZIONALITÀ INTERFACCIA CRITICA (Sempre operative)
         // =========================================================================
@@ -1478,7 +1544,7 @@
         let abstractSubmissions = JSON.parse(localStorage.getItem('broski_submissions')) || [];
 
         // =========================================================================
-        // 3. SINCRONIZZAZIONE E SCRITTURA DATI TRAMITE GITHUB API
+        // 3. SINCRONIZZAZIONE E SCRITTURA DATI TRAMITE GITHUB API (Real-Time)
         // =========================================================================
 
         async function loadGithubData() {
@@ -1487,12 +1553,35 @@
                 initPlayers();
                 return;
             }
+            
+            // Se l'amministratore ha aperto il modale di inserimento dati,
+            // evitiamo di ricaricare il database per non cancellare la sua digitazione.
+            const modal = document.getElementById('admin-modal');
+            if (modal && modal.style.display === 'flex') {
+                return;
+            }
+
             try {
-                // query string con timestamp per evitare la cache del browser e caricare i dati all'istante
-                const url = `https://raw.githubusercontent.com/${ghOwner}/${ghRepo}/main/${ghPath}?t=${Date.now()}`;
-                const res = await fetch(url);
+                // Utilizzo dell'API dei contenuti di GitHub (Bypassa completamente la cache del CDN raw)
+                const url = `https://api.github.com/repos/${ghOwner}/${ghRepo}/contents/${ghPath}`;
+                const headers = {
+                    "Accept": "application/vnd.github.v3+json"
+                };
+                
+                if (ghToken && !tokenPart1.startsWith("INSERISCI_")) {
+                    headers["Authorization"] = `token ${ghToken}`;
+                }
+
+                // Aggiunta di un timestamp casuale alla query string per impedire la memorizzazione locale del browser
+                const res = await fetch(`${url}?t=${Date.now()}`, { headers });
+                
                 if (res.ok) {
-                    const data = await res.json();
+                    const fileData = await res.json();
+                    
+                    // Decodifica Base64 sicura per i caratteri UTF-8
+                    const contentDecoded = decodeURIComponent(escape(atob(fileData.content)));
+                    const data = JSON.parse(contentDecoded);
+                    
                     abstractLevels = data.levels || defaultLevels;
                     abstractPlayers = data.players || defaultPlayers;
                     abstractSubmissions = data.submissions || [];
@@ -1500,12 +1589,41 @@
                     localStorage.setItem('broski_levels', JSON.stringify(abstractLevels));
                     localStorage.setItem('broski_players', JSON.stringify(abstractPlayers));
                     localStorage.setItem('broski_submissions', JSON.stringify(abstractSubmissions));
+                    
+                    updateUI();
                 }
             } catch (err) {
-                console.warn("Impossibile caricare dati da GitHub, utilizzo della memoria locale offline:", err);
-            } finally {
-                initLevels();
-                initPlayers();
+                console.warn("Errore durante il caricamento da GitHub API, uso fallback locale:", err);
+                abstractLevels = JSON.parse(localStorage.getItem('broski_levels')) || defaultLevels;
+                abstractPlayers = JSON.parse(localStorage.getItem('broski_players')) || defaultPlayers;
+                abstractSubmissions = JSON.parse(localStorage.getItem('broski_submissions')) || [];
+                updateUI();
+            }
+        }
+
+        // Funzione per ridisegnare l'interfaccia mantenendo le selezioni dell'utente
+        function updateUI() {
+            const currentSelectedLevel = selectedLevel;
+            const currentSelectedPlayer = selectedPlayer;
+
+            initLevels();
+            initPlayers();
+
+            if (currentSelectedLevel) {
+                const found = abstractLevels.find(l => l.name === currentSelectedLevel.name);
+                if (found) renderLevelDetails(found);
+            }
+            if (currentSelectedPlayer) {
+                const found = abstractPlayers.find(p => p.name === currentSelectedPlayer.name);
+                if (found) renderPlayerDetails(found);
+            }
+
+            if (isAdmin && document.getElementById('page-admin-dashboard').classList.contains('active')) {
+                if (currentAdminTab === 'levels') renderAdminLevels();
+                else if (currentAdminTab === 'records') renderAdminRecords();
+                else if (currentAdminTab === 'players') renderAdminPlayers();
+                else if (currentAdminTab === 'progress') renderAdminProgress();
+                else if (currentAdminTab === 'submissions') renderAdminSubmissions();
             }
         }
 
@@ -1599,8 +1717,9 @@
             saveToGithub();
         }
 
-        // Inizializza i dati caricandoli all'avvio
+        // Inizializzazione iniziale con avvio dell'aggiornamento automatico ogni 30 secondi
         loadGithubData();
+        setInterval(loadGithubData, 30000);
 
         // =========================================================================
         // 4. ALTRE FUNZIONI APPLICATIVE (Youtube, Dettagli, Form, Modali)
@@ -2296,6 +2415,46 @@
                 abstractSubmissions.splice(idx, 1);
                 saveSubmissions();
             }
+        }
+
+        function openPublicSubmissionForm() {
+            let levelOptions = '';
+            abstractLevels.forEach(lvl => {
+                levelOptions += `<option value="${lvl.name}">${lvl.name.toUpperCase()}</option>`;
+            });
+
+            const labelPlayer = currentLang === 'it' ? "Tuo Nome / Player" : "Your Name / Player";
+            const labelSelectLevel = currentLang === 'it' ? "Seleziona il Livello" : "Select Level";
+            const labelPct = currentLang === 'it' ? "Percentuale (Solo 100% consentita)" : "Percentage (Only 100% allowed)";
+            const labelHz = currentLang === 'it' ? "Refresh-Rate / Hz (es. 360Hz, Mobile)" : "Refresh-Rate / Hz (e.g. 360Hz, Mobile)";
+            const labelVideo = currentLang === 'it' ? "Link Video di Prova (YouTube/Twitch)" : "Video Proof Link (YouTube/Twitch)";
+            const titleText = currentLang === 'it' ? "Invia un Record" : "Submit a Record";
+
+            const fieldsHTML = `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelPlayer}</label>
+                    <input type="text" name="sub_player" class="admin-form-input" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelSelectLevel}</label>
+                    <select name="sub_level" class="admin-form-input" required>
+                        ${levelOptions}
+                    </select>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelPct}</label>
+                    <input type="number" name="sub_pct" min="100" max="100" class="admin-form-input" value="100" required readonly>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelHz}</label>
+                    <input type="text" name="sub_hz" class="admin-form-input" placeholder="es. 240Hz" required>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">${labelVideo}</label>
+                    <input type="url" name="sub_video" class="admin-form-input" placeholder="https://..." required>
+                </div>
+            `;
+            openAdminModal(titleText, fieldsHTML, 'public_submission');
         }
 
         function closeAdminModal() {
