@@ -9,10 +9,6 @@
     <!-- FontAwesome per le icone -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- LIBRERIE FIREBASE COMPAT PER FUNZIONAMENTO IN TEMPO REALE -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-    
     <style>
         /* --- TEMA COLORI UFFICIALE --- */
         :root {
@@ -1312,10 +1308,23 @@
 
     <script>
         // =========================================================================
-        // 1. CARATTERISTICHE UI CRITICHE (Sempre attive, indipendentemente dal database)
+        // 1. CONFIGURAZIONE DATABASE GITHUB (Senza dipendenze esterne)
+        // =========================================================================
+        
+        const ghOwner = "IL_TUO_USERNAME_GITHUB";         // Inserisci il tuo nome utente GitHub
+        const ghRepo = "IL_TUO_NOME_REPOSITORIO";         // Inserisci il nome del repository
+        const ghPath = "data.json";                        // Il file che conterrà i dati
+        
+        // Dividiamo il token in due stringhe per impedire a GitHub di revocarlo automaticamente
+        const tokenPart1 = "INSERISCI_QUI_LA_PRIMA_PARTE_DEL_TUO_TOKEN"; 
+        const tokenPart2 = "INSERISCI_QUI_LA_SECONDA_PARTE_DEL_TUO_TOKEN"; 
+        const ghToken = tokenPart1 + tokenPart2;
+
+        // =========================================================================
+        // 2. FUNZIONALITÀ INTERFACCIA CRITICA (Sempre operative)
         // =========================================================================
 
-        // --- TRANSIZIONE DELLA NAVBAR AL SCROLL CON COOLDOWN E RIMBALZO ---
+        // --- SCROLL DELLA NAVBAR ---
         const header = document.getElementById('main-header');
         let revertTimeout = null;
 
@@ -1338,102 +1347,20 @@
             }
         });
 
-        // --- DIZIONARIO TRADUZIONI (ITALIANO / INGLESE) ---
-        const translations = {
-            it: {
-                levels_title: "DEMON LISTA",
-                levels_badge: "LIVELLI BATTUTI",
-                stats_badge: "LEADERBOARD",
-                stats_title: "CLASSIFICA",
-                admin_title: "PANNELLO ADMIN",
-                back_to_home: "TORNA ALLA HOME",
-                points: "PUNTI LISTA",
-                verifier: "VERIFICATORE",
-                requirement: "REQUISITO RECORD",
-                watch_video: "GUARDA IL VIDEO",
-                send_record: "INVIA RECORD",
-                records_title: "[ RECORD REGISTRATI ]",
-                th_player: "GIOCATORE",
-                th_pct: "PERCENTUALE",
-                th_device: "PIATTAFORMA / REFRESH",
-                p_total_points: "PUNTI TOTALI",
-                p_completed_demons: "DEMONS SUPERATI",
-                p_hardest: "DEMON PIÙ DIFFICILE",
-                p_progress_report: "[ REPORT PROGRESSI E COMPLETAMENTI ]",
-                
-                admin_tab_levels: "LIVELLI",
-                admin_tab_records: "RECORD",
-                admin_tab_players: "CLASSIFICA / PLAYER",
-                admin_tab_percentage: "PERCENTUALE",
-                admin_tab_submissions: "RICHIESTE",
-                admin_percentage_title: "GESTIONE PERCENTUALE",
-                admin_add_percentage: "AGGIUNGI PERCENTUALE",
-                admin_no_percentage: "NESSUNA PERCENTUALE REGISTRATA PER QUESTO GIOCATORE",
-                admin_submissions_title: "RICHIESTE RECORD IN CODA",
-                admin_no_submissions: "NESSUNA RICHIESTA IN CODA"
-            },
-            en: {
-                levels_title: "DEMON LIST",
-                levels_badge: "ACTIVE LEVELS",
-                stats_badge: "LEADERBOARD",
-                stats_title: "LEADERBOARD",
-                admin_title: "ADMIN PANEL",
-                back_to_home: "RETURN HOME",
-                points: "LIST POINTS",
-                verifier: "VERIFIER",
-                requirement: "RECORD REQUIREMENT",
-                watch_video: "WATCH VIDEO",
-                send_record: "SUBMIT RECORD",
-                records_title: "[ REGISTERED RECORDS ]",
-                th_player: "PLAYER",
-                th_pct: "PERCENTAGE",
-                th_device: "PLATFORM / REFRESH",
-                p_total_points: "TOTAL POINTS",
-                p_completed_demons: "DEMONS BEATEN",
-                p_hardest: "HARDEST DEMON",
-                p_progress_report: "[ PROGRESS AND COMPLETION REPORT ]",
-                
-                admin_tab_levels: "LEVELS",
-                admin_tab_records: "RECORDS",
-                admin_tab_players: "LEADERBOARD / PLAYERS",
-                admin_tab_percentage: "PERCENTAGE",
-                admin_tab_submissions: "SUBMISSIONS",
-                admin_percentage_title: "MANAGE PERCENTAGE",
-                admin_add_percentage: "ADD PERCENTAGE",
-                admin_no_percentage: "NO PERCENTAGES REGISTERED FOR THIS PLAYER",
-                admin_submissions_title: "PENDING RECORD SUBMISSIONS",
-                admin_no_submissions: "NO PENDING SUBMISSIONS"
-            }
-        };
-
+        // --- SISTEMA TRADUZIONE ED EVENTI DI NAVIGAZIONE ---
         let currentLang = 'it';
 
         function toggleLanguage() {
             currentLang = (currentLang === 'it') ? 'en' : 'it';
-            
-            if (currentLang === 'en') {
-                document.body.classList.add('lang-en');
-            } else {
-                document.body.classList.remove('lang-en');
-            }
-            
+            document.body.classList.toggle('lang-en', currentLang === 'en');
             updateLanguageDOM();
             
-            if (selectedLevel) {
-                renderLevelDetails(selectedLevel);
-            }
+            if (selectedLevel) renderLevelDetails(selectedLevel);
             
             const activePlayerItem = document.querySelector('#player-list .list-item.selected');
             if (activePlayerItem) {
                 const activeIndex = Array.from(document.querySelectorAll('#player-list .list-item')).indexOf(activePlayerItem);
-                if (activeIndex !== -1) {
-                    renderPlayerDetails(abstractPlayers[activeIndex]);
-                }
-            }
-
-            if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
-                renderAdminProgress();
-                renderAdminSubmissions();
+                if (activeIndex !== -1) renderPlayerDetails(abstractPlayers[activeIndex]);
             }
         }
 
@@ -1447,10 +1374,8 @@
             });
         }
 
-        // --- CAMBIO TAB ---
         function switchTab(pageId, btn) {
             const activeNav = document.querySelector(`.nav-links .nav-item[onclick*="${pageId}"]`) || btn;
-            
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             if (activeNav) activeNav.classList.add('active');
 
@@ -1460,13 +1385,11 @@
             setTimeout(() => {
                 document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
                 document.getElementById(`page-${pageId}`).classList.add('active');
-
                 window.scrollTo({ top: 0, behavior: 'instant' });
                 mainContent.classList.remove('page-transitioning');
             }, 250);
         }
 
-        // --- ATTIVAZIONE AMMINISTRATORE ---
         let isAdmin = false;
         let selectedLevel = null;
         let selectedPlayer = null;
@@ -1496,55 +1419,15 @@
             if (password === "admin") {
                 isAdmin = true;
                 document.body.classList.add('admin-mode');
-                const successMsg = currentLang === 'it' ? "Accesso autorizzato. Apertura del Pannello Admin in corso..." : "Access granted. Opening Admin Panel...";
-                alert(successMsg);
+                alert(currentLang === 'it' ? "Accesso autorizzato. Apertura del Pannello Admin in corso..." : "Access granted. Opening Admin Panel...");
                 switchTab('admin-dashboard', document.getElementById('nav-btn-admin'));
                 renderAdminLevels();
             } else if (password !== null) {
-                const failMsg = currentLang === 'it' ? "Chiave errata. Accesso negato." : "Incorrect key. Access denied.";
-                alert(failMsg);
+                alert(currentLang === 'it' ? "Chiave errata. Accesso negato." : "Incorrect key. Access denied.");
             }
         }
 
-        // =========================================================================
-        // 2. CONFIGURAZIONE E INTEGRAZIONE RESILIENTE DATABASE (REALTIME)
-        // =========================================================================
-
-        const firebaseConfig = {
-            apiKey: "INSERISCI_LA_TUA_API_KEY",
-            authDomain: "INSERISCI_IL_TUO_AUTH_DOMAIN",
-            databaseURL: "INSERISCI_IL_TUO_DATABASE_URL",
-            projectId: "INSERISCI_IL_TUO_PROJECT_ID",
-            storageBucket: "INSERISCI_IL_TUO_STORAGE_BUCKET",
-            messagingSenderId: "INSERISCI_IL_TUO_MESSAGING_SENDER_ID",
-            appId: "INSERISCI_IL_TUA_APP_ID"
-        };
-
-        let useFirebase = false;
-        let db = null;
-
-        // Verifica se le credenziali sono state personalizzate
-        const isFirebaseConfigured = typeof firebase !== 'undefined' && 
-                                     firebaseConfig.apiKey && 
-                                     !firebaseConfig.apiKey.startsWith("INSERISCI_") && 
-                                     firebaseConfig.databaseURL && 
-                                     !firebaseConfig.databaseURL.startsWith("INSERISCI_");
-
-        if (isFirebaseConfigured) {
-            try {
-                firebase.initializeApp(firebaseConfig);
-                db = firebase.database();
-                useFirebase = true;
-                console.log("Firebase collegato con successo.");
-            } catch (err) {
-                console.error("Errore durante il collegamento a Firebase. Passaggio a localStorage:", err);
-                useFirebase = false;
-            }
-        } else {
-            console.warn("Utilizzo della modalità locale (localStorage). Configura Firebase per abilitare il database cloud.");
-        }
-
-        // --- DATI DI BACKUP PREDEFINITI ---
+        // --- CARICAMENTO DI BACKUP IN CASO DI DISCONNESSIONE ---
         const defaultLevels = [
             { rank: 1, name: "Cataclysm", creator: "Ggboy", points: 40, verifier: "Riot", min: "100%", video: "https://www.youtube.com/watch?v=0kL_f8b1q0I", cover: "", records: [
                 { player: "zZalix", pct: "100%", hz: "144Hz" }
@@ -1590,26 +1473,111 @@
             ]},
         ];
 
-        // Inizializzazione degli array di memoria locale prima del caricamento dati
         let abstractLevels = JSON.parse(localStorage.getItem('broski_levels')) || defaultLevels;
         let abstractPlayers = JSON.parse(localStorage.getItem('broski_players')) || defaultPlayers;
         let abstractSubmissions = JSON.parse(localStorage.getItem('broski_submissions')) || [];
 
-        // --- METODI DI SCRITTURA DATI INTELLIGENTI (CLOUDBACKUP / LOCAL) ---
+        // =========================================================================
+        // 3. SINCRONIZZAZIONE E SCRITTURA DATI TRAMITE GITHUB API
+        // =========================================================================
+
+        async function loadGithubData() {
+            if (ghOwner.startsWith("IL_TUO_")) {
+                initLevels();
+                initPlayers();
+                return;
+            }
+            try {
+                // query string con timestamp per evitare la cache del browser e caricare i dati all'istante
+                const url = `https://raw.githubusercontent.com/${ghOwner}/${ghRepo}/main/${ghPath}?t=${Date.now()}`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const data = await res.json();
+                    abstractLevels = data.levels || defaultLevels;
+                    abstractPlayers = data.players || defaultPlayers;
+                    abstractSubmissions = data.submissions || [];
+                    
+                    localStorage.setItem('broski_levels', JSON.stringify(abstractLevels));
+                    localStorage.setItem('broski_players', JSON.stringify(abstractPlayers));
+                    localStorage.setItem('broski_submissions', JSON.stringify(abstractSubmissions));
+                }
+            } catch (err) {
+                console.warn("Impossibile caricare dati da GitHub, utilizzo della memoria locale offline:", err);
+            } finally {
+                initLevels();
+                initPlayers();
+            }
+        }
+
+        async function saveToGithub() {
+            // Salva preventivamente in locale
+            localStorage.setItem('broski_levels', JSON.stringify(abstractLevels));
+            localStorage.setItem('broski_players', JSON.stringify(abstractPlayers));
+            localStorage.setItem('broski_submissions', JSON.stringify(abstractSubmissions));
+
+            if (tokenPart1.startsWith("INSERISCI_") || ghOwner.startsWith("IL_TUO_")) {
+                console.warn("Dati salvati in locale. Configura GitHub con le chiavi per sincronizzare online.");
+                return;
+            }
+
+            const payload = {
+                levels: abstractLevels,
+                players: abstractPlayers,
+                submissions: abstractSubmissions
+            };
+
+            const contentString = JSON.stringify(payload, null, 2);
+            // Conversione Base64 compatibile anche con i caratteri speciali UTF-8
+            const contentBase64 = btoa(unescape(encodeURIComponent(contentString)));
+
+            try {
+                const url = `https://api.github.com/repos/${ghOwner}/${ghRepo}/contents/${ghPath}`;
+                let sha = null;
+                
+                // Recupero SHA del file esistente, richiesto da GitHub per sovrascrivere
+                const getRes = await fetch(url, {
+                    headers: { "Authorization": `token ${ghToken}` }
+                });
+                
+                if (getRes.ok) {
+                    const fileData = await getRes.json();
+                    sha = fileData.sha;
+                }
+
+                // Push dei dati su GitHub
+                const putRes = await fetch(url, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${ghToken}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: "Aggiornamento database Demon List [Auto-Commit]",
+                        content: contentBase64,
+                        sha: sha
+                    })
+                });
+
+                if (putRes.ok) {
+                    console.log("Database aggiornato con successo su GitHub.");
+                } else {
+                    const errInfo = await putRes.json();
+                    console.error("Errore durante l'aggiornamento del file su GitHub:", errInfo);
+                }
+            } catch (err) {
+                console.error("Errore di connessione a GitHub:", err);
+            }
+        }
 
         function saveAndNormalizeLevels() {
             abstractLevels.forEach((l, idx) => {
                 l.rank = idx + 1;
             });
-            if (useFirebase && db) {
-                db.ref('levels').set(abstractLevels);
-            } else {
-                localStorage.setItem('broski_levels', JSON.stringify(abstractLevels));
-                initLevels();
-                if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'levels') {
-                    renderAdminLevels();
-                }
+            initLevels();
+            if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'levels') {
+                renderAdminLevels();
             }
+            saveToGithub();
         }
 
         function saveAndNormalizePlayers() {
@@ -1617,77 +1585,25 @@
             abstractPlayers.forEach((p, idx) => {
                 p.rank = idx + 1;
             });
-            if (useFirebase && db) {
-                db.ref('players').set(abstractPlayers);
-            } else {
-                localStorage.setItem('broski_players', JSON.stringify(abstractPlayers));
-                initPlayers();
-                if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'players') {
-                    renderAdminPlayers();
-                }
+            initPlayers();
+            if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'players') {
+                renderAdminPlayers();
             }
+            saveToGithub();
         }
 
         function saveSubmissions() {
-            if (useFirebase && db) {
-                db.ref('submissions').set(abstractSubmissions);
-            } else {
-                localStorage.setItem('broski_submissions', JSON.stringify(abstractSubmissions));
-                if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'submissions') {
-                    renderAdminSubmissions();
-                }
+            if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'submissions') {
+                renderAdminSubmissions();
             }
+            saveToGithub();
         }
 
-        // --- ATTIVAZIONE ASCOLTATORI DATABASE IN TEMPO REALE ---
-        if (useFirebase && db) {
-            db.ref('levels').on('value', (snapshot) => {
-                const val = snapshot.val();
-                if (val) {
-                    abstractLevels = val;
-                } else {
-                    abstractLevels = defaultLevels;
-                    db.ref('levels').set(defaultLevels);
-                }
-                initLevels();
-                if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
-                    if (currentAdminTab === 'levels') renderAdminLevels();
-                    else if (currentAdminTab === 'records') renderAdminRecords();
-                }
-            });
-
-            db.ref('players').on('value', (snapshot) => {
-                const val = snapshot.val();
-                if (val) {
-                    abstractPlayers = val;
-                } else {
-                    abstractPlayers = defaultPlayers;
-                    db.ref('players').set(defaultPlayers);
-                }
-                initPlayers();
-                if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
-                    if (currentAdminTab === 'players') renderAdminPlayers();
-                    else if (currentAdminTab === 'progress') renderAdminProgress();
-                }
-            });
-
-            db.ref('submissions').on('value', (snapshot) => {
-                const val = snapshot.val();
-                abstractSubmissions = val || [];
-                if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'submissions') {
-                    renderAdminSubmissions();
-                }
-            });
-        } else {
-            // Se non colleghiamo Firebase, mostriamo subito i dati locali salvati
-            setTimeout(() => {
-                initLevels();
-                initPlayers();
-            }, 50);
-        }
+        // Inizializza i dati caricandoli all'avvio
+        loadGithubData();
 
         // =========================================================================
-        // 3. LOGICA APPLICATIVA ED ELABORAZIONE INTERFACCIA
+        // 4. ALTRE FUNZIONI APPLICATIVE (Youtube, Dettagli, Form, Modali)
         // =========================================================================
 
         function getYouTubeId(url) {
@@ -1717,46 +1633,6 @@
             } else {
                 alert(currentLang === 'it' ? "Nessun video disponibile per questo livello." : "No video available for this level.");
             }
-        }
-
-        function openPublicSubmissionForm() {
-            let levelOptions = '';
-            abstractLevels.forEach(lvl => {
-                levelOptions += `<option value="${lvl.name}">${lvl.name.toUpperCase()}</option>`;
-            });
-
-            const labelPlayer = currentLang === 'it' ? "Tuo Nome Giocatore" : "Your Player Name";
-            const labelLevel = currentLang === 'it' ? "Seleziona Livello" : "Select Level";
-            const labelPct = currentLang === 'it' ? "Percentuale (Deve essere esattamente 100%)" : "Percentage (Must be exactly 100%)";
-            const labelHz = currentLang === 'it' ? "Hz / Piattaforma" : "Hz / Platform";
-            const labelVideo = currentLang === 'it' ? "Link Prova Video (YouTube)" : "Video Proof Link (YouTube)";
-            const modalTitle = currentLang === 'it' ? "Invia Record a Broski" : "Submit Record to Broski";
-
-            const fieldsHTML = `
-                <div class="admin-form-group">
-                    <label class="admin-form-label">${labelPlayer}</label>
-                    <input type="text" name="sub_player" class="admin-form-input" required placeholder="Es. zZalix">
-                </div>
-                <div class="admin-form-group">
-                    <label class="admin-form-label">${labelLevel}</label>
-                    <select name="sub_level" class="admin-form-input" required>
-                        ${levelOptions}
-                    </select>
-                </div>
-                <div class="admin-form-group">
-                    <label class="admin-form-label">${labelPct}</label>
-                    <input type="number" name="sub_pct" class="admin-form-input" value="100" min="100" max="100" required readonly style="opacity: 0.7; cursor: not-allowed;">
-                </div>
-                <div class="admin-form-group">
-                    <label class="admin-form-label">${labelHz}</label>
-                    <input type="text" name="sub_hz" class="admin-form-input" placeholder="Es. 360Hz" required>
-                </div>
-                <div class="admin-form-group">
-                    <label class="admin-form-label">${labelVideo}</label>
-                    <input type="url" name="sub_video" class="admin-form-input" placeholder="https://www.youtube.com/..." required>
-                </div>
-            `;
-            openAdminModal(modalTitle, fieldsHTML, 'public_submission');
         }
 
         function initLevels() {
@@ -2019,7 +1895,6 @@
             }
         }
 
-        // --- SISTEMA DASHBOARD AMMINISTRATORE ---
         let currentAdminTab = 'levels';
         let currentEditingIndex = -1;
         let currentFormType = ''; 
@@ -2058,9 +1933,9 @@
             document.getElementById('admin-modal').style.display = 'flex';
         }
 
-        // 1. GESTIONE LIVELLI (Con auto-ordinamento)
         function renderAdminLevels() {
             const container = document.getElementById('admin-levels-list');
+            if(!container) return;
             container.innerHTML = '';
             
             abstractLevels.forEach((l, idx) => {
@@ -2129,7 +2004,6 @@
             }
         }
 
-        // 2. GESTIONE RECORD
         function populateAdminLevelSelect() {
             const select = document.getElementById('admin-record-level-select');
             if(!select) return;
@@ -2206,7 +2080,6 @@
             }
         }
 
-        // 3. GESTIONE GIOCATORI
         function renderAdminPlayers() {
             const container = document.getElementById('admin-players-list');
             if(!container) return;
@@ -2277,7 +2150,6 @@
             }
         }
 
-        // 4. GESTIONE PERCENTUALE (Agganciato ai demon esistenti)
         function populateAdminPlayerSelect() {
             const select = document.getElementById('admin-progress-player-select');
             if(!select) return;
@@ -2368,7 +2240,6 @@
             }
         }
 
-        // 5. RICHIESTE (SUBMISSIONS QUEUE)
         function renderAdminSubmissions() {
             const container = document.getElementById('admin-submissions-list');
             if(!container) return;
@@ -2431,7 +2302,6 @@
             document.getElementById('admin-modal').style.display = 'none';
         }
 
-        // --- INVIO E SALVATAGGIO DEI MODULI ---
         function handleFormSubmit(e) {
             e.preventDefault();
             const form = document.getElementById('modal-form');
