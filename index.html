@@ -1311,21 +1311,9 @@
     </div>
 
     <script>
-        // --- CONFIGURAZIONE FIREBASE IN REALTIME ---
-        // Sostituisci i seguenti campi con le chiavi del tuo progetto Firebase
-        const firebaseConfig = {
-            apiKey: "INSERISCI_LA_TUA_API_KEY",
-            authDomain: "INSERISCI_IL_TUO_AUTH_DOMAIN",
-            databaseURL: "INSERISCI_IL_TUO_DATABASE_URL",
-            projectId: "INSERISCI_IL_TUO_PROJECT_ID",
-            storageBucket: "INSERISCI_IL_TUO_STORAGE_BUCKET",
-            messagingSenderId: "INSERISCI_IL_TUO_MESSAGING_SENDER_ID",
-            appId: "INSERISCI_IL_TUA_APP_ID"
-        };
-
-        // Inizializzazione di Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        // =========================================================================
+        // 1. CARATTERISTICHE UI CRITICHE (Sempre attive, indipendentemente dal database)
+        // =========================================================================
 
         // --- TRANSIZIONE DELLA NAVBAR AL SCROLL CON COOLDOWN E RIMBALZO ---
         const header = document.getElementById('main-header');
@@ -1373,7 +1361,6 @@
                 p_hardest: "DEMON PIÙ DIFFICILE",
                 p_progress_report: "[ REPORT PROGRESSI E COMPLETAMENTI ]",
                 
-                // Traduzioni Interfaccia Admin
                 admin_tab_levels: "LIVELLI",
                 admin_tab_records: "RECORD",
                 admin_tab_players: "CLASSIFICA / PLAYER",
@@ -1406,7 +1393,6 @@
                 p_hardest: "HARDEST DEMON",
                 p_progress_report: "[ PROGRESS AND COMPLETION REPORT ]",
                 
-                // English Admin Translations
                 admin_tab_levels: "LEVELS",
                 admin_tab_records: "RECORDS",
                 admin_tab_players: "LEADERBOARD / PLAYERS",
@@ -1480,7 +1466,7 @@
             }, 250);
         }
 
-        // --- GESTIONE AMMINISTRATORE (Dashboard Integrata) ---
+        // --- ATTIVAZIONE AMMINISTRATORE ---
         let isAdmin = false;
         let selectedLevel = null;
         let selectedPlayer = null;
@@ -1520,37 +1506,45 @@
             }
         }
 
-        // --- HELPER STRUMENTI VIDEO (YOUTUBE) ---
-        function getYouTubeId(url) {
-            if (!url) return null;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
+        // =========================================================================
+        // 2. CONFIGURAZIONE E INTEGRAZIONE RESILIENTE DATABASE (REALTIME)
+        // =========================================================================
 
-        function getYouTubeEmbedUrl(url) {
-            const id = getYouTubeId(url);
-            return id ? `https://www.youtube.com/embed/${id}` : url;
-        }
+        const firebaseConfig = {
+            apiKey: "INSERISCI_LA_TUA_API_KEY",
+            authDomain: "INSERISCI_IL_TUO_AUTH_DOMAIN",
+            databaseURL: "INSERISCI_IL_TUO_DATABASE_URL",
+            projectId: "INSERISCI_IL_TUO_PROJECT_ID",
+            storageBucket: "INSERISCI_IL_TUO_STORAGE_BUCKET",
+            messagingSenderId: "INSERISCI_IL_TUO_MESSAGING_SENDER_ID",
+            appId: "INSERISCI_IL_TUA_APP_ID"
+        };
 
-        function loadIframeInline() {
-            if (!selectedLevel || !selectedLevel.video) return;
-            const videoBox = document.getElementById('level-video-container');
-            if (videoBox) {
-                const embedUrl = getYouTubeEmbedUrl(selectedLevel.video);
-                videoBox.innerHTML = `<iframe src="${embedUrl}?autoplay=1" style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        let useFirebase = false;
+        let db = null;
+
+        // Verifica se le credenziali sono state personalizzate
+        const isFirebaseConfigured = typeof firebase !== 'undefined' && 
+                                     firebaseConfig.apiKey && 
+                                     !firebaseConfig.apiKey.startsWith("INSERISCI_") && 
+                                     firebaseConfig.databaseURL && 
+                                     !firebaseConfig.databaseURL.startsWith("INSERISCI_");
+
+        if (isFirebaseConfigured) {
+            try {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+                useFirebase = true;
+                console.log("Firebase collegato con successo.");
+            } catch (err) {
+                console.error("Errore durante il collegamento a Firebase. Passaggio a localStorage:", err);
+                useFirebase = false;
             }
+        } else {
+            console.warn("Utilizzo della modalità locale (localStorage). Configura Firebase per abilitare il database cloud.");
         }
 
-        function watchVideo() {
-            if (selectedLevel && selectedLevel.video) {
-                window.open(selectedLevel.video, '_blank');
-            } else {
-                alert(currentLang === 'it' ? "Nessun video disponibile per questo livello." : "No video available for this level.");
-            }
-        }
-
-        // --- DATI DEFAULT INIZIALI ---
+        // --- DATI DI BACKUP PREDEFINITI ---
         const defaultLevels = [
             { rank: 1, name: "Cataclysm", creator: "Ggboy", points: 40, verifier: "Riot", min: "100%", video: "https://www.youtube.com/watch?v=0kL_f8b1q0I", cover: "", records: [
                 { player: "zZalix", pct: "100%", hz: "144Hz" }
@@ -1596,61 +1590,26 @@
             ]},
         ];
 
-        // --- DICHIARAZIONE VARIABILI GLOBALI ---
-        let abstractLevels = [];
-        let abstractPlayers = [];
-        let abstractSubmissions = [];
+        // Inizializzazione degli array di memoria locale prima del caricamento dati
+        let abstractLevels = JSON.parse(localStorage.getItem('broski_levels')) || defaultLevels;
+        let abstractPlayers = JSON.parse(localStorage.getItem('broski_players')) || defaultPlayers;
+        let abstractSubmissions = JSON.parse(localStorage.getItem('broski_submissions')) || [];
 
-        // --- ASCOLTO REALTIME SUI DATI FIREBASE ---
-        
-        // Sincronizzazione Live dei Livelli
-        db.ref('levels').on('value', (snapshot) => {
-            const val = snapshot.val();
-            if (val) {
-                abstractLevels = val;
-            } else {
-                abstractLevels = defaultLevels;
-                db.ref('levels').set(defaultLevels);
-            }
-            initLevels();
-            if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
-                if (currentAdminTab === 'levels') renderAdminLevels();
-                else if (currentAdminTab === 'records') renderAdminRecords();
-            }
-        });
-
-        // Sincronizzazione Live dei Giocatori
-        db.ref('players').on('value', (snapshot) => {
-            const val = snapshot.val();
-            if (val) {
-                abstractPlayers = val;
-            } else {
-                abstractPlayers = defaultPlayers;
-                db.ref('players').set(defaultPlayers);
-            }
-            initPlayers();
-            if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
-                if (currentAdminTab === 'players') renderAdminPlayers();
-                else if (currentAdminTab === 'progress') renderAdminProgress();
-            }
-        });
-
-        // Sincronizzazione Live delle Richieste
-        db.ref('submissions').on('value', (snapshot) => {
-            const val = snapshot.val();
-            abstractSubmissions = val || [];
-            if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'submissions') {
-                renderAdminSubmissions();
-            }
-        });
-
-        // --- SCRITTURA DATI SU FIREBASE ---
+        // --- METODI DI SCRITTURA DATI INTELLIGENTI (CLOUDBACKUP / LOCAL) ---
 
         function saveAndNormalizeLevels() {
             abstractLevels.forEach((l, idx) => {
                 l.rank = idx + 1;
             });
-            db.ref('levels').set(abstractLevels);
+            if (useFirebase && db) {
+                db.ref('levels').set(abstractLevels);
+            } else {
+                localStorage.setItem('broski_levels', JSON.stringify(abstractLevels));
+                initLevels();
+                if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'levels') {
+                    renderAdminLevels();
+                }
+            }
         }
 
         function saveAndNormalizePlayers() {
@@ -1658,14 +1617,108 @@
             abstractPlayers.forEach((p, idx) => {
                 p.rank = idx + 1;
             });
-            db.ref('players').set(abstractPlayers);
+            if (useFirebase && db) {
+                db.ref('players').set(abstractPlayers);
+            } else {
+                localStorage.setItem('broski_players', JSON.stringify(abstractPlayers));
+                initPlayers();
+                if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'players') {
+                    renderAdminPlayers();
+                }
+            }
         }
 
         function saveSubmissions() {
-            db.ref('submissions').set(abstractSubmissions);
+            if (useFirebase && db) {
+                db.ref('submissions').set(abstractSubmissions);
+            } else {
+                localStorage.setItem('broski_submissions', JSON.stringify(abstractSubmissions));
+                if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'submissions') {
+                    renderAdminSubmissions();
+                }
+            }
         }
 
-        // --- GESTIONE COMPILAZIONE FORM DI INVIO RECORD PUBBLICO ---
+        // --- ATTIVAZIONE ASCOLTATORI DATABASE IN TEMPO REALE ---
+        if (useFirebase && db) {
+            db.ref('levels').on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val) {
+                    abstractLevels = val;
+                } else {
+                    abstractLevels = defaultLevels;
+                    db.ref('levels').set(defaultLevels);
+                }
+                initLevels();
+                if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
+                    if (currentAdminTab === 'levels') renderAdminLevels();
+                    else if (currentAdminTab === 'records') renderAdminRecords();
+                }
+            });
+
+            db.ref('players').on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val) {
+                    abstractPlayers = val;
+                } else {
+                    abstractPlayers = defaultPlayers;
+                    db.ref('players').set(defaultPlayers);
+                }
+                initPlayers();
+                if (document.getElementById('page-admin-dashboard').classList.contains('active')) {
+                    if (currentAdminTab === 'players') renderAdminPlayers();
+                    else if (currentAdminTab === 'progress') renderAdminProgress();
+                }
+            });
+
+            db.ref('submissions').on('value', (snapshot) => {
+                const val = snapshot.val();
+                abstractSubmissions = val || [];
+                if (document.getElementById('page-admin-dashboard').classList.contains('active') && currentAdminTab === 'submissions') {
+                    renderAdminSubmissions();
+                }
+            });
+        } else {
+            // Se non colleghiamo Firebase, mostriamo subito i dati locali salvati
+            setTimeout(() => {
+                initLevels();
+                initPlayers();
+            }, 50);
+        }
+
+        // =========================================================================
+        // 3. LOGICA APPLICATIVA ED ELABORAZIONE INTERFACCIA
+        // =========================================================================
+
+        function getYouTubeId(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function getYouTubeEmbedUrl(url) {
+            const id = getYouTubeId(url);
+            return id ? `https://www.youtube.com/embed/${id}` : url;
+        }
+
+        function loadIframeInline() {
+            if (!selectedLevel || !selectedLevel.video) return;
+            const videoBox = document.getElementById('level-video-container');
+            if (videoBox) {
+                const embedUrl = getYouTubeEmbedUrl(selectedLevel.video);
+                videoBox.innerHTML = `<iframe src="${embedUrl}?autoplay=1" style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            }
+        }
+
+        function watchVideo() {
+            if (selectedLevel && selectedLevel.video) {
+                window.open(selectedLevel.video, '_blank');
+            } else {
+                alert(currentLang === 'it' ? "Nessun video disponibile per questo livello." : "No video available for this level.");
+            }
+        }
+
         function openPublicSubmissionForm() {
             let levelOptions = '';
             abstractLevels.forEach(lvl => {
@@ -1706,7 +1759,6 @@
             openAdminModal(modalTitle, fieldsHTML, 'public_submission');
         }
 
-        // --- POPOLAMENTO LIVELLI ---
         function initLevels() {
             const container = document.getElementById('level-list');
             if (!container) return;
@@ -1822,7 +1874,6 @@
             }
         }
 
-        // --- POPOLAMENTO PLAYERS ---
         function initPlayers() {
             try {
                 const container = document.getElementById('player-list');
@@ -1968,7 +2019,7 @@
             }
         }
 
-        // --- SISTEMA DASHBOARD AMMINISTRATORE INTERNA ---
+        // --- SISTEMA DASHBOARD AMMINISTRATORE ---
         let currentAdminTab = 'levels';
         let currentEditingIndex = -1;
         let currentFormType = ''; 
@@ -2081,6 +2132,7 @@
         // 2. GESTIONE RECORD
         function populateAdminLevelSelect() {
             const select = document.getElementById('admin-record-level-select');
+            if(!select) return;
             select.innerHTML = '';
             abstractLevels.forEach((l, idx) => {
                 const opt = document.createElement('option');
@@ -2092,6 +2144,7 @@
 
         function renderAdminRecords() {
             const container = document.getElementById('admin-records-list');
+            if(!container) return;
             container.innerHTML = '';
             const select = document.getElementById('admin-record-level-select');
             if (!select || select.value === "" || select.value === null) return;
@@ -2156,6 +2209,7 @@
         // 3. GESTIONE GIOCATORI
         function renderAdminPlayers() {
             const container = document.getElementById('admin-players-list');
+            if(!container) return;
             container.innerHTML = '';
             
             abstractPlayers.forEach((p, idx) => {
@@ -2223,9 +2277,10 @@
             }
         }
 
-        // 4. GESTIONE PERCENTUALE
+        // 4. GESTIONE PERCENTUALE (Agganciato ai demon esistenti)
         function populateAdminPlayerSelect() {
             const select = document.getElementById('admin-progress-player-select');
+            if(!select) return;
             select.innerHTML = '';
             abstractPlayers.forEach((p, idx) => {
                 const opt = document.createElement('option');
@@ -2237,6 +2292,7 @@
 
         function renderAdminProgress() {
             const container = document.getElementById('admin-progress-list');
+            if(!container) return;
             container.innerHTML = '';
             const select = document.getElementById('admin-progress-player-select');
             if (!select || select.value === "" || select.value === null || select.value === undefined) return;
@@ -2269,7 +2325,6 @@
             });
         }
 
-        // Modale per configurare i progressi
         function openProgressForm(idx = -1) {
             const select = document.getElementById('admin-progress-player-select');
             const pIndex = parseInt(select.value, 10);
@@ -2316,6 +2371,7 @@
         // 5. RICHIESTE (SUBMISSIONS QUEUE)
         function renderAdminSubmissions() {
             const container = document.getElementById('admin-submissions-list');
+            if(!container) return;
             container.innerHTML = '';
             
             if (abstractSubmissions.length === 0) {
