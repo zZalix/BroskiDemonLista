@@ -1445,8 +1445,8 @@
             ]},
             { rank: 6, name: "FlashBang", creator: "SomeRandomCow", points: 10, verifier: "SomeRandomCow", min: "100%", video: "https://youtu.be/LY_VSD0IC14?si=_tbgHHrmneDpSNVx", cover: "https://i.ytimg.com/vi/_TUnN5nl0iQ/maxresdefault.jpg", records: [
                 { player: "b0bX2", pct: "100%", hz: "360Hz" }
-            ]};
-
+            ]},
+        ];
         const defaultPlayers = [
             { rank: 1, name: "zZalix", points: 525, count: 46, highest: "Cataclysm (144Hz)", banned: false, banReason: "", completions: [
                 { level: "Cataclysm", pct: 40 },
@@ -1469,7 +1469,8 @@
             ]},
             { rank: 6, name: "b0bX2", points: 30, count: 2, highest: "FlashBang (360Hz)", banned: false, banReason: "", completions: [
                 { level: "Depressure", pct: 10 }
-            ]};
+            ]},
+        ];
 
         let abstractLevels = JSON.parse(localStorage.getItem('broski_levels')) || defaultLevels;
         let abstractPlayers = JSON.parse(localStorage.getItem('broski_players')) || defaultPlayers;
