@@ -57,7 +57,8 @@ const t = {
         futura: "Futura",
         futuraDisabledLabel: "Futura (Disattivata)",
         updatesTitle: "Aggiornamenti Recenti",
-        pointsLabel: "punti"
+        pointsLabel: "punti",
+        levelNotFound: "Livello non trovato nel database locale."
     },
     en: {
         searchPlaceholder: "Search level...",
@@ -107,7 +108,8 @@ const t = {
         futura: "Futura",
         futuraDisabledLabel: "Futura (Disabled)",
         updatesTitle: "Recent Updates",
-        pointsLabel: "points"
+        pointsLabel: "points",
+        levelNotFound: "Level not found in local database."
     }
 };
 
@@ -141,6 +143,30 @@ let activeLevelRank = null; // Memorizza l'ultimo livello aperto per le traduzio
 let rouletteTarget = 1;
 let rouletteHistory = [];
 let currentRouletteLevel = null;
+
+// Reindirizza al dettaglio di un livello cercandolo per nome
+function goToLevelByName(levelName) {
+    // Cerca prima nella lista Presente
+    let lvl = levels.find(l => l.name === levelName);
+    if (lvl) {
+        activeList = 'presente';
+        switchView('detail', lvl.rank);
+        return;
+    }
+
+    // Cerca nella lista Futura se attiva
+    if (isFuturaActive) {
+        let futLvl = futuraLevels.find(l => l.name === levelName);
+        if (futLvl) {
+            activeList = 'futura';
+            switchView('detail', futLvl.rank);
+            return;
+        }
+    }
+
+    // Segnala se il livello non esiste nel database locale
+    triggerToast(t[currentLang].levelNotFound);
+}
 
 // Gestore Visualizzazione SPA con Fix transizione (void offsetWidth per ricaricare l'animazione)
 function switchView(viewName, parameterId = null) {
@@ -260,16 +286,6 @@ function toggleTheme() {
         `;
         triggerToast(currentLang === 'it' ? 'Tema Scuro attivato' : 'Dark Mode activated');
     }
-}
-
-// Gestore Toast
-function triggerToast(message) {
-    const toast = document.getElementById('toast-notify');
-    toast.innerText = message;
-    toast.classList.add('show');
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
 }
 
 // Seleziona se mostrare la lista Presente o Futura
@@ -508,10 +524,10 @@ function renderRoulette() {
             <div class="roulette-rank">#${currentRouletteLevel.rank}</div>
             <div class="roulette-name">${currentRouletteLevel.name}</div>
             <div class="roulette-id">(${currentRouletteLevel.id})</div>
-            <div class="roulette-published">${t[currentLang].verifiedBy.replace('Verificato da', 'Pubblicato da')}:<br><span>${currentRouletteLevel.creator}</span></div>
+            <div class="roulette-published">${t[currentLang].verifiedBy.replace('Verificato da', 'Pubblicato da').replace('Verified by', 'Published by')}:<br><span>${currentRouletteLevel.creator}</span></div>
         </div>
         <div class="roulette-target-action">
-            <div class="roulette-target-badge">${t[currentLang].livelloCorrente.replace('Livello Corrente', 'ALMENO')} ${rouletteTarget}%</div>
+            <div class="roulette-target-badge">${t[currentLang].livelloCorrente.replace('Livello Corrente', 'ALMENO').replace('Current Level', 'AT LEAST')} ${rouletteTarget}%</div>
             <button class="roulette-done-btn" onclick="completeStep()">Done</button>
         </div>
     `;
@@ -612,7 +628,8 @@ function renderPlayerDetail() {
                 </div>
             </div>
         </div>
-        <div class="hardest-banner" onclick="triggerToast('Selected hardest level detail')">
+        <!-- Clicking hardest level banner redirects directly to that level -->
+        <div class="hardest-banner" onclick="goToLevelByName('${player.hardest}')">
             <div class="hardest-left">
                 <span class="hardest-icon">🔥</span>
                 <div class="hardest-title-group">
@@ -634,7 +651,7 @@ function renderPlayerDetail() {
             </div>
             <div class="tags-container">
                 ${player.completed.map(levelName => `
-                    <span class="level-tag" onclick="triggerToast('Tags clicked: ${levelName}')">${levelName}</span>
+                    <span class="level-tag" onclick="goToLevelByName('${levelName}')">${levelName}</span>
                 `).join('')}
             </div>
         </div>
