@@ -1491,3 +1491,94 @@ body.light-mode .nav-btn:hover, body.light-mode .nav-btn.active {
         grid-template-columns: 1fr 1fr;
     }
 }
+/* Impedisce fisicamente il click quando l'elemento ha la classe disabled-item */
+.dropdown-item.disabled-item {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Griglia per i canali YouTube dei creatori/giocatori */
+.creators-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 1.5rem;
+}
+
+.creator-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: transform 0.2s, border-color 0.2s, background-color var(--transition-speed);
+    user-select: none;
+}
+
+.creator-card:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-2px);
+}
+
+.creator-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.creator-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-blue);
+    background-color: #000;
+}
+
+.creator-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.creator-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.creator-rank {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.creator-yt-btn {
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity var(--transition-speed);
+}
+
+.creator-yt-btn:hover {
+    opacity: 0.9;
+}
+
+.creator-yt-btn.disabled {
+    background-color: var(--panel-border);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+}
