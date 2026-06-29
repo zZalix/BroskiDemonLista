@@ -1,3 +1,11 @@
+// ==========================================
+// CONFIGURAZIONE ATTIVAZIONE LISTA FUTURA
+// ==========================================
+// Imposta su 'true' per attivare i livelli della lista "Futura" nella tendina.
+// Imposta su 'false' per tenerla disattivata.
+const isFuturaActive = false; 
+
+// DATABASE LOCALE DEI LIVELLI (PRESENTE)
 const levels = [
     { 
         rank: 1, 
@@ -12,7 +20,7 @@ const levels = [
         length: "2:15", 
         objects: "150,000", 
         version: "2.2", 
-        quote: "This is the first level quote.", 
+        quote: "Questo è il primo quote di esempio del livello.", 
         youtubeId: "dQw4w9WgXcQ" 
     },
     { 
@@ -28,7 +36,7 @@ const levels = [
         length: "1:58", 
         objects: "120,440", 
         version: "2.1", 
-        quote: "Second level custom description.", 
+        quote: "Sottotitolo descrittivo personalizzato del secondo livello.", 
         youtubeId: "dQw4w9WgXcQ" 
     },
     { 
@@ -44,7 +52,7 @@ const levels = [
         length: "2:02", 
         objects: "112,045", 
         version: "2.1", 
-        quote: "Third level custom description.", 
+        quote: "Sottotitolo descrittivo personalizzato del terzo livello.", 
         youtubeId: "dQw4w9WgXcQ" 
     },
     { 
@@ -60,7 +68,7 @@ const levels = [
         length: "2:31", 
         objects: "281,004", 
         version: "2.2", 
-        quote: "Fourth level custom description.", 
+        quote: "Sottotitolo descrittivo personalizzato del quarto livello.", 
         youtubeId: "dQw4w9WgXcQ" 
     },
     { 
@@ -76,7 +84,28 @@ const levels = [
         length: "2:45", 
         objects: "138,409", 
         version: "2.1", 
-        quote: "Fifth level custom description.", 
+        quote: "Sottotitolo descrittivo personalizzato del quinto livello.", 
+        youtubeId: "dQw4w9WgXcQ" 
+    }
+];
+
+// DATABASE DEI LIVELLI (FUTURA)
+// Questa lista verrà mostrata solo se imposti "isFuturaActive = true" in alto.
+const futuraLevels = [
+    { 
+        rank: 1, 
+        name: "Futura Level 1", 
+        creator: "Creatore Futuro", 
+        verifier: "Verificatore Futuro", 
+        pointsMin: "300.00", 
+        pointsMax: "1200.00", 
+        isNew: true, 
+        id: "99999999", 
+        password: "Free Copy", 
+        length: "2:00", 
+        objects: "90,000", 
+        version: "2.2", 
+        quote: "Questo è un livello futuro sbloccato modificando la configurazione.", 
         youtubeId: "dQw4w9WgXcQ" 
     }
 ];
@@ -90,6 +119,7 @@ const players = [
 
 let activePlayerIndex = 0;
 let displayMode = 'list'; // Impostata su 'list' (Visualizzazione Principale) di default
+let activeList = 'presente'; // 'presente' o 'futura'
 
 // Stato Level Roulette
 let rouletteTarget = 1;
@@ -138,7 +168,7 @@ function toggleTheme() {
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
             </svg>
         `;
-        triggerToast('Light Mode attivata');
+        triggerToast('Tema Chiaro attivato');
     } else {
         sunBtn.innerHTML = `
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -146,7 +176,7 @@ function toggleTheme() {
                 <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
             </svg>
         `;
-        triggerToast('Dark Mode attivata');
+        triggerToast('Tema Scuro attivato');
     }
 }
 
@@ -158,6 +188,18 @@ function triggerToast(message) {
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3000);
+}
+
+// Seleziona se mostrare la lista Presente o Futura
+function selectList(listName) {
+    if (listName === 'futura') {
+        if (!isFuturaActive) {
+            triggerToast('La lista Futura è disattivata. Modifica "isFuturaActive" in app.js per attivarla!');
+            return;
+        }
+    }
+    activeList = listName;
+    switchView('grid');
 }
 
 // Gestore delle tendine menu (Dropdowns)
@@ -201,9 +243,14 @@ function setDisplayMode(mode) {
     renderDisplay();
 }
 
-function renderDisplay(filteredLevels = levels) {
-    gridRange.innerText = `#1 - #${levels.length}`;
+function renderDisplay() {
+    const currentList = (activeList === 'futura') ? futuraLevels : levels;
+    
+    gridRange.innerText = `#1 - #${currentList.length}`;
     displayContainer.innerHTML = '';
+
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const filteredLevels = currentList.filter(lvl => lvl.name.toLowerCase().includes(query));
 
     if (displayMode === 'grid') {
         const gridDiv = document.createElement('div');
@@ -212,7 +259,7 @@ function renderDisplay(filteredLevels = levels) {
             const cell = document.createElement('div');
             cell.className = 'grid-cell';
             cell.innerHTML = `
-                ${lvl.isNew ? '<span class="grid-badge-new">New</span>' : ''}
+                ${lvl.isNew ? '<span class="grid-badge-new">NEW</span>' : ''}
                 <div class="grid-rank-box">${lvl.rank}</div>
                 <div class="grid-name">${lvl.name}</div>
             `;
@@ -228,7 +275,7 @@ function renderDisplay(filteredLevels = levels) {
             card.className = 'level-card';
             card.innerHTML = `
                 <div class="level-thumbnail-container">
-                    ${lvl.isNew ? '<span class="badge-new">New</span>' : ''}
+                    ${lvl.isNew ? '<span class="badge-new">NEW</span>' : ''}
                     <img class="level-thumbnail" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop" alt="${lvl.name}">
                 </div>
                 <div class="level-details-main">
@@ -237,7 +284,7 @@ function renderDisplay(filteredLevels = levels) {
                         <span class="level-name-txt">${lvl.name}</span>
                     </div>
                     <div class="level-meta-row">
-                        ${lvl.creator} | <span class="verifier">${lvl.verifier}</span> · ${lvl.pointsMin} — <span class="points-val">${lvl.pointsMax}</span> points
+                        ${lvl.creator} | <span class="verifier">${lvl.verifier}</span> · ${lvl.pointsMin} — <span class="points-val">${lvl.pointsMax}</span> punti
                     </div>
                 </div>
             `;
@@ -249,10 +296,8 @@ function renderDisplay(filteredLevels = levels) {
 }
 
 if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        const filtered = levels.filter(lvl => lvl.name.toLowerCase().includes(query));
-        renderDisplay(filtered);
+    searchInput.addEventListener('input', () => {
+        renderDisplay();
     });
 }
 
@@ -260,7 +305,8 @@ if (searchInput) {
 const detailContent = document.getElementById('level-detail-content');
 
 function renderDetail(rankId) {
-    const level = levels.find(l => l.rank == rankId);
+    const currentList = (activeList === 'futura') ? futuraLevels : levels;
+    const level = currentList.find(l => l.rank == rankId);
     if (!level) return;
 
     detailContent.innerHTML = `
@@ -268,22 +314,22 @@ function renderDetail(rankId) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
             </svg>
-            Back to list
+            Torna alla lista
         </button>
         <div class="detail-top">
             <h1 class="detail-title-row"><span>#${level.rank}</span> ${level.name}</h1>
-            <div class="detail-creator-row">created by <strong>${level.creator}</strong></div>
+            <div class="detail-creator-row">creato da <strong>${level.creator}</strong></div>
         </div>
-        <div class="verified-badge"><span>✓ Verified by <strong>${level.verifier}</strong></span></div>
+        <div class="verified-badge"><span>✓ Verificato da <strong>${level.verifier}</strong></span></div>
         <div class="detail-quote">// ${level.quote} //</div>
         <div class="detail-video-wrapper">
             <iframe src="https://www.youtube.com/embed/${level.youtubeId}" title="YouTube video player" allowfullscreen></iframe>
         </div>
         <div class="stats-grid-row-1">
             <div class="stat-card" onclick="copyId('${level.id}', 'id-val')">
-                <span class="lbl">ID</span>
+                <span class="lbl">ID Livello</span>
                 <span class="val" id="id-val">${level.id}</span>
-                <span class="sub-click">Click to copy</span>
+                <span class="sub-click">Clicca per copiare</span>
             </div>
             <div class="stat-card">
                 <span class="lbl">Password</span>
@@ -292,33 +338,33 @@ function renderDetail(rankId) {
         </div>
         <div class="stats-grid-row-2">
             <div class="stat-card">
-                <span class="lbl">Length</span><span class="val">${level.length}</span>
+                <span class="lbl">Durata</span><span class="val">${level.length}</span>
             </div>
             <div class="stat-card">
-                <span class="lbl">Objects</span><span class="val">${level.objects}</span>
+                <span class="lbl">Oggetti</span><span class="val">${level.objects}</span>
             </div>
             <div class="stat-card">
-                <span class="lbl">Version</span><span class="val">${level.version}</span>
+                <span class="lbl">Versione</span><span class="val">${level.version}</span>
             </div>
         </div>
         <div class="stats-grid-row-3">
             <div class="stat-card">
-                <span class="lbl">Total Score (100%)</span><span class="val" style="color: var(--accent-blue);">${level.pointsMax}</span>
+                <span class="lbl">Punteggio Totale (100%)</span><span class="val" style="color: var(--accent-blue);">${level.pointsMax}</span>
             </div>
             <div class="stat-card">
-                <span class="lbl">List Percent Score (66%)</span><span class="val">${level.pointsMin}</span>
+                <span class="lbl">Punteggio Minimo (66%)</span><span class="val">${level.pointsMin}</span>
             </div>
         </div>
         <div class="action-buttons-row">
-            <a class="action-btn" onclick="triggerToast('Audio track is not configured')">🎵 Song</a>
-            <a class="action-btn" onclick="triggerToast('GD Browser mirror is unavailable')">🔗 GD Browser</a>
+            <a class="action-btn" onclick="triggerToast('Traccia audio non configurata.')">🎵 Canzone</a>
+            <a class="action-btn" onclick="triggerToast('GD Browser specchio non disponibile.')">🔗 GD Browser</a>
         </div>
         <div class="position-history-accordion">
             <div class="accordion-header" onclick="toggleAccordion()">
-                <span>Position history</span><span>▼</span>
+                <span>Cronologia Posizioni</span><span>▼</span>
             </div>
             <div class="accordion-content" id="accordion-body">
-                Placed #${level.rank} on demonlist.
+                Inserito al posto #${level.rank} della lista globale.
             </div>
         </div>
         <div class="records-container">
@@ -326,14 +372,14 @@ function renderDetail(rankId) {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
-                <span>Records</span>
+                <span>Record Ricevuti</span>
             </div>
-            <div class="records-sub">0 records in total, 0 of which are 100%</div>
+            <div class="records-sub">0 record totali, di cui 0 sono al 100%</div>
             <div class="no-records-box">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
                 </svg>
-                No records yet
+                Nessun record registrato
             </div>
         </div>
     `;
@@ -342,7 +388,7 @@ function renderDetail(rankId) {
 function copyId(id, elementId) {
     navigator.clipboard.writeText(id).then(() => {
         const el = document.getElementById(elementId);
-        el.innerText = "Copied!";
+        el.innerText = "Copiato!";
         setTimeout(() => { el.innerText = id; }, 1500);
     });
 }
@@ -363,8 +409,9 @@ function initRoulette() {
 }
 
 function rollNextLevel() {
-    const randomIndex = Math.floor(Math.random() * levels.length);
-    currentRouletteLevel = levels[randomIndex];
+    const currentList = (activeList === 'futura') ? futuraLevels : levels;
+    const randomIndex = Math.floor(Math.random() * currentList.length);
+    currentRouletteLevel = currentList[randomIndex];
 }
 
 function renderRoulette() {
@@ -378,16 +425,16 @@ function renderRoulette() {
             <div class="roulette-rank">#${currentRouletteLevel.rank}</div>
             <div class="roulette-name">${currentRouletteLevel.name}</div>
             <div class="roulette-id">(${currentRouletteLevel.id})</div>
-            <div class="roulette-published">Published by:<br><span>${currentRouletteLevel.creator}</span></div>
+            <div class="roulette-published">Pubblicato da:<br><span>${currentRouletteLevel.creator}</span></div>
         </div>
         <div class="roulette-target-action">
-            <div class="roulette-target-badge">AT LEAST ${rouletteTarget}%</div>
+            <div class="roulette-target-badge">ALMENO ${rouletteTarget}%</div>
             <button class="roulette-done-btn" onclick="completeStep()">Done</button>
         </div>
     `;
 
     if (rouletteHistory.length === 0) {
-        rouletteHistoryContainer.innerHTML = `<div class="history-empty">No levels have been completed yet.</div>`;
+        rouletteHistoryContainer.innerHTML = `<div class="history-empty">Nessun livello è stato completato ancora.</div>`;
     } else {
         rouletteHistoryContainer.innerHTML = `
             <ul class="history-list">
@@ -411,7 +458,7 @@ function completeStep() {
     rouletteTarget++;
     rollNextLevel();
     renderRoulette();
-    triggerToast(`Step completed! Target raised to ${rouletteTarget}%`);
+    triggerToast(`Step completato! Obiettivo alzato a ${rouletteTarget}%`);
 }
 
 function resetRoulette() {
@@ -420,7 +467,7 @@ function resetRoulette() {
     currentRouletteLevel = null;
     rollNextLevel();
     renderRoulette();
-    triggerToast("Roulette reset successful!");
+    triggerToast("Roulette resettata con successo!");
 }
 
 // --- STATS VIEWER ---
@@ -472,21 +519,21 @@ function renderPlayerDetail() {
             <div class="p-stat-box">
                 <div class="p-stat-icon">🏆</div>
                 <div class="p-stat-details">
-                    <span class="p-stat-val">#${player.rank}</span><span class="p-stat-lbl">Rank</span>
+                    <span class="p-stat-val">#${player.rank}</span><span class="p-stat-lbl">Posizione</span>
                 </div>
             </div>
             <div class="p-stat-box">
                 <div class="p-stat-icon">✨</div>
                 <div class="p-stat-details">
-                    <span class="p-stat-val">${player.score}</span><span class="p-stat-lbl">Score</span>
+                    <span class="p-stat-val">${player.score}</span><span class="p-stat-lbl">Punteggio</span>
                 </div>
             </div>
         </div>
-        <div class="hardest-banner" onclick="triggerToast('Selected hardest level detail')">
+        <div class="hardest-banner" onclick="triggerToast('Visualizzazione livello record')">
             <div class="hardest-left">
                 <span class="hardest-icon">🔥</span>
                 <div class="hardest-title-group">
-                    <span class="hardest-lbl">Hardest level</span>
+                    <span class="hardest-lbl">Record più difficile</span>
                     <span class="hardest-name">${player.hardest}</span>
                 </div>
             </div>
@@ -498,13 +545,13 @@ function renderPlayerDetail() {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
-                    <span>Main levels</span>
+                    <span>Livelli Completati</span>
                 </div>
                 <span class="box-counter">${player.completed.length}</span>
             </div>
             <div class="tags-container">
                 ${player.completed.map(levelName => `
-                    <span class="level-tag" onclick="triggerToast('Tags clicked: ${levelName}')">${levelName}</span>
+                    <span class="level-tag" onclick="triggerToast('Livello cliccato: ${levelName}')">${levelName}</span>
                 `).join('')}
             </div>
         </div>
@@ -519,7 +566,22 @@ if (playerSearchInput) {
     });
 }
 
+// Configura dinamicamente la navbar in base alle variabili
+function initNavbar() {
+    const futuraBtn = document.getElementById('btn-futura');
+    if (futuraBtn) {
+        if (isFuturaActive) {
+            futuraBtn.classList.remove('disabled-item');
+            futuraBtn.innerText = 'Futura';
+        } else {
+            futuraBtn.classList.add('disabled-item');
+            futuraBtn.innerText = 'Futura (Disattivata)';
+        }
+    }
+}
+
 // Esecuzione al caricamento iniziale
 document.addEventListener('DOMContentLoaded', () => {
+    initNavbar();
     renderDisplay();
 });
