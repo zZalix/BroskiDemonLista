@@ -59,7 +59,7 @@
                         <button id="nav-more" class="nav-btn" onclick="toggleDropdown(event, 'more-dropdown-container')">Altro ▾</button>
                         <ul class="dropdown-menu">
                             <li><button class="dropdown-item" id="btn-roulette" onclick="switchView('roulette')">Roulette dei Livelli</button></li>
-                            <li><button class="dropdown-item disabled-item" id="btn-guidelines" onclick="triggerToast(t[currentLang].socialDisabled)">Linee Guida (Disattivata)</button></li>
+                            <li><button class="dropdown-item" id="btn-guidelines" onclick="showGuidelines()">Linee Guida</button></li>
                             <li><button class="dropdown-item disabled-item" id="btn-timemachine" onclick="triggerToast(t[currentLang].socialDisabled)">Macchina del Tempo (Disattivata)</button></li>
                         </ul>
                     </li>
@@ -71,9 +71,9 @@
                     <li class="dropdown" id="social-dropdown-container">
                         <button id="nav-social" class="nav-btn" onclick="toggleDropdown(event, 'social-dropdown-container')">I nostri social ▾</button>
                         <ul class="dropdown-menu">
-                            <li><button class="dropdown-item disabled-item" onclick="triggerToast(t[currentLang].socialDisabled)">Discord (Disattivata)</button></li>
-                            <li><button class="dropdown-item disabled-item" onclick="triggerToast(t[currentLang].socialDisabled)">Twitter (Disattivata)</button></li>
-                            <li><button class="dropdown-item disabled-item" onclick="triggerToast(t[currentLang].socialDisabled)">YouTube (Disattivata)</button></li>
+                            <li><button class="dropdown-item" onclick="handleSocialClick('discord')">Discord</button></li>
+                            <li><button class="dropdown-item" onclick="handleSocialClick('twitter')">Twitter</button></li>
+                            <li><button class="dropdown-item" onclick="handleSocialClick('youtube')">YouTube (Player Channels)</button></li>
                         </ul>
                     </li>
 
@@ -214,6 +214,13 @@
             </div>
         </section>
 
+        <!-- VISTA 6: CANALI YOUTUBE DEI GIOCATORI -->
+        <section id="view-youtube" class="view-section">
+            <div class="detail-layout" id="youtube-creators-content-container">
+                <!-- Generato tramite JavaScript -->
+            </div>
+        </section>
+
     </main>
 
     <!-- Componente Toast per messaggi non invasivi -->
@@ -233,9 +240,9 @@
                 <span class="footer-logo-sub">La classifica definitiva dei livelli più difficili di Geometry Dash</span>
             </div>
             <div class="footer-socials">
-                <div class="footer-social-btn">💬</div>
-                <div class="footer-social-btn">⭐</div>
-                <div class="footer-social-btn">𝕏</div>
+                <button class="footer-social-btn" onclick="handleSocialClick('discord')" aria-label="Discord">💬</button>
+                <button class="footer-social-btn" onclick="handleSocialClick('youtube')" aria-label="YouTube">📹</button>
+                <button class="footer-social-btn" onclick="handleSocialClick('twitter')" aria-label="Twitter">𝕏</button>
             </div>
         </div>
         <div class="footer-bottom">
