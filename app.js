@@ -1,7 +1,7 @@
 // ==========================================
 // 1. CONFIGURAZIONE GENERALE
 // ==========================================
-const isFuturaActive = false; // 'true' per attivare la lista Futura, 'false' per disattivarla
+const isFuturaActive = true; // 'true' per attivare la lista Futura, 'false' per disattivarla
 let currentLang = 'it';       // 'it' per italiano di default, 'en' per inglese
 
 
