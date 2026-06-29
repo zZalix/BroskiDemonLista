@@ -27,6 +27,18 @@
             --transition-speed: 0.15s;
         }
 
+        /* Tema Chiaro (Inversione Colori Elegante) */
+        body.light-mode {
+            --bg-color: #f3f4f6;
+            --navbar-bg: #ffffff;
+            --panel-bg: #e5e7eb;
+            --card-bg: #ffffff;
+            --panel-border: #d1d5db;
+            --text-primary: #0f172a;
+            --text-secondary: #4b5563;
+            --input-bg: #f9fafb;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -43,6 +55,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
         /* Elementi decorativi di sfondo */
@@ -58,6 +71,11 @@
             justify-content: space-between;
             align-items: flex-end;
             opacity: 0.12;
+        }
+
+        .bg-decorations svg {
+            color: var(--panel-border);
+            transition: color var(--transition-speed);
         }
 
         .decor-left {
@@ -109,6 +127,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 2rem;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .navbar-left {
@@ -127,6 +146,7 @@
             font-size: 1.25rem;
             letter-spacing: -0.5px;
             cursor: pointer;
+            user-select: none;
         }
 
         .navbar-brand svg {
@@ -135,25 +155,37 @@
 
         .navbar-menu {
             display: flex;
-            gap: 20px;
+            gap: 12px;
             list-style: none;
             align-items: center;
         }
 
-        .navbar-menu a {
-            text-decoration: none;
+        /* Sostituzione con pulsanti di navigazione reali */
+        .nav-btn {
+            background: none;
+            border: none;
             color: var(--text-secondary);
+            font-family: var(--font-sans);
             font-size: 0.9rem;
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 4px;
             cursor: pointer;
-            transition: color var(--transition-speed);
+            transition: color var(--transition-speed), background-color var(--transition-speed);
+            user-select: none;
+            outline: none;
+            padding: 6px 12px;
+            border-radius: 6px;
         }
 
-        .navbar-menu a:hover, .navbar-menu a.active {
+        .nav-btn:hover, .nav-btn.active {
             color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.04);
+        }
+
+        body.light-mode .nav-btn:hover, body.light-mode .nav-btn.active {
+            background-color: rgba(0, 0, 0, 0.05);
         }
 
         /* TENDINA MENU (Dropdown) */
@@ -177,16 +209,23 @@
             z-index: 1000;
         }
 
-        .dropdown-menu li a {
+        .dropdown-item {
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
             padding: 10px 16px;
             display: block;
             color: var(--text-secondary);
             font-size: 0.85rem;
-            text-decoration: none;
+            cursor: pointer;
+            font-family: var(--font-sans);
             transition: background-color var(--transition-speed), color var(--transition-speed);
+            user-select: none;
+            outline: none;
         }
 
-        .dropdown-menu li a:hover {
+        .dropdown-item:hover {
             background-color: var(--panel-border);
             color: var(--text-primary);
         }
@@ -195,47 +234,47 @@
             display: flex;
         }
 
+        /* Sezione navbar destra modificata */
         .navbar-right {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-decoration: none;
-        }
-
-        .user-avatar {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: var(--accent-blue);
+        .sun-toggle {
+            border: 1.5px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 0.75rem;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: border-color var(--transition-speed), background-color var(--transition-speed), color var(--transition-speed);
+            outline: none;
+            user-select: none;
         }
 
-        .nav-icon-btn {
+        .sun-toggle:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .bell-btn {
             background: none;
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
+            padding: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
             transition: color var(--transition-speed);
+            outline: none;
+            user-select: none;
         }
 
-        .nav-icon-btn:hover {
+        .bell-btn:hover {
             color: var(--text-primary);
         }
 
@@ -306,6 +345,7 @@
             color: var(--text-primary);
             font-size: 0.95rem;
             outline: none;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .main-search-input:focus {
@@ -319,6 +359,7 @@
             border-radius: 8px;
             padding: 4px;
             gap: 4px;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .toggle-btn {
@@ -367,6 +408,7 @@
             flex-grow: 1;
             height: 1px;
             background-color: var(--panel-border);
+            transition: background-color var(--transition-speed);
         }
 
         /* VISUALIZZAZIONE GRIGLIA A 4 COLONNE */
@@ -387,6 +429,7 @@
             cursor: pointer;
             position: relative;
             transition: background-color var(--transition-speed), border-color var(--transition-speed);
+            user-select: none;
         }
 
         .grid-cell:hover {
@@ -446,7 +489,8 @@
             align-items: center;
             gap: 20px;
             cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s, border-color 0.2s, background-color var(--transition-speed);
+            user-select: none;
         }
 
         .level-card:hover {
@@ -540,6 +584,7 @@
             font-weight: 500;
             align-self: flex-start;
             cursor: pointer;
+            user-select: none;
         }
 
         .back-link:hover {
@@ -639,7 +684,8 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: border-color var(--transition-speed);
+            transition: border-color var(--transition-speed), background-color var(--transition-speed);
+            user-select: none;
         }
 
         .stat-card:hover {
@@ -687,7 +733,9 @@
             gap: 8px;
             cursor: pointer;
             text-decoration: none;
-            transition: background-color var(--transition-speed);
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
+            user-select: none;
+            outline: none;
         }
 
         .action-btn:hover {
@@ -700,6 +748,7 @@
             border: 1px solid var(--panel-border);
             border-radius: 8px;
             overflow: hidden;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .accordion-header {
@@ -717,7 +766,7 @@
             padding: 0 16px;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.2s ease-out, padding 0.2s ease-out;
+            transition: max-height 0.2s ease-out, padding 0.2s ease-out, border-color var(--transition-speed);
             color: var(--text-secondary);
             font-size: 0.85rem;
             border-top: 0 solid var(--panel-border);
@@ -735,6 +784,7 @@
             border: 1px solid var(--panel-border);
             border-radius: 8px;
             padding: 16px;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .records-header {
@@ -753,7 +803,6 @@
         .records-sub {
             font-size: 0.8rem;
             color: var(--text-secondary);
-            margin-bottom: 14px;
         }
 
         .no-records-box {
@@ -768,6 +817,7 @@
             color: var(--text-secondary);
             font-size: 0.85rem;
             gap: 8px;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .no-records-box svg {
@@ -812,6 +862,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .stats-dropdown-btn {
@@ -848,7 +899,8 @@
             border: 1px solid var(--panel-border);
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.15s, border-color 0.15s;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
+            user-select: none;
         }
 
         .player-item:hover, .player-item.active {
@@ -919,6 +971,7 @@
             border: 1px solid var(--panel-border);
             border-radius: 12px;
             padding: 24px;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .player-detail-header {
@@ -957,6 +1010,7 @@
             display: flex;
             align-items: center;
             gap: 14px;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .p-stat-icon {
@@ -999,6 +1053,7 @@
             justify-content: space-between;
             margin-bottom: 20px;
             cursor: pointer;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .hardest-left {
@@ -1038,6 +1093,7 @@
             border: 1px solid var(--panel-border);
             border-radius: 8px;
             padding: 16px;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .box-title-row {
@@ -1084,6 +1140,7 @@
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .level-tag:hover {
@@ -1092,7 +1149,7 @@
         }
 
 
-        /* VISTA LEVEL ROULETTE (CON STILE ESTETICO DELLO SCREENSHOT) */
+        /* VISTA LEVEL ROULETTE */
         .roulette-layout {
             max-width: 850px;
             margin: 0 auto;
@@ -1105,12 +1162,12 @@
             font-size: 2.2rem;
             font-weight: 800;
             text-align: center;
-            color: #ffffff;
+            color: var(--text-primary);
             letter-spacing: -0.5px;
         }
 
         .roulette-card {
-            background-color: #12141c;
+            background-color: var(--card-bg);
             border: 1px solid var(--panel-border);
             border-radius: 12px;
             padding: 30px;
@@ -1118,6 +1175,7 @@
             grid-template-columns: 360px 1fr auto;
             gap: 24px;
             align-items: center;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .roulette-video {
@@ -1143,14 +1201,14 @@
         .roulette-rank {
             font-size: 2rem;
             font-weight: 800;
-            color: #ffffff;
+            color: var(--text-primary);
             line-height: 1;
         }
 
         .roulette-name {
             font-size: 1.8rem;
             font-weight: 800;
-            color: #ffffff;
+            color: var(--text-primary);
             margin-top: 2px;
         }
 
@@ -1166,7 +1224,7 @@
         }
 
         .roulette-published span {
-            color: #ffffff;
+            color: var(--text-primary);
             font-weight: 600;
         }
 
@@ -1178,7 +1236,7 @@
         }
 
         .roulette-target-badge {
-            background-color: #191c26;
+            background-color: var(--panel-bg);
             color: var(--text-secondary);
             border: 1px solid var(--panel-border);
             font-size: 0.75rem;
@@ -1186,6 +1244,7 @@
             padding: 6px 12px;
             border-radius: 4px;
             letter-spacing: 0.5px;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .roulette-done-btn {
@@ -1198,6 +1257,8 @@
             border-radius: 6px;
             cursor: pointer;
             transition: opacity var(--transition-speed);
+            outline: none;
+            user-select: none;
         }
 
         .roulette-done-btn:hover {
@@ -1219,6 +1280,8 @@
             border-radius: 6px;
             cursor: pointer;
             text-transform: uppercase;
+            outline: none;
+            user-select: none;
         }
 
         .reset-btn {
@@ -1227,8 +1290,10 @@
         }
 
         .menu-btn {
-            background-color: #191c26;
-            color: #ffffff;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--panel-border);
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .history-section {
@@ -1251,7 +1316,7 @@
         }
 
         .history-list {
-            background-color: #12141c;
+            background-color: var(--card-bg);
             border: 1px solid var(--panel-border);
             border-radius: 12px;
             padding: 20px;
@@ -1259,6 +1324,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .history-item {
@@ -1266,7 +1332,8 @@
             justify-content: space-between;
             align-items: center;
             padding-bottom: 8px;
-            border-bottom: 1px solid #1a1e2a;
+            border-bottom: 1px solid var(--panel-border);
+            transition: border-color var(--transition-speed);
         }
 
         .history-item:last-child {
@@ -1275,7 +1342,7 @@
         }
 
 
-        /* SISTEMA NOTIFICHE TOAST (NON INVASIVO, SENZA POPUP) */
+        /* SISTEMA NOTIFICHE TOAST (NON INVASIVO) */
         .toast-notification {
             position: fixed;
             bottom: 24px;
@@ -1287,7 +1354,7 @@
             border-radius: 8px;
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
             transform: translateY(150%);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color var(--transition-speed), border-color var(--transition-speed);
             z-index: 9999;
             font-weight: 500;
             font-size: 0.9rem;
@@ -1305,6 +1372,7 @@
             margin-top: auto;
             position: relative;
             z-index: 2;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .footer-main {
@@ -1317,6 +1385,7 @@
             gap: 1.5rem;
             padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--panel-border);
+            transition: border-color var(--transition-speed);
         }
 
         .footer-logo {
@@ -1349,7 +1418,7 @@
         }
 
         .footer-social-btn {
-            background-color: #1a2030;
+            background-color: var(--card-bg);
             border: 1px solid var(--panel-border);
             color: var(--text-secondary);
             width: 36px;
@@ -1359,7 +1428,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: color var(--transition-speed), border-color var(--transition-speed);
+            transition: color var(--transition-speed), border-color var(--transition-speed), background-color var(--transition-speed);
         }
 
         .footer-social-btn:hover {
@@ -1437,18 +1506,18 @@
     <!-- Sfondo geometrico dei picchi (spikes) e icone -->
     <div class="bg-decorations">
         <div class="decor-left">
-            <svg viewBox="0 0 100 100" fill="#1b2230" width="100%">
+            <svg viewBox="0 0 100 100" fill="currentColor" width="100%">
                 <polygon points="10,90 30,50 50,90"/>
                 <polygon points="40,90 65,40 90,90"/>
                 <polygon points="75,90 85,70 95,90"/>
-                <rect x="20" y="20" width="20" height="20" rx="3" stroke="#1b2230" stroke-width="3" fill="none" transform="rotate(15 30 30)"/>
+                <rect x="20" y="20" width="20" height="20" rx="3" stroke="currentColor" stroke-width="3" fill="none" transform="rotate(15 30 30)"/>
             </svg>
         </div>
         <div class="decor-right">
-            <svg viewBox="0 0 100 100" fill="#1b2230" width="80%">
+            <svg viewBox="0 0 100 100" fill="currentColor" width="80%">
                 <path d="M30,20 L70,20 L70,45 C70,55 60,65 50,65 C40,65 30,55 30,45 Z"/>
                 <path d="M50,65 L50,80 L65,80 L65,85 L35,85 L35,80 L50,80 Z"/>
-                <path d="M20,25 C15,25 15,40 30,40 M80,25 C85,25 85,40 70,40" stroke="#1b2230" stroke-width="4" fill="none"/>
+                <path d="M20,25 C15,25 15,40 30,40 M80,25 C85,25 85,40 70,40" stroke="currentColor" stroke-width="4" fill="none"/>
             </svg>
         </div>
     </div>
@@ -1456,39 +1525,44 @@
     <!-- Barra di navigazione superiore -->
     <header class="navbar">
         <div class="navbar-left">
-            <a href="#" class="navbar-brand" onclick="switchView('grid')">
+            <button class="navbar-brand" style="background:none; border:none; padding:0;" onclick="switchView('grid')">
                 <svg width="24" height="24" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" stroke-width="1.5" fill="none"/>
                     <path d="M2 12h20" stroke="currentColor" stroke-width="1.5"/>
                 </svg>
                 <span>ZALIXLIST</span>
-            </a>
+            </button>
             <nav>
                 <ul class="navbar-menu">
-                    <li><a id="nav-classic" class="active" onclick="switchView('grid')">Lists ▾</a></li>
+                    <li><button id="nav-classic" class="nav-btn active" onclick="switchView('grid')">Lists ▾</button></li>
                     <li class="dropdown" id="dropdown-menu-container">
-                        <a id="nav-more" onclick="toggleDropdown(event)">More ▾</a>
+                        <button id="nav-more" class="nav-btn" onclick="toggleDropdown(event)">More ▾</button>
                         <ul class="dropdown-menu" id="more-dropdown">
-                            <li><a onclick="switchView('roulette')">Level Roulette</a></li>
-                            <li><a onclick="triggerToast('Guidelines coming soon!')">Guidelines</a></li>
-                            <li><a onclick="triggerToast('Time Machine coming soon!')">Time Machine</a></li>
+                            <li><button class="dropdown-item" onclick="switchView('roulette')">Level Roulette</button></li>
+                            <li><button class="dropdown-item" onclick="triggerToast('Guidelines coming soon!')">Guidelines</button></li>
+                            <li><button class="dropdown-item" onclick="triggerToast('Time Machine coming soon!')">Time Machine</button></li>
                         </ul>
                     </li>
-                    <li><a id="nav-stats" onclick="switchView('stats')">Stats Viewer</a></li>
-                    <li><a onclick="triggerToast('Social links coming soon!')">Our social ▾</a></li>
-                    <li><a>🌐 ▾</a></li>
+                    <li><button id="nav-stats" class="nav-btn" onclick="switchView('stats')">Stats Viewer</button></li>
+                    <li><button class="nav-btn" onclick="triggerToast('Social links coming soon!')">Our social ▾</button></li>
+                    <li><button class="nav-btn">🌐 ▾</button></li>
                 </ul>
             </nav>
         </div>
+        <!-- Solo Sole e Campanella Notifica, ripulito da avatar e nome -->
         <div class="navbar-right">
-            <button class="nav-icon-btn">☀️</button>
-            <button class="nav-icon-btn">🔔</button>
-            <a class="user-profile">
-                <div class="user-avatar">Z</div>
-                <span>zZalix</span>
-            </a>
-            <button class="nav-icon-btn">🚪</button>
+            <button class="sun-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+            </button>
+            <button class="bell-btn" onclick="switchView('updates')" aria-label="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </button>
         </div>
     </header>
 
@@ -1513,13 +1587,13 @@
                 </div>
                 <!-- Toggle visualizzazione standard vs griglia -->
                 <div class="view-toggles">
-                    <button class="toggle-btn" id="toggle-list" onclick="setDisplayMode('list')">
+                    <button class="toggle-btn active" id="toggle-list" onclick="setDisplayMode('list')">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
                             <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
                         </svg>
                     </button>
-                    <button class="toggle-btn active" id="toggle-grid" onclick="setDisplayMode('grid')">
+                    <button class="toggle-btn" id="toggle-grid" onclick="setDisplayMode('grid')">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
                             <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
@@ -1573,7 +1647,7 @@
             </div>
         </section>
 
-        <!-- VISTA 4: LEVEL ROULETTE (REPLICA PERFETTA DELLO SCREENSHOT) -->
+        <!-- VISTA 4: LEVEL ROULETTE -->
         <section id="view-roulette" class="view-section">
             <div class="roulette-layout">
                 <h1 class="roulette-main-title">Current Level</h1>
@@ -1591,6 +1665,50 @@
                     <h2 class="history-title">Level History</h2>
                     <div id="roulette-history-container">
                         <!-- Cronologia generata tramite JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 5: AGGIORNAMENTI RECENTI (PAGINA NOTIFICHE) -->
+        <section id="view-updates" class="view-section">
+            <div class="detail-layout">
+                <button class="back-link" style="background: none; border: none; font-family: inherit; font-size: inherit; cursor: pointer; color: var(--text-secondary);" onclick="switchView('grid')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="19" y1="12" x2="5" y2="12"/>
+                        <polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Back to list
+                </button>
+                <div class="detail-top">
+                    <h1 class="detail-title-row" style="margin-bottom: 20px;">Aggiornamenti Recenti</h1>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+                    <div class="records-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--panel-border); padding-bottom: 8px;">
+                            <span style="font-weight: 800; color: var(--accent-blue);">Versione 1.3.0</span>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary);">Giugno 2026</span>
+                        </div>
+                        <ul style="list-style-type: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                            <li>• Sostituiti tutti i link di navigazione con pulsanti reali per prevenire la selezione del testo accidentale.</li>
+                            <li>• Rimosso l'avatar del profilo e semplificato l'angolo destro della barra di navigazione.</li>
+                            <li>• La modalità di visualizzazione predefinita all'avvio è stata impostata su quella principale (lista con anteprime).</li>
+                            <li>• Implementata la pagina interattiva dei Changelog direttamente cliccando sulla campanella delle notifiche.</li>
+                            <li>• Aggiunto il toggle del sole per invertire elegantemente i colori dell'intera pagina (Tema Chiaro / Tema Scuro).</li>
+                        </ul>
+                    </div>
+
+                    <div class="records-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--panel-border); padding-bottom: 8px;">
+                            <span style="font-weight: 800; color: var(--accent-orange);">Versione 1.2.0</span>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary);">Maggio 2026</span>
+                        </div>
+                        <ul style="list-style-type: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                            <li>• Introdotta la modalità di gioco "Level Roulette" con progressione dinamica dei target percentuali (1% + ogni turno).</li>
+                            <li>• Aggiunto il menu a discesa (dropdown) interattivo sulla voce "More".</li>
+                            <li>• Sostituiti tutti i popup di sistema (alert) con eleganti notifiche toast a scorrimento.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -1644,7 +1762,7 @@
         ];
 
         let activePlayerIndex = 0;
-        let displayMode = 'grid'; // 'grid' o 'list'
+        let displayMode = 'list'; // Impostata su 'list' (Visualizzazione Principale) di default
 
         // Stato Level Roulette
         let rouletteTarget = 1;
@@ -1659,8 +1777,8 @@
             document.querySelectorAll('.view-section').forEach(section => {
                 section.classList.remove('active');
             });
-            document.querySelectorAll('.navbar-menu a').forEach(link => {
-                link.classList.remove('active');
+            document.querySelectorAll('.navbar-menu .nav-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
 
             if (viewName === 'grid') {
@@ -1678,6 +1796,32 @@
             } else if (viewName === 'roulette') {
                 document.getElementById('view-roulette').classList.add('active');
                 initRoulette();
+            } else if (viewName === 'updates') {
+                document.getElementById('view-updates').classList.add('active');
+            }
+        }
+
+        // Inversione Colori (Tema Chiaro / Tema Scuro)
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const sunBtn = document.querySelector('.sun-toggle');
+            if (document.body.classList.contains('light-mode')) {
+                // Sostituisce l'icona del sole con la luna in modalità chiara
+                sunBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                `;
+                triggerToast('Light Mode attivata');
+            } else {
+                // Sostituisce con il sole originale
+                sunBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                `;
+                triggerToast('Dark Mode attivata');
             }
         }
 
@@ -1739,7 +1883,7 @@
                 });
                 displayContainer.appendChild(gridDiv);
             } else {
-                // Visualizzazione Elenco Standard
+                // Visualizzazione Elenco Standard (Predefinita all'avvio)
                 const listDiv = document.createElement('div');
                 listDiv.className = 'levels-list-vertical';
                 filteredLevels.forEach(lvl => {
@@ -1880,7 +2024,6 @@
         }
 
         function rollNextLevel() {
-            // Sceglie un livello a caso tra i 5 disponibili
             const randomIndex = Math.floor(Math.random() * levels.length);
             currentRouletteLevel = levels[randomIndex];
         }
@@ -1923,13 +2066,11 @@
         }
 
         function completeStep() {
-            // Salva il livello superato
             rouletteHistory.push({
                 level: currentRouletteLevel,
                 percentage: rouletteTarget
             });
 
-            // Incrementa il target e seleziona il prossimo livello
             rouletteTarget++;
             rollNextLevel();
             renderRoulette();
