@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zalixlist — Geometry Dash Demonlist</title>
-    <!-- Font Inter per la massima leggibilità -->
+    <!-- Font Inter per la tipografia della UI -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,8 +22,9 @@
             --accent-green: #10b981;
             --accent-orange: #f97316;
             --accent-red: #ef4444;
-            --input-bg: #192030;
+            --input-bg: #121622;
             --font-sans: 'Inter', sans-serif;
+            --transition-speed: 0.15s;
         }
 
         * {
@@ -40,9 +41,11 @@
             line-height: 1.5;
             position: relative;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Elementi decorativi di sfondo (Spikes a sinistra, Trofeo a destra) */
+        /* Elementi decorativi di sfondo */
         .bg-decorations {
             position: fixed;
             top: 64px;
@@ -54,7 +57,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            opacity: 0.15;
+            opacity: 0.12;
         }
 
         .decor-left {
@@ -144,7 +147,7 @@
             align-items: center;
             gap: 4px;
             cursor: pointer;
-            transition: color 0.15s;
+            transition: color var(--transition-speed);
         }
 
         .navbar-menu a:hover, .navbar-menu a.active {
@@ -188,24 +191,25 @@
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
-            transition: color 0.15s;
+            transition: color var(--transition-speed);
         }
 
         .nav-icon-btn:hover {
             color: var(--text-primary);
         }
 
-        /* Layout principale */
+        /* Contenitore App */
         .app-container {
             position: relative;
             z-index: 2;
-            max-width: 1200px;
+            max-width: 1100px;
+            width: 100%;
             margin: 0 auto;
             padding: 2rem 1rem;
-            min-height: calc(100vh - 64px);
+            flex-grow: 1;
         }
 
-        /* Vista 1: Lista Classica */
+        /* Viste */
         .view-section {
             display: none;
         }
@@ -214,7 +218,7 @@
             display: block;
         }
 
-        /* Cerca e Filtri (Top bar della lista) */
+        /* Filtri & Ricerca */
         .filter-bar {
             display: flex;
             align-items: center;
@@ -295,98 +299,371 @@
             border: 1px solid var(--panel-border);
         }
 
-        /* Lista di Card dei Livelli */
-        .levels-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .level-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 12px;
-            padding: 14px;
+        /* Header Categoria Lista */
+        .category-header {
             display: flex;
             align-items: center;
-            gap: 20px;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .level-card:hover {
-            border-color: var(--accent-blue);
-            transform: translateY(-2px);
-        }
-
-        .level-thumbnail-container {
-            position: relative;
-            width: 180px;
-            height: 100px;
-            border-radius: 8px;
-            overflow: hidden;
-            flex-shrink: 0;
-            background-color: #000;
-        }
-
-        .level-thumbnail {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.85;
-        }
-
-        .badge-new {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background-color: var(--accent-orange);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 800;
-            padding: 2px 6px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .level-details-main {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .level-title-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.15rem;
+            gap: 10px;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
             font-weight: 700;
         }
 
-        .level-rank-num {
-            color: var(--accent-blue);
+        .category-header .range {
+            color: var(--accent-red);
+            background-color: rgba(239, 68, 68, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
         }
 
-        .level-name-txt {
-            color: var(--text-primary);
-        }
-
-        .level-meta-row {
-            font-size: 0.85rem;
+        .category-header .title {
             color: var(--text-secondary);
         }
 
-        .level-meta-row span.verifier {
-            color: var(--accent-green);
-            font-weight: 600;
+        .category-header::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background-color: var(--panel-border);
         }
 
-        .level-meta-row span.points-val {
+        /* MODALITÀ GRIGLIA A 4 COLONNE */
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .grid-cell {
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
+        }
+
+        .grid-cell:hover {
+            border-color: var(--accent-blue);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .grid-rank-box {
+            background-color: #1d2331;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            width: 28px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .grid-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .grid-badge-new {
+            position: absolute;
+            top: -4px;
+            right: 8px;
+            background-color: var(--accent-orange);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 1px 4px;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        /* DETTAGLIO LIVELLO */
+        .detail-layout {
+            max-width: 720px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            align-self: flex-start;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+
+        .detail-top {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .detail-title-row {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .detail-title-row span {
             color: var(--accent-blue);
+        }
+
+        .detail-creator-row {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .verified-badge {
+            background-color: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .detail-quote {
+            font-style: italic;
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: 0.85rem;
+            margin: 10px 0;
+        }
+
+        .detail-video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--panel-border);
+            background-color: #000;
+        }
+
+        .detail-video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Configurazione griglia asimmetrica per i dati del livello */
+        .stats-grid-row-1 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stats-grid-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stats-grid-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: border-color var(--transition-speed);
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .stat-card .lbl {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .val {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stat-card .sub-click {
+            font-size: 0.65rem;
+            color: var(--accent-blue);
+            margin-top: 2px;
+        }
+
+        .action-buttons-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background-color: #1e293b;
+            border: 1px solid var(--panel-border);
+            color: var(--text-primary);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+        }
+
+        .action-btn:hover {
+            background-color: #334155;
+        }
+
+        /* Accordion posizione */
+        .position-history-accordion {
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .accordion-content {
+            padding: 0 16px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out, padding 0.2s ease-out;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 0 solid var(--panel-border);
+        }
+
+        .accordion-content.open {
+            padding: 12px 16px;
+            max-height: 150px;
+            border-top: 1px solid var(--panel-border);
+        }
+
+        /* Pannello dei Record */
+        .records-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .records-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .records-header svg {
+            color: var(--accent-orange);
+        }
+
+        .records-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        .no-records-box {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            gap: 8px;
+        }
+
+        .no-records-box svg {
+            color: var(--panel-border);
+        }
+
+        .records-pagination {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+
+        .records-page-btn {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
-        /* Vista 2: Stats Viewer */
+        .records-page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* VISTA STATS VIEWER */
         .stats-layout {
             display: grid;
             grid-template-columns: 320px 1fr;
@@ -497,12 +774,6 @@
             font-size: 0.85rem;
             font-weight: 600;
             flex: 1;
-            transition: background-color 0.15s, color 0.15s;
-        }
-
-        .page-btn:hover:not(:disabled) {
-            background-color: var(--panel-border);
-            color: var(--text-primary);
         }
 
         .page-btn:disabled {
@@ -510,7 +781,6 @@
             cursor: not-allowed;
         }
 
-        /* Pannello Dettaglio Giocatore */
         .player-detail-panel {
             background-color: var(--panel-bg);
             border: 1px solid var(--panel-border);
@@ -526,27 +796,9 @@
             margin-bottom: 24px;
         }
 
-        .player-detail-flag-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
         .player-detail-flag {
             font-size: 2.8rem;
             line-height: 1;
-        }
-
-        .player-detail-badge {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            background-color: var(--accent-orange);
-            color: white;
-            border: 1px solid var(--panel-bg);
-            font-size: 0.55rem;
-            font-weight: 800;
-            padding: 1px 3px;
-            border-radius: 3px;
         }
 
         .player-detail-name {
@@ -557,16 +809,6 @@
             gap: 8px;
         }
 
-        .player-detail-name svg {
-            color: var(--text-secondary);
-            cursor: pointer;
-        }
-
-        .player-detail-name svg:hover {
-            color: var(--text-primary);
-        }
-
-        /* Stat Grid dei Giocatori */
         .player-stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -596,11 +838,6 @@
             color: var(--accent-blue);
         }
 
-        .p-stat-icon.orange {
-            background-color: rgba(249, 115, 22, 0.1);
-            color: var(--accent-orange);
-        }
-
         .p-stat-details {
             display: flex;
             flex-direction: column;
@@ -619,7 +856,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Hardest Level Banner */
         .hardest-banner {
             background-color: rgba(249, 115, 22, 0.05);
             border: 1px solid rgba(249, 115, 22, 0.2);
@@ -630,11 +866,6 @@
             justify-content: space-between;
             margin-bottom: 20px;
             cursor: pointer;
-            transition: background-color 0.15s;
-        }
-
-        .hardest-banner:hover {
-            background-color: rgba(249, 115, 22, 0.08);
         }
 
         .hardest-left {
@@ -646,8 +877,6 @@
         .hardest-icon {
             color: var(--accent-orange);
             font-size: 1.2rem;
-            display: flex;
-            align-items: center;
         }
 
         .hardest-title-group {
@@ -671,7 +900,6 @@
             color: var(--text-secondary);
         }
 
-        /* Sezione Griglia dei Tag */
         .main-levels-box {
             background-color: var(--card-bg);
             border: 1px solid var(--panel-border);
@@ -723,7 +951,6 @@
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            transition: color 0.15s, border-color 0.15s;
         }
 
         .level-tag:hover {
@@ -731,37 +958,138 @@
             color: var(--text-primary);
         }
 
+        /* FOOTER REPLICA */
+        .footer {
+            background-color: var(--navbar-bg);
+            border-top: 1px solid var(--panel-border);
+            padding: 2rem 2rem 1.5rem 2rem;
+            margin-top: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-main {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        .footer-logo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .footer-logo-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .footer-logo-title svg {
+            fill: var(--accent-blue);
+        }
+
+        .footer-logo-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 12px;
+        }
+
+        .footer-social-btn {
+            background-color: #1a2030;
+            border: 1px solid var(--panel-border);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: color var(--transition-speed), border-color var(--transition-speed);
+        }
+
+        .footer-social-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-blue);
+        }
+
+        .footer-bottom {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-top: 1rem;
+            display: flex;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .footer-bottom a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--text-primary);
+        }
+
         /* Responsività */
         @media (max-width: 900px) {
+            .levels-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
             .stats-layout {
                 grid-template-columns: 1fr;
             }
-
-            .app-container {
-                padding: 1rem;
-            }
-
             .bg-decorations {
                 display: none;
+            }
+            .footer-main {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .levels-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid-row-2 {
+                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Decorazioni geometriche di sfondo -->
+    <!-- Sfondo geometrico dei picchi (spikes) e icone -->
     <div class="bg-decorations">
-        <!-- SVG Spikes Sinistro -->
         <div class="decor-left">
             <svg viewBox="0 0 100 100" fill="#1b2230" width="100%">
                 <polygon points="10,90 30,50 50,90"/>
                 <polygon points="40,90 65,40 90,90"/>
                 <polygon points="75,90 85,70 95,90"/>
-                <!-- Cubo iconico GD -->
                 <rect x="20" y="20" width="20" height="20" rx="3" stroke="#1b2230" stroke-width="3" fill="none" transform="rotate(15 30 30)"/>
             </svg>
         </div>
-        <!-- SVG Trofeo Destro -->
         <div class="decor-right">
             <svg viewBox="0 0 100 100" fill="#1b2230" width="80%">
                 <path d="M30,20 L70,20 L70,45 C70,55 60,65 50,65 C40,65 30,55 30,45 Z"/>
@@ -771,10 +1099,10 @@
         </div>
     </div>
 
-    <!-- Barra di navigazione -->
+    <!-- Barra di navigazione superiore -->
     <header class="navbar">
         <div class="navbar-left">
-            <a href="#" class="navbar-brand">
+            <a href="#" class="navbar-brand" onclick="switchView('grid')">
                 <svg width="24" height="24" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" stroke-width="1.5" fill="none"/>
@@ -784,9 +1112,9 @@
             </a>
             <nav>
                 <ul class="navbar-menu">
-                    <li><a id="nav-classic" class="active" onclick="switchView('list')">Lists ▾</a></li>
-                    <li><a onclick="alert('Funzionalità non abilitata per questa demo.')">More ▾</a></li>
-                    <li><a onclick="switchView('stats')">Stats Viewer</a></li>
+                    <li><a id="nav-classic" class="active" onclick="switchView('grid')">Lists ▾</a></li>
+                    <li><a onclick="alert('Funzionalità More disabilitata.')">More ▾</a></li>
+                    <li><a id="nav-stats" onclick="switchView('stats')">Stats Viewer</a></li>
                     <li><a onclick="alert('I canali social verranno inseriti a breve.')">Our social ▾</a></li>
                     <li><a>🌐 ▾</a></li>
                 </ul>
@@ -803,22 +1131,18 @@
         </div>
     </header>
 
+    <!-- Contenuto Principale della pagina -->
     <main class="app-container">
 
-        <!-- VISTA 1: LISTA CLASSICA (LIST) -->
-        <section id="view-list" class="view-section active">
-            <!-- Barra di ricerca e filtri superiore -->
+        <!-- VISTA 1: LA GRIGLIA COMPATTA DEI LIVELLI -->
+        <section id="view-grid" class="view-section active">
             <div class="filter-bar">
                 <button class="filter-btn-blue">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="4" y1="21" x2="4" y2="14"/>
-                        <line x1="4" y1="10" x2="4" y2="3"/>
-                        <line x1="12" y1="21" x2="12" y2="12"/>
-                        <line x1="12" y1="8" x2="12" y2="3"/>
-                        <line x1="20" y1="21" x2="20" y2="16"/>
-                        <line x1="20" y1="12" x2="20" y2="3"/>
-                        <line x1="1" y1="14" x2="7" y2="14"/>
-                        <line x1="9" y1="8" x2="15" y2="8"/>
+                        <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+                        <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+                        <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/>
                         <line x1="17" y1="16" x2="23" y2="16"/>
                     </svg>
                 </button>
@@ -827,22 +1151,16 @@
                     <input type="text" id="level-search" class="main-search-input" placeholder="Search...">
                 </div>
                 <div class="view-toggles">
-                    <button class="toggle-btn active">
+                    <button class="toggle-btn" onclick="alert('Visualizzazione elenco non abilitata.')">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <line x1="8" y1="6" x2="21" y2="6"/>
-                            <line x1="8" y1="12" x2="21" y2="12"/>
-                            <line x1="8" y1="18" x2="21" y2="18"/>
-                            <line x1="3" y1="6" x2="3.01" y2="6"/>
-                            <line x1="3" y1="12" x2="3.01" y2="12"/>
-                            <line x1="3" y1="18" x2="3.01" y2="18"/>
+                            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
                         </svg>
                     </button>
-                    <button class="toggle-btn" onclick="alert('Visualizzazione a griglia non implementata.')">
+                    <button class="toggle-btn active">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <rect x="3" y="3" width="7" height="7"/>
-                            <rect x="14" y="3" width="7" height="7"/>
-                            <rect x="14" y="14" width="7" height="7"/>
-                            <rect x="3" y="14" width="7" height="7"/>
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
                         </svg>
                     </button>
                     <button class="toggle-btn">
@@ -854,16 +1172,28 @@
                 </div>
             </div>
 
-            <!-- Contenitore delle Card dei Livelli -->
-            <div class="levels-grid" id="levels-container">
+            <!-- Intestazione Categoria (Dinamica in base all'array) -->
+            <div class="category-header">
+                <span class="range" id="grid-range">#1 - #5</span>
+                <span class="title">Main List</span>
+            </div>
+
+            <!-- Griglia interattiva dei livelli -->
+            <div class="levels-grid" id="levels-grid-container">
                 <!-- Generato tramite JavaScript -->
             </div>
         </section>
 
-        <!-- VISTA 2: STATS VIEWER (STATS) -->
+        <!-- VISTA 2: DETTAGLIO LIVELLO SELEZIONATO (SCHERMATA CENTRALE) -->
+        <section id="view-detail" class="view-section">
+            <div class="detail-layout" id="level-detail-content">
+                <!-- Generato dinamicamente -->
+            </div>
+        </section>
+
+        <!-- VISTA 3: STATS VIEWER -->
         <section id="view-stats" class="view-section">
             <div class="stats-layout">
-                
                 <!-- Sidebar sinistra giocatori -->
                 <div class="stats-sidebar">
                     <button class="stats-dropdown-btn">
@@ -874,194 +1204,342 @@
                         <span class="search-icon">🔍</span>
                         <input type="text" id="player-search" class="main-search-input" style="height: 38px;" placeholder="Search...">
                     </div>
-                    
                     <ul class="players-list" id="players-list-container">
                         <!-- Generato tramite JavaScript -->
                     </ul>
-
                     <div class="pagination-container">
                         <button class="page-btn" disabled>&lt; Previous</button>
                         <button class="page-btn" disabled>Next &gt;</button>
                     </div>
                 </div>
-
                 <!-- Pannello dettagli giocatore a destra -->
                 <div class="player-detail-panel" id="player-detail-container">
                     <!-- Generato tramite JavaScript -->
                 </div>
-
             </div>
         </section>
 
     </main>
 
+    <!-- FOOTER DI CODA -->
+    <footer class="footer">
+        <div class="footer-main">
+            <div class="footer-logo">
+                <div class="footer-logo-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    </svg>
+                    <span>GLOBAL DEMONLIST</span>
+                </div>
+                <span class="footer-logo-sub">The ultimate list of the hardest Geometry Dash levels</span>
+            </div>
+            <div class="footer-socials">
+                <div class="footer-social-btn">💬</div>
+                <div class="footer-social-btn">⭐</div>
+                <div class="footer-social-btn">𝕏</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 <a href="#">demonlist.org</a></span>
+            <span>Developed by <a href="#">Eiriley</a> <a href="#">Vernam</a> <a href="#">Partur</a></span>
+            <span style="display: block; width: 100%; font-size: 0.65rem; opacity: 0.5; margin-top: 4px;">demonlist.org is in no way affiliated with RobTop Games AB ®</span>
+        </div>
+    </footer>
+
+    <!-- Logica di Routing (SPA), Database e Interazione -->
     <script>
-        // Database locale simulato per la Demo (esattamente corrispondente alla lista reale mostrata)
+        // ARRAY DI TEMPLATE DEI LIVELLI (Esattamente 5 elementi personalizzabili)
         const levels = [
-            {
-                rank: 1,
-                name: "Society",
-                creator: "Neomarbilan",
-                verifier: "wPopoff",
-                pointsMin: "250.00",
-                pointsMax: "1000.00",
-                isNew: true,
-                thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop" // Estetica astratta scura
+            { 
+                rank: 1, 
+                name: "Template Level 1",      // Cambia il nome del livello
+                creator: "Creator Name",       // Cambia il creatore
+                verifier: "Verifier Name",     // Cambia il verificatore
+                pointsMin: "250.00",           // Punteggio minimo (es. record al 66%)
+                pointsMax: "1000.00",          // Punteggio massimo (100% completamento)
+                isNew: true,                   // Mostra il badge "NEW" in griglia (true/false)
+                id: "12345678",                // ID del livello in-game
+                password: "Free Copy",         // Password (es. "Free Copy" o numeri)
+                length: "2:15",                // Durata del livello
+                objects: "150,000",            // Numero di oggetti
+                version: "2.2",                // Versione del gioco
+                quote: "Enter your custom level quote here.", // Citazione/Sottotitolo
+                youtubeId: "dQw4w9WgXcQ"       // ID del video YouTube per l'iframe
             },
-            {
-                rank: 2,
-                name: "Thinking Space II",
-                creator: "CairoX",
-                verifier: "Zoink",
-                pointsMin: "240.00",
-                pointsMax: "960.00",
-                isNew: false,
-                thumbnail: "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=300&auto=format&fit=crop" // Spazio/Nebulosa
+            { 
+                rank: 2, 
+                name: "Template Level 2", 
+                creator: "Creator Name", 
+                verifier: "Verifier Name", 
+                pointsMin: "240.00", 
+                pointsMax: "960.00", 
+                isNew: false, 
+                id: "23456789", 
+                password: "No copy", 
+                length: "1:58", 
+                objects: "120,440", 
+                version: "2.1", 
+                quote: "Second level custom description.", 
+                youtubeId: "dQw4w9WgXcQ" 
             },
-            {
-                rank: 3,
-                name: "Amethyst",
-                creator: "iMist",
-                verifier: "wPopoff",
-                pointsMin: "230.00",
-                pointsMax: "920.00",
-                isNew: false,
-                thumbnail: "https://images.unsplash.com/photo-1618005198143-d3668f9a239b?q=80&w=300&auto=format&fit=crop" // Viola/Ametista
+            { 
+                rank: 3, 
+                name: "Template Level 3", 
+                creator: "Creator Name", 
+                verifier: "Verifier Name", 
+                pointsMin: "230.00", 
+                pointsMax: "920.00", 
+                isNew: false, 
+                id: "34567890", 
+                password: "Free Copy", 
+                length: "2:02", 
+                objects: "112,045", 
+                version: "2.1", 
+                quote: "Third level custom description.", 
+                youtubeId: "dQw4w9WgXcQ" 
             },
-            {
-                rank: 4,
-                name: "Flamewall",
-                creator: "UNarwall",
-                verifier: "CuatrocientosYT",
-                pointsMin: "220.00",
-                pointsMax: "880.00",
-                isNew: false,
-                thumbnail: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?q=80&w=300&auto=format&fit=crop" // Fuoco/Arancione
+            { 
+                rank: 4, 
+                name: "Template Level 4", 
+                creator: "Creator Name", 
+                verifier: "Verifier Name", 
+                pointsMin: "220.00", 
+                pointsMax: "880.00", 
+                isNew: false, 
+                id: "45678901", 
+                password: "1234", 
+                length: "2:31", 
+                objects: "281,004", 
+                version: "2.2", 
+                quote: "Fourth level custom description.", 
+                youtubeId: "dQw4w9WgXcQ" 
             },
-            {
-                rank: 5,
-                name: "Tidal Wave",
-                creator: "OniLink",
-                verifier: "Zoink",
-                pointsMin: "210.00",
-                pointsMax: "840.00",
-                isNew: false,
-                thumbnail: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?q=80&w=300&auto=format&fit=crop" // Acqua/Oceano
+            { 
+                rank: 5, 
+                name: "Template Level 5", 
+                creator: "Creator Name", 
+                verifier: "Verifier Name", 
+                pointsMin: "210.00", 
+                pointsMax: "840.00", 
+                isNew: false, 
+                id: "56789012", 
+                password: "Free Copy", 
+                length: "2:45", 
+                objects: "138,409", 
+                version: "2.1", 
+                quote: "Fifth level custom description.", 
+                youtubeId: "dQw4w9WgXcQ" 
             }
         ];
 
+        // Database dei giocatori sincronizzato con i template qui sopra
         const players = [
-            {
-                rank: 1,
-                name: "Zoink",
-                score: "20921.29",
-                flag: "🇺🇸",
-                hardest: "Thinking Space II",
-                completed: ["Thinking Space II", "Amethyst", "Flamewall", "Tidal Wave", "ORBIT", "Nullscapes", "BOOBAWAMBA", "Quanteuse processing", "Every End", "Subsuming Vortex", "Silent clubstep", "Ashley Wave Trials", "andromeda", "Anathema", "Avernus", "Spectre", "Menace", "Abyss of Darkness", "Acheron", "Defeated Circles", "Tunnel of Despair", "Kyouki", "Subterminal Point", "Slaughterhouse", "Deimos", "KOCMOC", "The Lightning Rod", "KOSETSU", "Eyes in the Water", "Firework", "Sakupen Circles", "Silentlocked", "Through The Gates", "poocubed", "Saul Goodman", "MINUSdry", "Apocalyptic Trilogy", "Deadlier Clubstep", "The Hallucination", "Sevvend Clubstep", "COMBUSTION"]
-            },
-            {
-                rank: 2,
-                name: "wPopoff",
-                score: "18571.81",
-                flag: "🇺🇸",
-                hardest: "Society",
-                completed: ["Society", "Amethyst", "Flamewall", "Tidal Wave", "Nullscapes", "Every End", "Acheron", "Slaughterhouse", "KOCMOC", "Firework", "Sakupen Circles"]
-            },
-            {
-                rank: 3,
-                name: "Netermind",
-                score: "13192.90",
-                flag: "🇺🇸",
-                hardest: "Amethyst",
-                completed: ["Amethyst", "Flamewall", "Tidal Wave", "ORBIT", "Kyouki", "Slaughterhouse"]
-            },
-            {
-                rank: 4,
-                name: "Trick",
-                score: "11405.02",
-                flag: "🇺🇸",
-                hardest: "Tidal Wave",
-                completed: ["Tidal Wave", "ORBIT", "Nullscapes", "Every End", "Avernus", "Acheron"]
-            },
-            {
-                rank: 5,
-                name: "zLevii",
-                score: "10198.14",
-                flag: "🇦🇺",
-                hardest: "Flamewall",
-                completed: ["Flamewall", "Tidal Wave", "Every End", "KOCMOC", "Firework"]
-            }
+            { rank: 1, name: "Zoink", score: "20921.29", flag: "🇺🇸", hardest: "Template Level 1", completed: ["Template Level 1", "Template Level 2", "Template Level 3"] },
+            { rank: 2, name: "wPopoff", score: "18571.81", flag: "🇺🇸", hardest: "Template Level 1", completed: ["Template Level 1", "Template Level 3", "Template Level 4"] },
+            { rank: 3, name: "Netermind", score: "13192.90", flag: "🇺🇸", hardest: "Template Level 2", completed: ["Template Level 2", "Template Level 4", "Template Level 5"] }
         ];
 
         let activePlayerIndex = 0;
 
-        // Gestore per cambiare vista (SPA)
-        function switchView(viewName) {
-            // Rimuovi classe active da tutte le sezioni
+        // Routing SPA (Single Page Application)
+        function switchView(viewName, parameterId = null) {
             document.querySelectorAll('.view-section').forEach(section => {
                 section.classList.remove('active');
             });
-            // Rimuovi classe active dai link della navbar
             document.querySelectorAll('.navbar-menu a').forEach(link => {
                 link.classList.remove('active');
             });
 
-            if (viewName === 'list') {
-                document.getElementById('view-list').classList.add('active');
+            if (viewName === 'grid') {
+                document.getElementById('view-grid').classList.add('active');
                 document.getElementById('nav-classic').classList.add('active');
+                renderGrid();
+            } else if (viewName === 'detail') {
+                document.getElementById('view-detail').classList.add('active');
+                renderDetail(parameterId);
             } else if (viewName === 'stats') {
                 document.getElementById('view-stats').classList.add('active');
+                document.getElementById('nav-stats').classList.add('active');
                 renderPlayersList();
                 renderPlayerDetail();
             }
         }
 
-        // --- GESTIONE LISTA CLASSICA ---
-        const levelsContainer = document.getElementById('levels-container');
-        const levelSearchInput = document.getElementById('level-search');
+        // --- SCHERMATA GRIGLIA ---
+        const gridContainer = document.getElementById('levels-grid-container');
+        const gridRange = document.getElementById('grid-range');
+        const searchInput = document.getElementById('level-search');
 
-        function renderLevels(filteredLevels = levels) {
-            levelsContainer.innerHTML = '';
-            if (filteredLevels.length === 0) {
-                levelsContainer.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Nessun livello trovato.</p>`;
-                return;
-            }
+        function renderGrid(filteredLevels = levels) {
+            // Aggiorna l'intervallo mostrato in base ai livelli reali caricati
+            gridRange.innerText = `#1 - #${levels.length}`;
 
-            filteredLevels.forEach(level => {
-                const card = document.createElement('div');
-                card.className = 'level-card';
-                card.innerHTML = `
-                    <div class="level-thumbnail-container">
-                        ${level.isNew ? '<span class="badge-new">New</span>' : ''}
-                        <img class="level-thumbnail" src="${level.thumbnail}" alt="${level.name}">
-                    </div>
-                    <div class="level-details-main">
-                        <div class="level-title-row">
-                            <span class="level-rank-num">#${level.rank}</span>
-                            <span class="level-name-txt">${level.name}</span>
-                        </div>
-                        <div class="level-meta-row">
-                            ${level.creator} | <span class="verifier">${level.verifier}</span> · ${level.pointsMin} — <span class="points-val">${level.pointsMax}</span> points
-                        </div>
-                    </div>
+            gridContainer.innerHTML = '';
+            filteredLevels.forEach(lvl => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.innerHTML = `
+                    ${lvl.isNew ? '<span class="grid-badge-new">New</span>' : ''}
+                    <div class="grid-rank-box">${lvl.rank}</div>
+                    <div class="grid-name">${lvl.name}</div>
                 `;
-                levelsContainer.appendChild(card);
+                cell.addEventListener('click', () => {
+                    switchView('detail', lvl.rank);
+                });
+                gridContainer.appendChild(cell);
             });
         }
 
-        // Ricerca livelli in tempo reale
-        levelSearchInput.addEventListener('input', (e) => {
+        // Ricerca dei livelli
+        searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
-            const filtered = levels.filter(lvl => 
-                lvl.name.toLowerCase().includes(query) || 
-                lvl.creator.toLowerCase().includes(query) || 
-                lvl.verifier.toLowerCase().includes(query)
-            );
-            renderLevels(filtered);
+            const filtered = levels.filter(lvl => lvl.name.toLowerCase().includes(query));
+            renderGrid(filtered);
         });
 
+        // --- SCHERMATA DI DETTAGLIO LIVELLO ---
+        const detailContent = document.getElementById('level-detail-content');
 
-        // --- GESTIONE STATS VIEWER ---
+        function renderDetail(rankId) {
+            const level = levels.find(l => l.rank == rankId);
+            if (!level) return;
+
+            detailContent.innerHTML = `
+                <!-- Link per tornare indietro alla lista -->
+                <a class="back-link" onclick="switchView('grid')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="19" y1="12" x2="5" y2="12"/>
+                        <polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Back to list
+                </a>
+
+                <div class="detail-top">
+                    <h1 class="detail-title-row">
+                        <span>#${level.rank}</span> ${level.name}
+                    </h1>
+                    <div class="detail-creator-row">
+                        created by <strong>${level.creator}</strong>
+                    </div>
+                </div>
+
+                <!-- Badge di Verifica -->
+                <div class="verified-badge">
+                    <span>✓ Verified by <strong>${level.verifier}</strong></span>
+                </div>
+
+                <!-- Quote citazione -->
+                <div class="detail-quote">
+                    // ${level.quote} //
+                </div>
+
+                <!-- Video Iframe -->
+                <div class="detail-video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/${level.youtubeId}" title="YouTube video player" allowfullscreen></iframe>
+                </div>
+
+                <!-- Griglia dei Dati Tecnici -->
+                <div class="stats-grid-row-1">
+                    <div class="stat-card" onclick="copyId('${level.id}', 'id-val')">
+                        <span class="lbl">ID</span>
+                        <span class="val" id="id-val">${level.id}</span>
+                        <span class="sub-click">Click to copy</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="lbl">Password</span>
+                        <span class="val">${level.password}</span>
+                    </div>
+                </div>
+
+                <div class="stats-grid-row-2">
+                    <div class="stat-card">
+                        <span class="lbl">Length</span>
+                        <span class="val">${level.length}</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="lbl">Objects</span>
+                        <span class="val">${level.objects}</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="lbl">Version</span>
+                        <span class="val">${level.version}</span>
+                    </div>
+                </div>
+
+                <div class="stats-grid-row-3">
+                    <div class="stat-card">
+                        <span class="lbl">Total Score (100%)</span>
+                        <span class="val" style="color: var(--accent-blue);">${level.pointsMax}</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="lbl">List Percent Score (66%)</span>
+                        <span class="val">${level.pointsMin}</span>
+                    </div>
+                </div>
+
+                <!-- Pulsanti Azione -->
+                <div class="action-buttons-row">
+                    <a class="action-btn" onclick="alert('Riproduzione traccia audio non configurata.')">🎵 Song</a>
+                    <a class="action-btn" onclick="alert('Apertura su GD Browser non configurata.')">🔗 GD Browser</a>
+                </div>
+
+                <!-- Posizionamento Storico (Accordion) -->
+                <div class="position-history-accordion">
+                    <div class="accordion-header" onclick="toggleAccordion()">
+                        <span>Position history</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="accordion-content" id="accordion-body">
+                        Inserito al posto #${level.rank} della lista globale.
+                    </div>
+                </div>
+
+                <!-- Pannello Record -->
+                <div class="records-container">
+                    <div class="records-header">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <span>Records</span>
+                    </div>
+                    <div class="records-sub">0 records in total, 0 of which are 100%</div>
+                    
+                    <div class="no-records-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                        </svg>
+                        No records yet
+                    </div>
+
+                    <div class="records-pagination">
+                        <button class="records-page-btn" disabled>&lt; Previous</button>
+                        <button class="records-page-btn" disabled>Next &gt;</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Funzione per copiare l'ID del livello
+        function copyId(id, elementId) {
+            navigator.clipboard.writeText(id).then(() => {
+                const el = document.getElementById(elementId);
+                const prevText = el.innerText;
+                el.innerText = "Copied!";
+                setTimeout(() => {
+                    el.innerText = prevText;
+                }, 1500);
+            });
+        }
+
+        // Funzione per l'Accordion
+        function toggleAccordion() {
+            const content = document.getElementById('accordion-body');
+            content.classList.toggle('open');
+        }
+
+
+        // --- STATS VIEWER ---
         const playersListContainer = document.getElementById('players-list-container');
         const playerDetailContainer = document.getElementById('player-detail-container');
         const playerSearchInput = document.getElementById('player-search');
@@ -1069,9 +1547,7 @@
         function renderPlayersList(filteredPlayers = players) {
             playersListContainer.innerHTML = '';
             filteredPlayers.forEach((player, index) => {
-                // Troviamo l'indice reale globale del giocatore per poterlo attivare
                 const globalIndex = players.findIndex(p => p.name === player.name);
-                
                 const li = document.createElement('li');
                 li.className = `player-item ${globalIndex === activePlayerIndex ? 'active' : ''}`;
                 li.innerHTML = `
@@ -1099,12 +1575,9 @@
 
             playerDetailContainer.innerHTML = `
                 <div class="player-detail-header">
-                    <div class="player-detail-flag-wrapper">
-                        <span class="player-detail-flag">${player.flag}</span>
-                    </div>
+                    <span class="player-detail-flag">${player.flag}</span>
                     <h2 class="player-detail-name">
                         ${player.name}
-                        <!-- Icona link esterno -->
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                             <polyline points="15 3 21 3 21 9"/>
@@ -1130,7 +1603,7 @@
                     </div>
                 </div>
 
-                <div class="hardest-banner" onclick="alert('Navigazione verso: ${player.hardest}')">
+                <div class="hardest-banner" onclick="alert('Dettaglio livello: ${player.hardest}')">
                     <div class="hardest-left">
                         <span class="hardest-icon">🔥</span>
                         <div class="hardest-title-group">
@@ -1153,14 +1626,13 @@
                     </div>
                     <div class="tags-container">
                         ${player.completed.map(levelName => `
-                            <span class="level-tag" onclick="alert('Dettagli di: ${levelName}')">${levelName}</span>
+                            <span class="level-tag" onclick="alert('Informazioni su ${levelName}')">${levelName}</span>
                         `).join('')}
                     </div>
                 </div>
             `;
         }
 
-        // Ricerca giocatori in tempo reale nel pannello statistiche
         playerSearchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
             const filtered = players.filter(p => p.name.toLowerCase().includes(query));
@@ -1168,7 +1640,7 @@
         });
 
         // Avvio Iniziale
-        renderLevels();
+        renderGrid();
     </script>
 </body>
 </html>
