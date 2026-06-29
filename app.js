@@ -6,15 +6,15 @@ let currentLang = 'it';             // 'it' per italiano di default, 'en' per in
 
 // Canali e link ufficiali
 const SOCIAL_LINKS = {
-    discord: "https://discord.gg/IL_TUO_INVITO",       // Sostituisci con l'invito del tuo server Discord
-    twitter: "https://twitter.com/IL_TUO_PROFILO",      // Sostituisci con il tuo profilo Twitter/X
-    youtube: "https://youtube.com/IL_TUO_CANALE"       // Sostituisci con il tuo canale YouTube principale
+    discord: "https://discord.ibroski.net",       // Sostituisci con l'invito del tuo server Discord
+    twitter: "https://twitter.com/zZalix",      // Sostituisci con il tuo profilo Twitter/X
+    youtube: "https://youtube.com/zZalix"       // Sostituisci con il tuo canale YouTube principale
 };
 
 // Linee guida del sito / server
 const GUIDELINES = {
-    it: "Linee Guida: Completa i livelli inseriti in lista rispettando il record minimo (66% per la Main List) ed invia la tua prova video per essere registrato in classifica!",
-    en: "Guidelines: Complete any level listed on the platform respecting the minimum record requirement (66% for the Main List) and submit your video proof to be added!"
+    it: "Linee Guida: Completa i livelli inseriti in lista ed invia la tua prova video per essere registrato in classifica!      -zZalix",
+    en: "Guidelines: Complete any level listed on the platform and submit your video proof to be added!       -zZalix"
 };
 
 // Changelog / Aggiornamenti del sito
@@ -41,8 +41,8 @@ const RECENT_UPDATES = [
     },
     {
         version: "Versione 1.2.0",
-        dateIt: "Maggio 2026",
-        dateEn: "May 2026",
+        dateIt: "Giugno 2026",
+        dateEn: "Giulia 2026",
         accentColor: "var(--accent-orange)",
         changesIt: [
             "Introdotta la modalità di gioco 'Level Roulette' con progressione dinamica dei target percentuali (1% + ogni turno).",
@@ -78,7 +78,9 @@ const playersData = [
         completed: [              
             'Cataclysm', 
             'Denouement', 
-            'Nine Circles'
+            'Nine Circles',
+            'Skeletal Shenanigans',
+            'B'
         ] 
     },
     { 
@@ -95,7 +97,7 @@ const playersData = [
         },
         completed: [
             'tower descent', 
-            'Template Level 3'
+            'Idk'
         ] 
     },
     { 
