@@ -1,27 +1,67 @@
-// ==========================================
-// 1. CONFIGURAZIONI GENERALI E SOCIAL (DA MODIFICARE)
-// ==========================================
+// =========================================================================
+// 1. CONFIGURAZIONI GENERALI E SOCIAL (EDITABILI)
+// =========================================================================
 const isFuturaActive = true;       // 'true' per attivare la lista Futura, 'false' per disattivarla
 let currentLang = 'it';             // 'it' per italiano di default, 'en' per inglese
 
-// Inserisci qui i tuoi canali ufficiali
+// Canali e link ufficiali
 const SOCIAL_LINKS = {
-    discord: "https://discord.gg/IL_TUO_INVITO",       // Sostituisci con il tuo invito Discord
-    twitter: "https://twitter.com/IL_TUO_PROFILO",
-    youtube: "https://youtube.com/IL_TUO_CANALE"
+    discord: "https://discord.gg/IL_TUO_INVITO",       // Sostituisci con l'invito del tuo server Discord
+    twitter: "https://twitter.com/IL_TUO_PROFILO",      // Sostituisci con il tuo profilo Twitter/X
+    youtube: "https://youtube.com/IL_TUO_CANALE"       // Sostituisci con il tuo canale YouTube principale
 };
 
-// Linee guida o messaggi generali modificabili
+// Linee guida del sito / server
 const GUIDELINES = {
-    it: "Completa i livelli con la percentuale minima richiesta per registrare il tuo record e scalare la classifica!",
-    en: "Complete the levels with the minimum required percentage to submit your record and climb the leaderboard!"
+    it: "Linee Guida: Completa i livelli inseriti in lista rispettando il record minimo (66% per la Main List) ed invia la tua prova video per essere registrato in classifica!",
+    en: "Guidelines: Complete any level listed on the platform respecting the minimum record requirement (66% for the Main List) and submit your video proof to be added!"
 };
 
+// Changelog / Aggiornamenti del sito
+const RECENT_UPDATES = [
+    {
+        version: "Versione 1.3.0",
+        dateIt: "Giugno 2026",
+        dateEn: "June 2026",
+        accentColor: "var(--accent-blue)",
+        changesIt: [
+            "Sostituiti tutti i link di navigazione con pulsanti reali per prevenire la selezione del testo accidentale.",
+            "Rimosso l'avatar del profilo e semplificato l'angolo destro della barra di navigazione.",
+            "La modalità di visualizzazione predefinita all'avvio è stata impostata su quella principale (lista con anteprime).",
+            "Implementata la pagina interattiva dei Changelog direttamente cliccando sulla campanella delle notifiche.",
+            "Aggiunto il toggle del sole per invertire elegantemente i colori dell'intera pagina (Tema Chiaro / Tema Scuro)."
+        ],
+        changesEn: [
+            "Swapped all navigation links to native buttons to fully prevent accidental text selection cursor.",
+            "Slashed the profile avatar and streamlined the navbar right corner.",
+            "Set list view (thumbnails) as the default active display mode on load.",
+            "Fully integrated recent updates page directly connected to the bell icon.",
+            "Handled light/dark mode color inversion using variables instead of blunt styling filters."
+        ]
+    },
+    {
+        version: "Versione 1.2.0",
+        dateIt: "Maggio 2026",
+        dateEn: "May 2026",
+        accentColor: "var(--accent-orange)",
+        changesIt: [
+            "Introdotta la modalità di gioco 'Level Roulette' con progressione dinamica dei target percentuali (1% + ogni turno).",
+            "Aggiunto il menu a discesa (dropdown) interattivo sulla voce 'More'.",
+            "Sostituiti tutti i popup di sistema (alert) con eleganti notifiche toast a scorrimento."
+        ],
+        changesEn: [
+            "Deployed Level Roulette gameplay with dynamic target percentage steps.",
+            "Added fully interactive menu dropdown under 'More' navigation element.",
+            "Erased native browser alert popups, replacing them with sliding toasts."
+        ]
+    }
+];
 
-// ==========================================
-// 2. DATABASE GIOCATORI (CON AVATAR E CANALI YT)
-// ==========================================
-// Puoi associare a ciascun giocatore un'immagine profilo ('avatar') e il suo canale YouTube ('youtubeChannel').
+
+// =========================================================================
+// 2. DATABASE GIOCATORI (EDITABILE)
+// =========================================================================
+// Puoi inserire l'URL di un'immagine profilo per 'avatar' e il canale YouTube del singolo player in 'youtubeChannel'
 const playersData = [
     { 
         rank: 1,                  
@@ -29,8 +69,8 @@ const playersData = [
         name: 'zZalix',           
         score: '525',             
         state: 'ITALY',           
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150', // Link foto profilo (puoi cambiarla)
-        youtubeChannel: 'https://youtube.com/@zZalixGD',                             // Link canale YouTube
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150', // Immagine profilo
+        youtubeChannel: "https://youtube.com/@zZalixGD",                             // Canale YouTube personale
         hardest: { 
             demon: 'Cataclysm',   
             hz: '144hz'           
@@ -48,7 +88,7 @@ const playersData = [
         score: '185',
         state: 'ITALY',
         avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150',
-        youtubeChannel: 'https://youtube.com',
+        youtubeChannel: "https://youtube.com",
         hardest: { 
             demon: 'tower descent', 
             hz: '360hz' 
@@ -143,9 +183,9 @@ const playersData = [
 ];
 
 
-// ==========================================
-// 3. DATABASE LIVELLI - LISTA PRESENTE
-// ==========================================
+// =========================================================================
+// 3. DATABASE LIVELLI - LISTA PRESENTE (EDITABILE)
+// =========================================================================
 const levels = [
     {
         rank: 1,                       
@@ -235,9 +275,9 @@ const levels = [
 ];
 
 
-// ==========================================
-// 4. DATABASE LIVELLI - LISTA FUTURA
-// ==========================================
+// =========================================================================
+// 4. DATABASE LIVELLI - LISTA FUTURA (EDITABILE)
+// =========================================================================
 const futuraLevels = [
     {
         rank: 1,
@@ -259,9 +299,9 @@ const futuraLevels = [
 ];
 
 
-// ==========================================
+// =========================================================================
 // 5. TRADUZIONI (ITALIANO / INGLESE)
-// ==========================================
+// =========================================================================
 const t = {
     it: {
         searchPlaceholder: "Cerca livello...",
@@ -313,7 +353,9 @@ const t = {
         updatesTitle: "Aggiornamenti Recenti",
         pointsLabel: "punti",
         levelNotFound: "Livello non trovato nel database locale.",
-        youtubeCreatorsTitle: "Canali dei Giocatori"
+        youtubeCreatorsTitle: "Canali dei Giocatori",
+        viewCreators: "Canali YouTube",
+        guidelinesTitle: "Linee Guida"
     },
     en: {
         searchPlaceholder: "Search level...",
@@ -365,14 +407,16 @@ const t = {
         updatesTitle: "Recent Updates",
         pointsLabel: "points",
         levelNotFound: "Level not found in local database.",
-        youtubeCreatorsTitle: "Players Channels"
+        youtubeCreatorsTitle: "Players Channels",
+        viewCreators: "YouTube Channels",
+        guidelinesTitle: "Guidelines"
     }
 };
 
 
-// ==========================================
+// =========================================================================
 // 6. STATO GENERALE DELL'APPLICAZIONE
-// ==========================================
+// =========================================================================
 let activePlayerIndex = 0;
 let displayMode = 'list';
 let activeList = 'presente';
@@ -384,9 +428,9 @@ let rouletteHistory = [];
 let currentRouletteLevel = null;
 
 
-// ==========================================
+// =========================================================================
 // 7. FUNZIONI E LOGICA DI SISTEMA (S.P.A.)
-// ==========================================
+// =========================================================================
 
 function getFlagDisplay(flagText) {
     if (flagText === 'IT') return '🇮🇹';
@@ -421,9 +465,13 @@ function handleSocialClick(platform) {
     } else if (platform === 'twitter') {
         window.open(SOCIAL_LINKS.twitter, '_blank');
     } else if (platform === 'youtube') {
-        // Naviga alla vista interna dei canali YouTube dei player
         switchView('youtube');
     }
+}
+
+// Visualizza le linee guida dinamiche in un toast
+function showGuidelines() {
+    triggerToast(GUIDELINES[currentLang]);
 }
 
 function switchView(viewName, parameterId = null) {
@@ -444,12 +492,14 @@ function switchView(viewName, parameterId = null) {
     }
 
     if (viewName === 'grid') {
-        document.getElementById('nav-classic').classList.add('active');
+        const navBtn = document.getElementById('nav-classic');
+        if (navBtn) navBtn.classList.add('active');
         renderDisplay();
     } else if (viewName === 'detail') {
         renderDetail(parameterId);
     } else if (viewName === 'stats') {
-        document.getElementById('nav-stats').classList.add('active');
+        const navBtn = document.getElementById('nav-stats');
+        if (navBtn) navBtn.classList.add('active');
         renderPlayersList();
         renderPlayerDetail();
     } else if (viewName === 'roulette') {
@@ -464,6 +514,7 @@ function switchView(viewName, parameterId = null) {
 function changeLanguage(lang) {
     currentLang = lang;
     updateLanguageDOM();
+    initNavbar(); // Aggiorna anche il linguaggio degli elementi della navbar
     renderDisplay();
     
     const activeSection = document.querySelector('.view-section.active');
@@ -489,10 +540,20 @@ function changeLanguage(lang) {
 function updateLanguageDOM() {
     const lang = currentLang;
     
-    document.getElementById('nav-classic').innerHTML = t[lang].lists;
-    document.getElementById('nav-more').innerHTML = t[lang].more;
-    document.getElementById('nav-stats').innerHTML = t[lang].navStats;
-    document.getElementById('nav-social').innerHTML = t[lang].social;
+    const navClassic = document.getElementById('nav-classic');
+    if (navClassic) navClassic.innerHTML = t[lang].lists;
+
+    const navMore = document.getElementById('nav-more');
+    if (navMore) navMore.innerHTML = t[lang].more;
+
+    const navStats = document.getElementById('nav-stats');
+    if (navStats) navStats.innerHTML = t[lang].navStats;
+
+    const navSocial = document.getElementById('nav-social');
+    if (navSocial) navSocial.innerHTML = t[lang].social;
+
+    const btnGuidelines = document.getElementById('btn-guidelines');
+    if (btnGuidelines) btnGuidelines.innerText = t[lang].guidelinesTitle;
     
     const searchInputEl = document.getElementById('level-search');
     if (searchInputEl) searchInputEl.placeholder = t[lang].searchPlaceholder;
@@ -503,44 +564,63 @@ function updateLanguageDOM() {
     const rangeTitle = document.querySelector('.category-header .title');
     if (rangeTitle) rangeTitle.innerText = t[lang].mainListTitle;
     
-    document.querySelector('.footer-logo-sub').innerText = t[lang].footerSub;
-    document.getElementById('footer-disclaimer-text').innerText = t[lang].footerDisclaimer;
+    const logoSub = document.querySelector('.footer-logo-sub');
+    if (logoSub) logoSub.innerText = t[lang].footerSub;
 
-    document.getElementById('btn-lang-it').innerHTML = (lang === 'it') ? '✓ Italiano' : 'Italiano';
-    document.getElementById('btn-lang-en').innerHTML = (lang === 'en') ? '✓ English' : 'English';
+    const disclaimer = document.getElementById('footer-disclaimer-text');
+    if (disclaimer) disclaimer.innerText = t[lang].footerDisclaimer;
 
-    document.getElementById('country-dropdown-text').innerText = t[lang].tuttiIPaesi;
-    document.getElementById('btn-stats-prev').innerText = `< ${t[lang].precedente}`;
-    document.getElementById('btn-stats-next').innerText = `${t[lang].successivo} >`;
+    const langItBtn = document.getElementById('btn-lang-it');
+    if (langItBtn) langItBtn.innerHTML = (lang === 'it') ? '✓ Italiano' : 'Italiano';
 
-    document.getElementById('roulette-title-text').innerText = t[lang].livelloCorrente;
-    document.getElementById('history-title-text').innerText = t[lang].cronologiaLivelli;
-    document.getElementById('btn-roulette-reset').innerText = "Reset";
-    document.getElementById('btn-roulette-menu').innerText = t[lang].backToList;
+    const langEnBtn = document.getElementById('btn-lang-en');
+    if (langEnBtn) langEnBtn.innerHTML = (lang === 'en') ? '✓ English' : 'English';
+
+    const countryText = document.getElementById('country-dropdown-text');
+    if (countryText) countryText.innerText = t[lang].tuttiIPaesi;
+
+    const prevBtn = document.getElementById('btn-stats-prev');
+    if (prevBtn) prevBtn.innerText = `< ${t[lang].precedente}`;
+
+    const nextBtn = document.getElementById('btn-stats-next');
+    if (nextBtn) nextBtn.innerText = `${t[lang].successivo} >`;
+
+    const rouletteTitle = document.getElementById('roulette-title-text');
+    if (rouletteTitle) rouletteTitle.innerText = t[lang].livelloCorrente;
+
+    const historyTitle = document.getElementById('history-title-text');
+    if (historyTitle) historyTitle.innerText = t[lang].cronologiaLivelli;
+
+    const rouletteResetBtn = document.getElementById('btn-roulette-reset');
+    if (rouletteResetBtn) rouletteResetBtn.innerText = "Reset";
+
+    const rouletteMenuBtn = document.getElementById('btn-roulette-menu');
+    if (rouletteMenuBtn) rouletteMenuBtn.innerText = t[lang].backToList;
 }
 
 function toggleTheme() {
     document.body.classList.toggle('light-mode');
     const sunBtn = document.querySelector('.sun-toggle');
-    if (document.body.classList.contains('light-mode')) {
-        sunBtn.innerHTML = `
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
-        `;
-        triggerToast(currentLang === 'it' ? 'Tema Chiaro attivato' : 'Light Mode activated');
-    } else {
-        sunBtn.innerHTML = `
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="5"/>
-                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-            </svg>
-        `;
-        triggerToast(currentLang === 'it' ? 'Tema Scuro attivato' : 'Dark Mode activated');
+    if (sunBtn) {
+        if (document.body.classList.contains('light-mode')) {
+            sunBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            `;
+            triggerToast(currentLang === 'it' ? 'Tema Chiaro attivato' : 'Light Mode activated');
+        } else {
+            sunBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+            `;
+            triggerToast(currentLang === 'it' ? 'Tema Scuro attivato' : 'Dark Mode activated');
+        }
     }
 }
 
-// Gestione tollerante per l'attivazione della lista Futura o Presente
 function selectList(listName) {
     const normalized = listName.toLowerCase().trim();
     if (normalized === 'futura' || normalized === 'future') {
@@ -558,6 +638,7 @@ function selectList(listName) {
 function toggleDropdown(event, containerId) {
     event.stopPropagation();
     const container = document.getElementById(containerId);
+    if (!container) return;
     const isOpen = container.classList.contains('open');
     
     closeAllDropdowns();
@@ -577,23 +658,33 @@ window.addEventListener('click', () => {
     closeAllDropdowns();
 });
 
+// Funzione Toast integrata
+function triggerToast(message) {
+    const toast = document.getElementById('toast-notify');
+    if (toast) {
+        toast.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+}
 
-// ==========================================
+
+// =========================================================================
 // 8. INTERFACCIA GRAFICA (RENDERING)
-// ==========================================
-
-const displayContainer = document.getElementById('levels-display-container');
-const gridRange = document.getElementById('grid-range');
-const searchInput = document.getElementById('level-search');
+// =========================================================================
 
 function setDisplayMode(mode) {
     displayMode = mode;
-    document.getElementById('toggle-list').classList.remove('active');
-    document.getElementById('toggle-grid').classList.remove('active');
+    const toggleList = document.getElementById('toggle-list');
+    const toggleGrid = document.getElementById('toggle-grid');
+    if (toggleList) toggleList.classList.remove('active');
+    if (toggleGrid) toggleGrid.classList.remove('active');
     if (mode === 'list') {
-        document.getElementById('toggle-list').classList.add('active');
+        if (toggleList) toggleList.classList.add('active');
     } else {
-        document.getElementById('toggle-grid').classList.add('active');
+        if (toggleGrid) toggleGrid.classList.add('active');
     }
     renderDisplay();
 }
@@ -601,13 +692,16 @@ function setDisplayMode(mode) {
 function renderDisplay() {
     const currentList = (activeList === 'futura') ? futuraLevels : levels;
     
+    const gridRange = document.getElementById('grid-range');
     if (gridRange) {
         gridRange.innerText = `#1 - #${currentList.length}`;
     }
     
+    const displayContainer = document.getElementById('levels-display-container');
     if (!displayContainer) return;
     displayContainer.innerHTML = '';
 
+    const searchInput = document.getElementById('level-search');
     const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
     const filteredLevels = currentList.filter(lvl => lvl.name.toLowerCase().includes(query));
 
@@ -655,18 +749,21 @@ function renderDisplay() {
     }
 }
 
-if (searchInput) {
-    searchInput.addEventListener('input', () => {
-        renderDisplay();
-    });
-}
-
-const detailContent = document.getElementById('level-detail-content');
+// Configura l'ascoltatore di ricerca dei livelli dinamicamente
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('level-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            renderDisplay();
+        });
+    }
+});
 
 function renderDetail(rankId) {
     activeLevelRank = rankId;
     const currentList = (activeList === 'futura') ? futuraLevels : levels;
     const level = currentList.find(l => l.rank == rankId);
+    const detailContent = document.getElementById('level-detail-content');
     if (!level || !detailContent) return;
 
     detailContent.innerHTML = `
@@ -748,22 +845,22 @@ function renderDetail(rankId) {
 function copyId(id, elementId) {
     navigator.clipboard.writeText(id).then(() => {
         const el = document.getElementById(elementId);
-        el.innerText = t[currentLang].copied;
-        setTimeout(() => { el.innerText = id; }, 1500);
+        if (el) {
+            el.innerText = t[currentLang].copied;
+            setTimeout(() => { el.innerText = id; }, 1500);
+        }
     });
 }
 
 function toggleAccordion() {
-    document.getElementById('accordion-body').classList.toggle('open');
+    const body = document.getElementById('accordion-body');
+    if (body) body.classList.toggle('open');
 }
 
 
-// ==========================================
+// =========================================================================
 // 9. LOGICA LEVEL ROULETTE
-// ==========================================
-
-const rouletteCardContainer = document.getElementById('roulette-card-container');
-const rouletteHistoryContainer = document.getElementById('roulette-history-container');
+// =========================================================================
 
 function initRoulette() {
     if (!currentRouletteLevel) {
@@ -779,38 +876,43 @@ function rollNextLevel() {
 }
 
 function renderRoulette() {
-    if (!currentRouletteLevel || !rouletteCardContainer) return;
+    if (!currentRouletteLevel) return;
 
-    rouletteCardContainer.innerHTML = `
-        <div class="roulette-video">
-            <iframe src="https://www.youtube.com/embed/${currentRouletteLevel.youtubeId}" allowfullscreen></iframe>
-        </div>
-        <div class="roulette-info">
-            <div class="roulette-rank">#${currentRouletteLevel.rank}</div>
-            <div class="roulette-name">${currentRouletteLevel.name}</div>
-            <div class="roulette-id">(${currentRouletteLevel.id})</div>
-            <div class="roulette-published">${t[currentLang].verifiedBy.replace('Verificato da', 'Pubblicato da').replace('Verified by', 'Published by')}:<br><span>${currentRouletteLevel.creator}</span></div>
-        </div>
-        <div class="roulette-target-action">
-            <div class="roulette-target-badge">${t[currentLang].livelloCorrente.replace('Livello Corrente', 'ALMENO').replace('Current Level', 'AT LEAST')} ${rouletteTarget}%</div>
-            <button class="roulette-done-btn" onclick="completeStep()">Done</button>
-        </div>
-    `;
-
-    if (!rouletteHistoryContainer) return;
-    if (rouletteHistory.length === 0) {
-        rouletteHistoryContainer.innerHTML = `<div class="history-empty">${t[currentLang].nessunLivelloCompletato}</div>`;
-    } else {
-        rouletteHistoryContainer.innerHTML = `
-            <ul class="history-list">
-                ${rouletteHistory.map((h, i) => `
-                    <li class="history-item">
-                        <span><strong>${i + 1}.</strong> #${h.level.rank} ${h.level.name}</span>
-                        <span style="color: var(--accent-orange); font-weight: 700;">${h.percentage}%</span>
-                    </li>
-                `).join('')}
-            </ul>
+    const rouletteCardContainer = document.getElementById('roulette-card-container');
+    if (rouletteCardContainer) {
+        rouletteCardContainer.innerHTML = `
+            <div class="roulette-video">
+                <iframe src="https://www.youtube.com/embed/${currentRouletteLevel.youtubeId}" allowfullscreen></iframe>
+            </div>
+            <div class="roulette-info">
+                <div class="roulette-rank">#${currentRouletteLevel.rank}</div>
+                <div class="roulette-name">${currentRouletteLevel.name}</div>
+                <div class="roulette-id">(${currentRouletteLevel.id})</div>
+                <div class="roulette-published">${t[currentLang].verifiedBy.replace('Verificato da', 'Pubblicato da').replace('Verified by', 'Published by')}:<br><span>${currentRouletteLevel.creator}</span></div>
+            </div>
+            <div class="roulette-target-action">
+                <div class="roulette-target-badge">${t[currentLang].livelloCorrente.replace('Livello Corrente', 'ALMENO').replace('Current Level', 'AT LEAST')} ${rouletteTarget}%</div>
+                <button class="roulette-done-btn" onclick="completeStep()">Done</button>
+            </div>
         `;
+    }
+
+    const rouletteHistoryContainer = document.getElementById('roulette-history-container');
+    if (rouletteHistoryContainer) {
+        if (rouletteHistory.length === 0) {
+            rouletteHistoryContainer.innerHTML = `<div class="history-empty">${t[currentLang].nessunLivelloCompletato}</div>`;
+        } else {
+            rouletteHistoryContainer.innerHTML = `
+                <ul class="history-list">
+                    ${rouletteHistory.map((h, i) => `
+                        <li class="history-item">
+                            <span><strong>${i + 1}.</strong> #${h.level.rank} ${h.level.name}</span>
+                            <span style="color: var(--accent-orange); font-weight: 700;">${h.percentage}%</span>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+        }
     }
 }
 
@@ -836,17 +938,15 @@ function resetRoulette() {
 }
 
 
-// ==========================================
+// =========================================================================
 // 10. CLASSIFICA E SCHERMATE STATISTICHE
-// ==========================================
-
-const playersListContainer = document.getElementById('players-list-container');
-const playerDetailContainer = document.getElementById('player-detail-container');
-const playerSearchInput = document.getElementById('player-search');
+// =========================================================================
 
 function renderPlayersList(filteredPlayers = playersData) {
+    const playersListContainer = document.getElementById('players-list-container');
     if (!playersListContainer) return;
     playersListContainer.innerHTML = '';
+    
     filteredPlayers.forEach((player) => {
         const globalIndex = playersData.findIndex(p => p.name === player.name);
         const li = document.createElement('li');
@@ -872,6 +972,7 @@ function renderPlayersList(filteredPlayers = playersData) {
 
 function renderPlayerDetail() {
     const player = playersData[activePlayerIndex];
+    const playerDetailContainer = document.getElementById('player-detail-container');
     if (!player || !playerDetailContainer) return;
 
     playerDetailContainer.innerHTML = `
@@ -928,22 +1029,24 @@ function renderPlayerDetail() {
     `;
 }
 
-if (playerSearchInput) {
-    playerSearchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        const filtered = playersData.filter(p => p.name.toLowerCase().includes(query));
-        renderPlayersList(filtered);
-    });
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const playerSearchInput = document.getElementById('player-search');
+    if (playerSearchInput) {
+        playerSearchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const filtered = playersData.filter(p => p.name.toLowerCase().includes(query));
+            renderPlayersList(filtered);
+        });
+    }
+});
 
 
-// ==========================================
-// 11. SCHERMATA YT GIOCATORI (CREATORI)
-// ==========================================
-
-const youtubeCreatorsContainer = document.getElementById('youtube-creators-content-container');
+// =========================================================================
+// 11. SCHERMATA CANALI YT GIOCATORI (CREATORI)
+// =========================================================================
 
 function renderYoutubeCreatorsPage() {
+    const youtubeCreatorsContainer = document.getElementById('youtube-creators-content-container');
     if (!youtubeCreatorsContainer) return;
 
     youtubeCreatorsContainer.innerHTML = `
@@ -958,25 +1061,25 @@ function renderYoutubeCreatorsPage() {
             <h1 class="detail-title-row">${t[currentLang].youtubeCreatorsTitle}</h1>
         </div>
         
-        <div class="creators-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 10px;">
+        <div class="creators-grid">
             ${playersData.map(player => {
-                const avatar = player.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'; // Avatar predefinito
+                const avatar = player.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'; // Default
                 const hasChannel = player.youtubeChannel && player.youtubeChannel !== '';
                 return `
-                    <div class="creator-card" style="background: var(--panel-bg); border: 1px solid var(--panel-border); padding: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <img src="${avatar}" alt="${player.name}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue);">
-                            <div>
-                                <h3 style="font-size: 1.1rem; margin: 0; color: var(--text-primary);">${player.name}</h3>
-                                <span style="font-size: 0.8rem; color: var(--text-secondary);">Rank #${player.rank}</span>
+                    <div class="creator-card">
+                        <div class="creator-left">
+                            <img src="${avatar}" alt="${player.name}" class="creator-avatar">
+                            <div class="creator-details">
+                                <h3 class="creator-name">${player.name}</h3>
+                                <span class="creator-rank">Rank #${player.rank}</span>
                             </div>
                         </div>
                         ${hasChannel ? `
-                            <a href="${player.youtubeChannel}" target="_blank" class="action-btn" style="padding: 6px 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; text-decoration: none; border-radius: 4px; background: #ff0000; color: #fff;">
+                            <a href="${player.youtubeChannel}" target="_blank" class="creator-yt-btn">
                                 📹 YouTube
                             </a>
                         ` : `
-                            <button disabled class="action-btn" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 4px; opacity: 0.4; cursor: not-allowed; background: var(--bg-body); color: var(--text-secondary);">
+                            <button disabled class="creator-yt-btn disabled">
                                 N/A
                             </button>
                         `}
@@ -988,15 +1091,15 @@ function renderYoutubeCreatorsPage() {
 }
 
 
-// ==========================================
+// =========================================================================
 // 12. AGGIORNAMENTI RECENTI / CHANGELOG
-// ==========================================
-
-const updatesContainer = document.getElementById('updates-content-container');
+// =========================================================================
 
 function renderUpdatesPage() {
+    const updatesContainer = document.getElementById('updates-content-container');
     if (!updatesContainer) return;
-    updatesContainer.innerHTML = `
+    
+    let updatesHtml = `
         <button class="back-link" style="background: none; border: none; font-family: inherit; font-size: inherit; cursor: pointer; color: var(--text-secondary);" onclick="switchView('grid')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="19" y1="12" x2="5" y2="12"/>
@@ -1009,53 +1112,33 @@ function renderUpdatesPage() {
         </div>
         
         <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
-            <div class="records-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--panel-border); padding-bottom: 8px;">
-                    <span style="font-weight: 800; color: var(--accent-blue);">Versione 1.3.0</span>
-                    <span style="font-size: 0.8rem; color: var(--text-secondary);">${currentLang === 'it' ? 'Giugno 2026' : 'June 2026'}</span>
-                </div>
-                <ul style="list-style-type: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--text-secondary);">
-                    ${currentLang === 'it' ? `
-                        <li>• Sostituiti tutti i link di navigazione con pulsanti reali per prevenire la selezione del testo accidentale.</li>
-                        <li>• Rimosso l'avatar del profilo e semplificato l'angolo destro della barra di navigazione.</li>
-                        <li>• La modalità di visualizzazione predefinita all'avvio è stata impostata su quella principale (lista con anteprime).</li>
-                        <li>• Implementata la pagina interattiva dei Changelog direttamente cliccando sulla campanella delle notifiche.</li>
-                        <li>• Aggiunto il toggle del sole per invertire elegantemente i colori dell'intera pagina (Tema Chiaro / Tema Scuro).</li>
-                    ` : `
-                        <li>• Swapped all navigation links to native buttons to fully prevent accidental text selection cursor.</li>
-                        <li>• Slashed the profile avatar and streamlined the navbar right corner.</li>
-                        <li>• Set list view (thumbnails) as the default active display mode on load.</li>
-                    	<li>• Fully integrated recent updates page directly connected to the bell icon.</li>
-                        <li>• Handled light/dark mode color inversion using variables instead of blunt styling filters.</li>
-                    `}
-                </ul>
-            </div>
-
-            <div class="records-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--panel-border); padding-bottom: 8px;">
-                    <span style="font-weight: 800; color: var(--accent-orange);">Versione 1.2.0</span>
-                    <span style="font-size: 0.8rem; color: var(--text-secondary);">${currentLang === 'it' ? 'Maggio 2026' : 'May 2026'}</span>
-                </div>
-                <ul style="list-style-type: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--text-secondary);">
-                    ${currentLang === 'it' ? `
-                        <li>• Introdotta la modalità di gioco "Level Roulette" con progressione dinamica dei target percentuali (1% + ogni turno).</li>
-                        <li>• Aggiunto il menu a discesa (dropdown) interattivo sulla voce "More".</li>
-                        <li>• Sostituiti tutti i popup di sistema (alert) con eleganti notifiche toast a scorrimento.</li>
-                    ` : `
-                        <li>• Deployed Level Roulette gameplay with dynamic target percentage steps.</li>
-                        <li>• Added fully interactive menu dropdown under 'More' navigation element.</li>
-                        <li>• Erased native browser alert popups, replacing them with sliding toasts.</li>
-                    `}
-                </ul>
-            </div>
-        </div>
     `;
+    
+    RECENT_UPDATES.forEach(upd => {
+        const date = currentLang === 'it' ? upd.dateIt : upd.dateEn;
+        const changes = currentLang === 'it' ? upd.changesIt : upd.changesEn;
+        
+        updatesHtml += `
+            <div class="records-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--panel-border); padding-bottom: 8px;">
+                    <span style="font-weight: 800; color: ${upd.accentColor};">${upd.version}</span>
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">${date}</span>
+                </div>
+                <ul style="list-style-type: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                    ${changes.map(ch => `<li>• ${ch}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    });
+    
+    updatesHtml += `</div>`;
+    updatesContainer.innerHTML = updatesHtml;
 }
 
 
-// ==========================================
+// =========================================================================
 // 13. INIZIALIZZAZIONE APPLICAZIONE
-// ==========================================
+// =========================================================================
 
 function initNavbar() {
     const lang = currentLang;
