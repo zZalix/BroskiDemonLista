@@ -1,32 +1,168 @@
 // ==========================================
-// 1. CONFIGURAZIONE GENERALE
+// 1. CONFIGURAZIONI GENERALI E SOCIAL (DA MODIFICARE)
 // ==========================================
-const isFuturaActive = true; // 'true' per attivare la lista Futura, 'false' per disattivarla
-let currentLang = 'it';       // 'it' per italiano di default, 'en' per inglese
+const isFuturaActive = true;       // 'true' per attivare la lista Futura, 'false' per disattivarla
+let currentLang = 'it';             // 'it' per italiano di default, 'en' per inglese
+
+// Inserisci qui i tuoi canali ufficiali
+const SOCIAL_LINKS = {
+    discord: "https://discord.gg/IL_TUO_INVITO",       // Sostituisci con il tuo invito Discord
+    twitter: "https://twitter.com/IL_TUO_PROFILO",
+    youtube: "https://youtube.com/IL_TUO_CANALE"
+};
+
+// Linee guida o messaggi generali modificabili
+const GUIDELINES = {
+    it: "Completa i livelli con la percentuale minima richiesta per registrare il tuo record e scalare la classifica!",
+    en: "Complete the levels with the minimum required percentage to submit your record and climb the leaderboard!"
+};
 
 
 // ==========================================
-// 2. DATABASE LIVELLI - LISTA PRESENTE
+// 2. DATABASE GIOCATORI (CON AVATAR E CANALI YT)
 // ==========================================
-// Modifica, aggiungi o rimuovi i livelli da questo elenco.
-// Ciascun livello deve avere la struttura indicata nel commento del Rank 1.
+// Puoi associare a ciascun giocatore un'immagine profilo ('avatar') e il suo canale YouTube ('youtubeChannel').
+const playersData = [
+    { 
+        rank: 1,                  
+        flagText: 'IT',           
+        name: 'zZalix',           
+        score: '525',             
+        state: 'ITALY',           
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150', // Link foto profilo (puoi cambiarla)
+        youtubeChannel: 'https://youtube.com/@zZalixGD',                             // Link canale YouTube
+        hardest: { 
+            demon: 'Cataclysm',   
+            hz: '144hz'           
+        },
+        completed: [              
+            'Cataclysm', 
+            'Denouement', 
+            'Nine Circles'
+        ] 
+    },
+    { 
+        rank: 2,
+        flagText: 'IT',
+        name: 'robZeph',
+        score: '185',
+        state: 'ITALY',
+        avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150',
+        youtubeChannel: 'https://youtube.com',
+        hardest: { 
+            demon: 'tower descent', 
+            hz: '360hz' 
+        },
+        completed: [
+            'tower descent', 
+            'Template Level 3'
+        ] 
+    },
+    { 
+        rank: 3,
+        flagText: 'IT',
+        name: 'klockish',
+        score: '125',
+        state: 'ITALY',
+        avatar: '',
+        youtubeChannel: '',
+        hardest: { 
+            demon: 'B', 
+            hz: '240hz' 
+        },
+        completed: [
+            'B', 
+            'Template Level 4'
+        ] 
+    },
+    { 
+        rank: 4,
+        flagText: 'IT',
+        name: 'mainsciamn',
+        score: '85',
+        state: 'ITALY',
+        avatar: '',
+        youtubeChannel: '',
+        hardest: { 
+            demon: 'B', 
+            hz: '160hz' 
+        },
+        completed: [
+            'B', 
+            'Template Level 5'
+        ] 
+    },
+    { 
+        rank: 5,
+        flagText: 'IT',
+        name: 'zleemm',
+        score: '80',
+        state: 'ITALY',
+        avatar: '',
+        youtubeChannel: '',
+        hardest: { 
+            demon: 'FlashBang', 
+            hz: '144hz' 
+        },
+        completed: [
+            'FlashBang'
+        ] 
+    },
+    { 
+        rank: 6,
+        flagText: 'IT',
+        name: 'UniversoMC',
+        score: '75',
+        state: 'ITALY',
+        avatar: '',
+        youtubeChannel: '',
+        hardest: { 
+            demon: 'Skeletal Shenanigans', 
+            hz: '165hz' 
+        },
+        completed: [
+            'Skeletal Shenanigans'
+        ] 
+    },
+    { 
+        rank: 7,
+        flagText: 'IT',
+        name: 'b0bX2',
+        score: '30',
+        state: 'ITALY',
+        avatar: '',
+        youtubeChannel: '',
+        hardest: { 
+            demon: 'FlashBang', 
+            hz: '360hz' 
+        },
+        completed: [
+            'FlashBang'
+        ] 
+    }
+];
+
+
+// ==========================================
+// 3. DATABASE LIVELLI - LISTA PRESENTE
+// ==========================================
 const levels = [
     {
-        rank: 1,                       // Posizione in classifica
-        name: "Cataclysm",             // Nome del livello
-        creator: "Ggb0y",              // Creatore del livello
-        verifier: "RIOT",              // Verificatore del livello
-        pointsMin: "45",               // Punteggio minimo (66%)
-        pointsMax: "45",               // Punteggio massimo (100%)
-        isNew: false,                   // Mostra il badge "NEW" (true / false)
-        id: "3979721",                 // ID di Geometry Dash
-        password: "Free Copy",         // Password di copia
-        length: "1:27",                // Durata del livello
-        objects: "15.216",             // Numero di oggetti
-        version: "2.2",                // Versione di gioco
-        quote: "Ex Top1",              // Descrizione breve / citazione
-        youtubeId: "W7XM0ExJD4c",      // ID del video YouTube (es. W7XM0ExJD4c)
-        thumbnail: "https://i.ytimg.com/vi/TDK9VpqGFYg/maxresdefault.jpg" // Immagine di anteprima
+        rank: 1,                       
+        name: "Cataclysm",             
+        creator: "Ggb0y",              
+        verifier: "RIOT",              
+        pointsMin: "45",               
+        pointsMax: "45",               
+        isNew: false,                   
+        id: "3979721",                 
+        password: "Free Copy",         
+        length: "1:27",                
+        objects: "15.216",             
+        version: "2.2",                
+        quote: "Ex Top1",              
+        youtubeId: "W7XM0ExJD4c",      
+        thumbnail: "https://i.ytimg.com/vi/TDK9VpqGFYg/maxresdefault.jpg" 
     },
     {
         rank: 2,
@@ -43,7 +179,7 @@ const levels = [
         version: "2.2",
         quote: "This Was Fun",
         youtubeId: "ziHvsAriE3s",
-        thumbnail: "https://i.ytimg.com/vi/7byWqbkoEUk/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD0PlV0qBV81PDrN1Y4XohkVIXSqA"
+        thumbnail: "https://i.ytimg.com/vi/7byWqbkoEUk/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD0PlV0qBV81PDrY4XohkVIXSqA"
     },
     {
         rank: 3,
@@ -100,7 +236,7 @@ const levels = [
 
 
 // ==========================================
-// 3. DATABASE LIVELLI - LISTA FUTURA
+// 4. DATABASE LIVELLI - LISTA FUTURA
 // ==========================================
 const futuraLevels = [
     {
@@ -119,117 +255,6 @@ const futuraLevels = [
         quote: "Giuro che non andrò in Grief",
         youtubeId: "rGImWWngaBE",
         thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop"
-    }
-];
-
-
-// ==========================================
-// 4. DATABASE GIOCATORI
-// ==========================================
-// Modifica, aggiungi o rimuovi i giocatori da questo elenco.
-const playersData = [
-    { 
-        rank: 1,                  // Posizione in classifica del giocatore
-        flagText: 'IT',           // Codice paese ('IT', 'US', ecc.) per mostrare la bandiera
-        name: 'zZalix',           // Nome del giocatore
-        score: '525',             // Punteggio complessivo accumulato
-        state: 'ITALY',           // Stato di appartenenza
-        hardest: { 
-            demon: 'Cataclysm',   // Il livello più difficile completato
-            hz: '144hz'           // Frequenza di aggiornamento utilizzata
-        },
-        completed: [              // Lista dei livelli completati (devono corrispondere ai nomi dei livelli)
-            'Cataclysm', 
-            'Denouement', 
-            'Nine Circles'
-        ] 
-    },
-    { 
-        rank: 2,
-        flagText: 'IT',
-        name: 'robZeph',
-        score: '185',
-        state: 'ITALY',
-        hardest: { 
-            demon: 'tower descent', 
-            hz: '360hz' 
-        },
-        completed: [
-            'tower descent', 
-            'Template Level 3'
-        ] 
-    },
-    { 
-        rank: 3,
-        flagText: 'IT',
-        name: 'klockish',
-        score: '125',
-        state: 'ITALY',
-        hardest: { 
-            demon: 'B', 
-            hz: '240hz' 
-        },
-        completed: [
-            'B', 
-            'Template Level 4'
-        ] 
-    },
-    { 
-        rank: 4,
-        flagText: 'IT',
-        name: 'mainsciamn',
-        score: '85',
-        state: 'ITALY',
-        hardest: { 
-            demon: 'B', 
-            hz: '160hz' 
-        },
-        completed: [
-            'B', 
-            'Template Level 5'
-        ] 
-    },
-    { 
-        rank: 5,
-        flagText: 'IT',
-        name: 'zleemm',
-        score: '80',
-        state: 'ITALY',
-        hardest: { 
-            demon: 'FlashBang', 
-            hz: '144hz' 
-        },
-        completed: [
-            'FlashBang'
-        ] 
-    },
-    { 
-        rank: 6,
-        flagText: 'IT',
-        name: 'UniversoMC',
-        score: '75',
-        state: 'ITALY',
-        hardest: { 
-            demon: 'Skeletal Shenanigans', 
-            hz: '165hz' 
-        },
-        completed: [
-            'Skeletal Shenanigans'
-        ] 
-    },
-    { 
-        rank: 7,
-        flagText: 'IT',
-        name: 'b0bX2',
-        score: '30',
-        state: 'ITALY',
-        hardest: { 
-            demon: 'FlashBang', 
-            hz: '360hz' 
-        },
-        completed: [
-            'FlashBang'
-        ] 
     }
 ];
 
@@ -287,7 +312,8 @@ const t = {
         futuraDisabledLabel: "Futura (Disattivata)",
         updatesTitle: "Aggiornamenti Recenti",
         pointsLabel: "punti",
-        levelNotFound: "Livello non trovato nel database locale."
+        levelNotFound: "Livello non trovato nel database locale.",
+        youtubeCreatorsTitle: "Canali dei Giocatori"
     },
     en: {
         searchPlaceholder: "Search level...",
@@ -338,7 +364,8 @@ const t = {
         futuraDisabledLabel: "Futura (Disabled)",
         updatesTitle: "Recent Updates",
         pointsLabel: "points",
-        levelNotFound: "Level not found in local database."
+        levelNotFound: "Level not found in local database.",
+        youtubeCreatorsTitle: "Players Channels"
     }
 };
 
@@ -387,6 +414,18 @@ function goToLevelByName(levelName) {
     triggerToast(t[currentLang].levelNotFound);
 }
 
+// Navigazione esterna o interna per i social
+function handleSocialClick(platform) {
+    if (platform === 'discord') {
+        window.open(SOCIAL_LINKS.discord, '_blank');
+    } else if (platform === 'twitter') {
+        window.open(SOCIAL_LINKS.twitter, '_blank');
+    } else if (platform === 'youtube') {
+        // Naviga alla vista interna dei canali YouTube dei player
+        switchView('youtube');
+    }
+}
+
 function switchView(viewName, parameterId = null) {
     closeAllDropdowns();
 
@@ -417,6 +456,8 @@ function switchView(viewName, parameterId = null) {
         initRoulette();
     } else if (viewName === 'updates') {
         renderUpdatesPage();
+    } else if (viewName === 'youtube') {
+        renderYoutubeCreatorsPage();
     }
 }
 
@@ -437,6 +478,8 @@ function changeLanguage(lang) {
             renderDetail(activeLevelRank);
         } else if (id === 'view-updates') {
             renderUpdatesPage();
+        } else if (id === 'view-youtube') {
+            renderYoutubeCreatorsPage();
         }
     }
     
@@ -497,14 +540,18 @@ function toggleTheme() {
     }
 }
 
+// Gestione tollerante per l'attivazione della lista Futura o Presente
 function selectList(listName) {
-    if (listName === 'futura') {
+    const normalized = listName.toLowerCase().trim();
+    if (normalized === 'futura' || normalized === 'future') {
         if (!isFuturaActive) {
             triggerToast(t[currentLang].futureDisabled);
             return;
         }
+        activeList = 'futura';
+    } else {
+        activeList = 'presente';
     }
-    activeList = listName;
     switchView('grid');
 }
 
@@ -554,7 +601,11 @@ function setDisplayMode(mode) {
 function renderDisplay() {
     const currentList = (activeList === 'futura') ? futuraLevels : levels;
     
-    gridRange.innerText = `#1 - #${currentList.length}`;
+    if (gridRange) {
+        gridRange.innerText = `#1 - #${currentList.length}`;
+    }
+    
+    if (!displayContainer) return;
     displayContainer.innerHTML = '';
 
     const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
@@ -616,7 +667,7 @@ function renderDetail(rankId) {
     activeLevelRank = rankId;
     const currentList = (activeList === 'futura') ? futuraLevels : levels;
     const level = currentList.find(l => l.rank == rankId);
-    if (!level) return;
+    if (!level || !detailContent) return;
 
     detailContent.innerHTML = `
         <button class="back-link" style="background: none; border: none; font-family: inherit; font-size: inherit; cursor: pointer;" onclick="switchView('grid')">
@@ -728,7 +779,7 @@ function rollNextLevel() {
 }
 
 function renderRoulette() {
-    if (!currentRouletteLevel) return;
+    if (!currentRouletteLevel || !rouletteCardContainer) return;
 
     rouletteCardContainer.innerHTML = `
         <div class="roulette-video">
@@ -746,6 +797,7 @@ function renderRoulette() {
         </div>
     `;
 
+    if (!rouletteHistoryContainer) return;
     if (rouletteHistory.length === 0) {
         rouletteHistoryContainer.innerHTML = `<div class="history-empty">${t[currentLang].nessunLivelloCompletato}</div>`;
     } else {
@@ -793,6 +845,7 @@ const playerDetailContainer = document.getElementById('player-detail-container')
 const playerSearchInput = document.getElementById('player-search');
 
 function renderPlayersList(filteredPlayers = playersData) {
+    if (!playersListContainer) return;
     playersListContainer.innerHTML = '';
     filteredPlayers.forEach((player) => {
         const globalIndex = playersData.findIndex(p => p.name === player.name);
@@ -819,7 +872,7 @@ function renderPlayersList(filteredPlayers = playersData) {
 
 function renderPlayerDetail() {
     const player = playersData[activePlayerIndex];
-    if (!player) return;
+    if (!player || !playerDetailContainer) return;
 
     playerDetailContainer.innerHTML = `
         <div class="player-detail-header">
@@ -885,12 +938,64 @@ if (playerSearchInput) {
 
 
 // ==========================================
-// 11. AGGIORNAMENTI RECENTI / CHANGELOG
+// 11. SCHERMATA YT GIOCATORI (CREATORI)
+// ==========================================
+
+const youtubeCreatorsContainer = document.getElementById('youtube-creators-content-container');
+
+function renderYoutubeCreatorsPage() {
+    if (!youtubeCreatorsContainer) return;
+
+    youtubeCreatorsContainer.innerHTML = `
+        <button class="back-link" style="background: none; border: none; font-family: inherit; font-size: inherit; cursor: pointer; color: var(--text-secondary);" onclick="switchView('grid')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+            </svg>
+            ${t[currentLang].backToList}
+        </button>
+        <div class="detail-top" style="margin-bottom: 20px;">
+            <h1 class="detail-title-row">${t[currentLang].youtubeCreatorsTitle}</h1>
+        </div>
+        
+        <div class="creators-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 10px;">
+            ${playersData.map(player => {
+                const avatar = player.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'; // Avatar predefinito
+                const hasChannel = player.youtubeChannel && player.youtubeChannel !== '';
+                return `
+                    <div class="creator-card" style="background: var(--panel-bg); border: 1px solid var(--panel-border); padding: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="${avatar}" alt="${player.name}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue);">
+                            <div>
+                                <h3 style="font-size: 1.1rem; margin: 0; color: var(--text-primary);">${player.name}</h3>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">Rank #${player.rank}</span>
+                            </div>
+                        </div>
+                        ${hasChannel ? `
+                            <a href="${player.youtubeChannel}" target="_blank" class="action-btn" style="padding: 6px 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; text-decoration: none; border-radius: 4px; background: #ff0000; color: #fff;">
+                                📹 YouTube
+                            </a>
+                        ` : `
+                            <button disabled class="action-btn" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 4px; opacity: 0.4; cursor: not-allowed; background: var(--bg-body); color: var(--text-secondary);">
+                                N/A
+                            </button>
+                        `}
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+
+// ==========================================
+// 12. AGGIORNAMENTI RECENTI / CHANGELOG
 // ==========================================
 
 const updatesContainer = document.getElementById('updates-content-container');
 
 function renderUpdatesPage() {
+    if (!updatesContainer) return;
     updatesContainer.innerHTML = `
         <button class="back-link" style="background: none; border: none; font-family: inherit; font-size: inherit; cursor: pointer; color: var(--text-secondary);" onclick="switchView('grid')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -949,7 +1054,7 @@ function renderUpdatesPage() {
 
 
 // ==========================================
-// 12. INIZIALIZZAZIONE APPLICAZIONE
+// 13. INIZIALIZZAZIONE APPLICAZIONE
 // ==========================================
 
 function initNavbar() {
