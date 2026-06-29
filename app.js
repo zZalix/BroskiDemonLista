@@ -1,13 +1,242 @@
 // ==========================================
-// CONFIGURAZIONE ATTIVAZIONE LISTA FUTURA
+// 1. CONFIGURAZIONE GENERALE
 // ==========================================
-// Imposta su 'true' per sbloccare la lista Futura nella tendina.
-// Imposta su 'false' per tenerla disattivata e semi-trasparente.
-const isFuturaActive = false; 
+const isFuturaActive = false; // 'true' per attivare la lista Futura, 'false' per disattivarla
+let currentLang = 'it';       // 'it' per italiano di default, 'en' per inglese
 
-// DIZIONARIO DI TRADUZIONE DINAMICO (ITALIANO / INGLESE)
-let currentLang = 'it'; // Sostituire con 'en' se si vuole impostare l'inglese di default
 
+// ==========================================
+// 2. DATABASE LIVELLI - LISTA PRESENTE
+// ==========================================
+// Modifica, aggiungi o rimuovi i livelli da questo elenco.
+// Ciascun livello deve avere la struttura indicata nel commento del Rank 1.
+const levels = [
+    {
+        rank: 1,                       // Posizione in classifica
+        name: "Cataclysm",             // Nome del livello
+        creator: "Ggb0y",              // Creatore del livello
+        verifier: "RIOT",              // Verificatore del livello
+        pointsMin: "45",               // Punteggio minimo (66%)
+        pointsMax: "45",               // Punteggio massimo (100%)
+        isNew: false,                   // Mostra il badge "NEW" (true / false)
+        id: "3979721",                 // ID di Geometry Dash
+        password: "Free Copy",         // Password di copia
+        length: "1:27",                // Durata del livello
+        objects: "15.216",             // Numero di oggetti
+        version: "2.2",                // Versione di gioco
+        quote: "Ex Top1",              // Descrizione breve / citazione
+        youtubeId: "W7XM0ExJD4c",      // ID del video YouTube (es. W7XM0ExJD4c)
+        thumbnail: "https://i.ytimg.com/vi/TDK9VpqGFYg/maxresdefault.jpg" // Immagine di anteprima
+    },
+    {
+        rank: 2,
+        name: "Denouement",
+        creator: "Synactive GD",
+        verifier: "Synactive GD",
+        pointsMin: "25",
+        pointsMax: "25",
+        isNew: false,
+        id: "60619762",
+        password: "Free copy",
+        length: "1:00",
+        objects: "10.042",
+        version: "2.2",
+        quote: "This Was Fun",
+        youtubeId: "ziHvsAriE3s",
+        thumbnail: "https://i.ytimg.com/vi/7byWqbkoEUk/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD0PlV0qBV81PDrN1Y4XohkVIXSqA"
+    },
+    {
+        rank: 3,
+        name: "Nine Circles",
+        creator: "Zobros",
+        verifier: "Zobros",
+        pointsMin: "20",
+        pointsMax: "20",
+        isNew: false,
+        id: "4284013",
+        password: "Free Copy",
+        length: "1:32",
+        objects: "14.894",
+        version: "2.2",
+        quote: "Zalix died at 85% 5 times",
+        youtubeId: "dQw4w9WgXcQ",
+        thumbnail: "https://pbs.twimg.com/media/GFeOqXWb0AAcuiB.jpg"
+    },
+    {
+        rank: 4,
+        name: "tower descent",
+        creator: "pocke",
+        verifier: "pocke",
+        pointsMin: "20",
+        pointsMax: "20",
+        isNew: false,
+        id: "92742742",
+        password: "Free Copy",
+        length: "0:29",
+        objects: "60.000+",
+        version: "2.2",
+        quote: "Tutti Blind Jumps",
+        youtubeId: "WOzf3oVoD0c",
+        thumbnail: "https://i.ytimg.com/vi/QonVCkQAEvc/maxresdefault.jpg"
+    },
+    {
+        rank: 5,
+        name: "Skeletal Shenanigans",
+        creator: "YoReid & Airzyy",
+        verifier: "YoReid",
+        pointsMin: "15",
+        pointsMax: "15",
+        isNew: false,
+        id: "118509879",
+        password: "Free Copy",
+        length: "3:50",
+        objects: "138,409",
+        version: "2.2",
+        quote: "I Really Like This One",
+        youtubeId: "mgzTHUKATqo",
+        thumbnail: "https://i.ytimg.com/vi/mgzTHUKATqo/maxresdefault.jpg"
+    }
+];
+
+
+// ==========================================
+// 3. DATABASE LIVELLI - LISTA FUTURA
+// ==========================================
+const futuraLevels = [
+    {
+        rank: 1,
+        name: "Shitty GRIEF",
+        creator: "zZalix",
+        verifier: "zZalix",
+        pointsMin: "500",
+        pointsMax: "500",
+        isNew: true,
+        id: "not verified yet",
+        password: "WONT TELL",
+        length: "2:52",
+        objects: "250.000+",
+        version: "2.2",
+        quote: "Giuro che non andrò in Grief",
+        youtubeId: "rGImWWngaBE",
+        thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop"
+    }
+];
+
+
+// ==========================================
+// 4. DATABASE GIOCATORI
+// ==========================================
+// Modifica, aggiungi o rimuovi i giocatori da questo elenco.
+const playersData = [
+    { 
+        rank: 1,                  // Posizione in classifica del giocatore
+        flagText: 'IT',           // Codice paese ('IT', 'US', ecc.) per mostrare la bandiera
+        name: 'zZalix',           // Nome del giocatore
+        score: '525',             // Punteggio complessivo accumulato
+        state: 'ITALY',           // Stato di appartenenza
+        hardest: { 
+            demon: 'Cataclysm',   // Il livello più difficile completato
+            hz: '144hz'           // Frequenza di aggiornamento utilizzata
+        },
+        completed: [              // Lista dei livelli completati (devono corrispondere ai nomi dei livelli)
+            'Cataclysm', 
+            'Denouement', 
+            'Nine Circles'
+        ] 
+    },
+    { 
+        rank: 2,
+        flagText: 'IT',
+        name: 'robZeph',
+        score: '185',
+        state: 'ITALY',
+        hardest: { 
+            demon: 'tower descent', 
+            hz: '360hz' 
+        },
+        completed: [
+            'tower descent', 
+            'Template Level 3'
+        ] 
+    },
+    { 
+        rank: 3,
+        flagText: 'IT',
+        name: 'klockish',
+        score: '125',
+        state: 'ITALY',
+        hardest: { 
+            demon: 'B', 
+            hz: '240hz' 
+        },
+        completed: [
+            'B', 
+            'Template Level 4'
+        ] 
+    },
+    { 
+        rank: 4,
+        flagText: 'IT',
+        name: 'mainsciamn',
+        score: '85',
+        state: 'ITALY',
+        hardest: { 
+            demon: 'B', 
+            hz: '160hz' 
+        },
+        completed: [
+            'B', 
+            'Template Level 5'
+        ] 
+    },
+    { 
+        rank: 5,
+        flagText: 'IT',
+        name: 'zleemm',
+        score: '80',
+        state: 'ITALY',
+        hardest: { 
+            demon: 'FlashBang', 
+            hz: '144hz' 
+        },
+        completed: [
+            'FlashBang'
+        ] 
+    },
+    { 
+        rank: 6,
+        flagText: 'IT',
+        name: 'UniversoMC',
+        score: '75',
+        state: 'ITALY',
+        hardest: { 
+            demon: 'Skeletal Shenanigans', 
+            hz: '165hz' 
+        },
+        completed: [
+            'Skeletal Shenanigans'
+        ] 
+    },
+    { 
+        rank: 7,
+        flagText: 'IT',
+        name: 'b0bX2',
+        score: '30',
+        state: 'ITALY',
+        hardest: { 
+            demon: 'FlashBang', 
+            hz: '360hz' 
+        },
+        completed: [
+            'FlashBang'
+        ] 
+    }
+];
+
+
+// ==========================================
+// 5. TRADUZIONI (ITALIANO / INGLESE)
+// ==========================================
 const t = {
     it: {
         searchPlaceholder: "Cerca livello...",
@@ -113,79 +342,32 @@ const t = {
     }
 };
 
-// DATABASE LOCALE DEI LIVELLI (PRESENTE)
-const levels = [
-    { rank: 1, name: "Cataclysm", creator: "Ggb0y", verifier: "RIOT", pointsMin: "45", pointsMax: "45", isNew: true, id: "3979721", password: "Free Copy", length: "1:27", objects: "15.216", version: "2.2", quote: "Ex Top1", youtubeId: "W7XM0ExJD4c" },
-    { rank: 2, name: "Denouement", creator: "Synactive GD", verifier: "Synactive GD", pointsMin: "25", pointsMax: "25", isNew: false, id: "60619762", password: "Free copy", length: "1:00", objects: "10.042", version: "2.2", quote: "This Was Fun", youtubeId: "ziHvsAriE3s" },
-    { rank: 3, name: "Nine Circles", creator: "Zobros", verifier: "Zobros", pointsMin: "20", pointsMax: "20", isNew: false, id: "4284013", password: "Free Copy", length: "1:32", objects: "14.894", version: "2.2", quote: "Zalix died at 85% 5 times", youtubeId: "dQw4w9WgXcQ" },
-    { rank: 4, name: "tower descent", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "220.00", pointsMax: "880.00", isNew: false, id: "45678901", password: "1234", length: "2:31", objects: "281,004", version: "2.2", quote: "Fourth level custom description.", youtubeId: "dQw4w9WgXcQ" },
-    { rank: 5, name: "Template Level 5", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "210.00", pointsMax: "840.00", isNew: false, id: "56789012", password: "Free Copy", length: "2:45", objects: "138,409", version: "2.1", quote: "Fifth level custom description.", youtubeId: "dQw4w9WgXcQ" }
-];
 
-// DATABASE DEI LIVELLI (FUTURA)
-const futuraLevels = [
-    { rank: 1, name: "Shitty GRIEF", creator: "zZalix", verifier: "zZalix", pointsMin: "500", pointsMax: "500", isNew: true, id: "not verified yet", password: "WONT TELL", length: "2:52", objects: "250.000+", version: "2.2", quote: "Giuro che non andrò in Grief", youtubeId: "rGImWWngaBE" }
-];
-
-// DATABASE DEI GIOCATORI (CON LA TUA STRUTTURA ESATTA)
-const playersData = [
-    { 
-        rank: 1, flagText: 'IT', name: 'zZalix', score: '525', state: 'ITALY',
-        hardest: { demon: 'Cataclysm', hz: '144hz' },
-        completed: ['Cataclysm', 'Denouement', 'Nine Circles'] 
-    },
-    { 
-        rank: 2, flagText: 'IT', name: 'robZeph', score: '185', state: 'ITALY',
-        hardest: { demon: 'tower descent', hz: '360hz' },
-        completed: ['tower descent', 'Template Level 3'] 
-    },
-    { 
-        rank: 3, flagText: 'IT', name: 'klockish', score: '125', state: 'ITALY',
-        hardest: { demon: 'B', hz: '240hz' },
-        completed: ['B', 'Template Level 4'] 
-    },
-    { 
-        rank: 4, flagText: 'IT', name: 'mainsciamn', score: '85', state: 'ITALY',
-        hardest: { demon: 'B', hz: '160hz' },
-        completed: ['B', 'Template Level 5'] 
-    },
-    { 
-        rank: 5, flagText: 'IT', name: 'zleemm', score: '80', state: 'ITALY',
-        hardest: { demon: 'FlashBang', hz: '144hz' },
-        completed: ['FlashBang'] 
-    },
-    { 
-        rank: 6, flagText: 'IT', name: 'UniversoMC', score: '75', state: 'ITALY',
-        hardest: { demon: 'Skeletal Shenanigans', hz: '165hz' },
-        completed: ['Skeletal Shenanigans'] 
-    },
-    { 
-        rank: 7, flagText: 'IT', name: 'b0bX2', score: '30', state: 'ITALY',
-        hardest: { demon: 'FlashBang', hz: '360hz' },
-        completed: ['FlashBang'] 
-    }
-];
-
+// ==========================================
+// 6. STATO GENERALE DELL'APPLICAZIONE
+// ==========================================
 let activePlayerIndex = 0;
-let displayMode = 'list'; // Impostata su 'list' (Visualizzazione Principale) di default
-let activeList = 'presente'; // 'presente' o 'futura'
-let activeLevelRank = null; // Memorizza l'ultimo livello aperto per le traduzioni in tempo reale
+let displayMode = 'list';
+let activeList = 'presente';
+let activeLevelRank = null;
 
 // Stato Level Roulette
 let rouletteTarget = 1;
 let rouletteHistory = [];
 let currentRouletteLevel = null;
 
-// Helper per mostrare l'emoji della bandiera corretta in base al flagText
+
+// ==========================================
+// 7. FUNZIONI E LOGICA DI SISTEMA (S.P.A.)
+// ==========================================
+
 function getFlagDisplay(flagText) {
     if (flagText === 'IT') return '🇮🇹';
     if (flagText === 'US') return '🇺🇸';
-    return flagText; // Se è già un'emoji o un altro codice
+    return flagText;
 }
 
-// Reindirizza al dettaglio di un livello cercandolo per nome
 function goToLevelByName(levelName) {
-    // Cerca prima nella lista Presente
     let lvl = levels.find(l => l.name === levelName);
     if (lvl) {
         activeList = 'presente';
@@ -193,7 +375,6 @@ function goToLevelByName(levelName) {
         return;
     }
 
-    // Cerca nella lista Futura se attiva
     if (isFuturaActive) {
         let futLvl = futuraLevels.find(l => l.name === levelName);
         if (futLvl) {
@@ -203,11 +384,9 @@ function goToLevelByName(levelName) {
         }
     }
 
-    // Segnala se il livello non esiste nel database locale
     triggerToast(t[currentLang].levelNotFound);
 }
 
-// Gestore Visualizzazione SPA con Fix transizione (void offsetWidth per ricaricare l'animazione)
 function switchView(viewName, parameterId = null) {
     closeAllDropdowns();
 
@@ -220,7 +399,6 @@ function switchView(viewName, parameterId = null) {
 
     const activeSection = document.getElementById(`view-${viewName}`);
     if (activeSection) {
-        // Reset transizione forzando il Reflow del browser
         activeSection.classList.remove('active');
         void activeSection.offsetWidth; 
         activeSection.classList.add('active');
@@ -242,12 +420,9 @@ function switchView(viewName, parameterId = null) {
     }
 }
 
-// Cambia la lingua dinamicamente senza ricaricare la pagina
 function changeLanguage(lang) {
     currentLang = lang;
     updateLanguageDOM();
-    
-    // Aggiorna gli elementi attivi visibili
     renderDisplay();
     
     const activeSection = document.querySelector('.view-section.active');
@@ -268,7 +443,6 @@ function changeLanguage(lang) {
     triggerToast(t[currentLang].linguaImpostata);
 }
 
-// Aggiorna le etichette di testo statiche nella pagina
 function updateLanguageDOM() {
     const lang = currentLang;
     
@@ -289,23 +463,19 @@ function updateLanguageDOM() {
     document.querySelector('.footer-logo-sub').innerText = t[lang].footerSub;
     document.getElementById('footer-disclaimer-text').innerText = t[lang].footerDisclaimer;
 
-    // Gestione pulsante Traduzione
     document.getElementById('btn-lang-it').innerHTML = (lang === 'it') ? '✓ Italiano' : 'Italiano';
     document.getElementById('btn-lang-en').innerHTML = (lang === 'en') ? '✓ English' : 'English';
 
-    // Gestione traduzione dicitura classifica
     document.getElementById('country-dropdown-text').innerText = t[lang].tuttiIPaesi;
     document.getElementById('btn-stats-prev').innerText = `< ${t[lang].precedente}`;
     document.getElementById('btn-stats-next').innerText = `${t[lang].successivo} >`;
 
-    // Roulette testo statico
     document.getElementById('roulette-title-text').innerText = t[lang].livelloCorrente;
     document.getElementById('history-title-text').innerText = t[lang].cronologiaLivelli;
     document.getElementById('btn-roulette-reset').innerText = "Reset";
     document.getElementById('btn-roulette-menu').innerText = t[lang].backToList;
 }
 
-// Inversione Colori (Tema Chiaro / Tema Scuro)
 function toggleTheme() {
     document.body.classList.toggle('light-mode');
     const sunBtn = document.querySelector('.sun-toggle');
@@ -327,7 +497,6 @@ function toggleTheme() {
     }
 }
 
-// Seleziona se mostrare la lista Presente o Futura
 function selectList(listName) {
     if (listName === 'futura') {
         if (!isFuturaActive) {
@@ -339,7 +508,6 @@ function selectList(listName) {
     switchView('grid');
 }
 
-// Gestore delle tendine menu (Dropdowns)
 function toggleDropdown(event, containerId) {
     event.stopPropagation();
     const container = document.getElementById(containerId);
@@ -358,12 +526,15 @@ function closeAllDropdowns() {
     });
 }
 
-// Chiudi le tendine cliccando fuori
 window.addEventListener('click', () => {
     closeAllDropdowns();
 });
 
-// --- SCHERMATA PRINCIPALE (LISTA / GRIGLIA) ---
+
+// ==========================================
+// 8. INTERFACCIA GRAFICA (RENDERING)
+// ==========================================
+
 const displayContainer = document.getElementById('levels-display-container');
 const gridRange = document.getElementById('grid-range');
 const searchInput = document.getElementById('level-search');
@@ -410,10 +581,11 @@ function renderDisplay() {
         filteredLevels.forEach(lvl => {
             const card = document.createElement('div');
             card.className = 'level-card';
+            const thumbnailSrc = lvl.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop';
             card.innerHTML = `
                 <div class="level-thumbnail-container">
                     ${lvl.isNew ? '<span class="badge-new">NEW</span>' : ''}
-                    <img class="level-thumbnail" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop" alt="${lvl.name}">
+                    <img class="level-thumbnail" src="${thumbnailSrc}" alt="${lvl.name}">
                 </div>
                 <div class="level-details-main">
                     <div class="level-title-row">
@@ -438,7 +610,6 @@ if (searchInput) {
     });
 }
 
-// --- SCHERMATA DETTAGLIO ---
 const detailContent = document.getElementById('level-detail-content');
 
 function renderDetail(rankId) {
@@ -535,7 +706,11 @@ function toggleAccordion() {
     document.getElementById('accordion-body').classList.toggle('open');
 }
 
-// --- LEVEL ROULETTE LOGIC ---
+
+// ==========================================
+// 9. LOGICA LEVEL ROULETTE
+// ==========================================
+
 const rouletteCardContainer = document.getElementById('roulette-card-container');
 const rouletteHistoryContainer = document.getElementById('roulette-history-container');
 
@@ -608,7 +783,11 @@ function resetRoulette() {
     triggerToast(t[currentLang].rouletteResettata);
 }
 
-// --- STATS VIEWER (CLASSIFICA GIOCATORI) ---
+
+// ==========================================
+// 10. CLASSIFICA E SCHERMATE STATISTICHE
+// ==========================================
+
 const playersListContainer = document.getElementById('players-list-container');
 const playerDetailContainer = document.getElementById('player-detail-container');
 const playerSearchInput = document.getElementById('player-search');
@@ -667,7 +846,6 @@ function renderPlayerDetail() {
                 </div>
             </div>
         </div>
-        <!-- Cliccando sul banner del record verrai indirizzato alla sua pagina dettagliata -->
         <div class="hardest-banner" onclick="goToLevelByName('${player.hardest.demon}')">
             <div class="hardest-left">
                 <span class="hardest-icon">🔥</span>
@@ -705,7 +883,11 @@ if (playerSearchInput) {
     });
 }
 
-// --- PAGINA DEGLI AGGIORNAMENTI RECENTI (NOTIFICHE) ---
+
+// ==========================================
+// 11. AGGIORNAMENTI RECENTI / CHANGELOG
+// ==========================================
+
 const updatesContainer = document.getElementById('updates-content-container');
 
 function renderUpdatesPage() {
@@ -765,7 +947,11 @@ function renderUpdatesPage() {
     `;
 }
 
-// Configura dinamicamente la navbar in base alle variabili
+
+// ==========================================
+// 12. INIZIALIZZAZIONE APPLICAZIONE
+// ==========================================
+
 function initNavbar() {
     const lang = currentLang;
     const futuraBtn = document.getElementById('btn-futura');
@@ -780,7 +966,6 @@ function initNavbar() {
     }
 }
 
-// Esecuzione al caricamento iniziale
 document.addEventListener('DOMContentLoaded', () => {
     updateLanguageDOM();
     initNavbar();
