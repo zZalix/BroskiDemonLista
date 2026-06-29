@@ -127,11 +127,78 @@ const futuraLevels = [
     { rank: 1, name: "Futura Level 1", creator: "Creatore Futuro", verifier: "Verificatore Futuro", pointsMin: "300.00", pointsMax: "1200.00", isNew: true, id: "99999999", password: "Free Copy", length: "2:00", objects: "90,000", version: "2.2", quote: "Questo è un livello futuro sbloccato modificando la configurazione.", youtubeId: "dQw4w9WgXcQ" }
 ];
 
-// DATABASE DEI GIOCATORI
+// DATABASE DEI GIOCATORI AGGIORNATO CON I TUOI DATI REALI
 const players = [
-    { rank: 1, name: "Zoink", score: "20921.29", flag: "🇺🇸", hardest: "Template Level 1", completed: ["Template Level 1", "Template Level 2"] },
-    { rank: 2, name: "wPopoff", score: "18571.81", flag: "🇺🇸", hardest: "Template Level 1", completed: ["Template Level 1", "Template Level 3"] },
-    { rank: 3, name: "Netermind", score: "13192.90", flag: "🇺🇸", hardest: "Template Level 2", completed: ["Template Level 2", "Template Level 4"] }
+    { 
+        rank: 1, 
+        name: 'zZalix', 
+        score: '525', 
+        flag: '🇮🇹', 
+        state: 'ITALY',
+        hardest: 'Cataclysm', 
+        hz: '144hz',
+        completed: ['Cataclysm', 'Template Level 1', 'Template Level 2'] 
+    },
+    { 
+        rank: 2, 
+        name: 'robZeph', 
+        score: '185', 
+        flag: '🇮🇹', 
+        state: 'ITALY',
+        hardest: 'tower descent', 
+        hz: '360hz',
+        completed: ['tower descent', 'Template Level 3'] 
+    },
+    { 
+        rank: 3, 
+        name: 'klockish', 
+        score: '125', 
+        flag: '🇮🇹', 
+        state: 'ITALY',
+        hardest: 'B', 
+        hz: '240hz',
+        completed: ['B', 'Template Level 4'] 
+    },
+    { 
+        rank: 4, 
+        name: 'mainsciamn', 
+        score: '85', 
+        flag: '🇮🇹', 
+        state: 'ITALY',
+        hardest: 'B', 
+        hz: '160hz',
+        completed: ['B', 'Template Level 5'] 
+    },
+    { 
+        rank: 5, 
+        name: 'zleemm', 
+        score: '80', 
+        flag: '🇮🇹', 
+        state: 'ITALY',
+        hardest: 'FlashBang', 
+        hz: '144hz',
+        completed: ['FlashBang'] 
+    },
+    { 
+        rank: 6, 
+        name: 'UniversoMC', 
+        score: '75', 
+        flag: '🇮🇹', 
+        state: 'ITALY',
+        hardest: 'Skeletal Shenanigans', 
+        hz: '165hz',
+        completed: ['Skeletal Shenanigans'] 
+    },
+    { 
+        rank: 7, 
+        name: 'b0bX2', 
+        score: '30', 
+        flag: '🇮🇹', 
+        state: 'ITALY',
+        hardest: 'FlashBang', 
+        hz: '360hz',
+        completed: ['FlashBang'] 
+    }
 ];
 
 let activePlayerIndex = 0;
@@ -628,13 +695,13 @@ function renderPlayerDetail() {
                 </div>
             </div>
         </div>
-        <!-- Clicking hardest level banner redirects directly to that level -->
+        <!-- Cliccando sul banner del record verrai indirizzato alla sua pagina dettagliata -->
         <div class="hardest-banner" onclick="goToLevelByName('${player.hardest}')">
             <div class="hardest-left">
                 <span class="hardest-icon">🔥</span>
                 <div class="hardest-title-group">
                     <span class="hardest-lbl">${t[currentLang].recordPiuDifficile}</span>
-                    <span class="hardest-name">${player.hardest}</span>
+                    <span class="hardest-name">${player.hardest} ${player.hz ? `(${player.hz})` : ''}</span>
                 </div>
             </div>
             <span class="hardest-right">❯</span>
