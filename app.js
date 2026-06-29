@@ -116,9 +116,9 @@ const t = {
 // DATABASE LOCALE DEI LIVELLI (PRESENTE)
 const levels = [
     { rank: 1, name: "Cataclysm", creator: "Ggb0y", verifier: "RIOT", pointsMin: "45", pointsMax: "45", isNew: true, id: "3979721", password: "Free Copy", length: "1:27", objects: "15.216", version: "2.2", quote: "Ex Top1", youtubeId: "W7XM0ExJD4c" },
-    { rank: 2, name: "Nine Circles", creator: "Zobros", verifier: "Zobros", pointsMin: "20", pointsMax: "20", isNew: false, id: "4284013", password: "Free copy", length: "1:32", objects: "14.894", version: "2.2", quote: "Zalix died at 85% 5 times", youtubeId: "dOdPoU1ncOc" },
-    { rank: 3, name: "Template Level 3", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "230.00", pointsMax: "920.00", isNew: false, id: "34567890", password: "Free Copy", length: "2:02", objects: "112,045", version: "2.1", quote: "Third level custom description.", youtubeId: "dQw4w9WgXcQ" },
-    { rank: 4, name: "Template Level 4", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "220.00", pointsMax: "880.00", isNew: false, id: "45678901", password: "1234", length: "2:31", objects: "281,004", version: "2.2", quote: "Fourth level custom description.", youtubeId: "dQw4w9WgXcQ" },
+    { rank: 2, name: "Denouement", creator: "Synactive GD", verifier: "Synactive GD", pointsMin: "25", pointsMax: "25", isNew: false, id: "60619762", password: "Free copy", length: "1:00", objects: "10.042", version: "2.2", quote: "This Was Fun", youtubeId: "ziHvsAriE3s" },
+    { rank: 3, name: "Nine Circles", creator: "Zobros", verifier: "Zobros", pointsMin: "20", pointsMax: "20", isNew: false, id: "4284013", password: "Free Copy", length: "1:32", objects: "14.894", version: "2.2", quote: "Zalix died at 85% 5 times", youtubeId: "dQw4w9WgXcQ" },
+    { rank: 4, name: "tower descent", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "220.00", pointsMax: "880.00", isNew: false, id: "45678901", password: "1234", length: "2:31", objects: "281,004", version: "2.2", quote: "Fourth level custom description.", youtubeId: "dQw4w9WgXcQ" },
     { rank: 5, name: "Template Level 5", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "210.00", pointsMax: "840.00", isNew: false, id: "56789012", password: "Free Copy", length: "2:45", objects: "138,409", version: "2.1", quote: "Fifth level custom description.", youtubeId: "dQw4w9WgXcQ" }
 ];
 
@@ -132,7 +132,7 @@ const playersData = [
     { 
         rank: 1, flagText: 'IT', name: 'zZalix', score: '525', state: 'ITALY',
         hardest: { demon: 'Cataclysm', hz: '144hz' },
-        completed: ['Cataclysm', 'Template Level 1', 'Template Level 2'] 
+        completed: ['Cataclysm', 'Denouement', 'Nine Circles'] 
     },
     { 
         rank: 2, flagText: 'IT', name: 'robZeph', score: '185', state: 'ITALY',
