@@ -4,25 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zalixlist — Geometry Dash Demonlist</title>
-    <!-- Font Inter per uno stile moderno e pulito -->
+    <!-- Font Inter per la massima leggibilità -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #08090c;
-            --navbar-bg: #0e1017;
-            --panel-bg: #12151e;
-            --panel-border: #1e2330;
-            --panel-border-hover: #2d3548;
+            --bg-color: #07090e;
+            --navbar-bg: #0b0e14;
+            --panel-bg: #111622;
+            --card-bg: #141b29;
+            --panel-border: #1d2636;
             --text-primary: #ffffff;
-            --text-secondary: #8f96a3;
-            --accent-color: #ff6a00;
-            --accent-gradient: linear-gradient(135deg, #ff6a00 0%, #ee0979 100%);
-            --red-demon: #ff3e3e;
-            --shadow-color: rgba(0, 0, 0, 0.5);
-            --transition-speed: 0.2s;
+            --text-secondary: #7e8b9b;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+            --input-bg: #192030;
+            --font-sans: 'Inter', sans-serif;
         }
 
         * {
@@ -32,30 +33,68 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-sans);
             background-color: var(--bg-color);
             color: var(--text-primary);
             overflow-x: hidden;
             line-height: 1.5;
+            position: relative;
+            min-height: 100vh;
         }
 
-        /* Scrollbar Personalizzata */
+        /* Elementi decorativi di sfondo (Spikes a sinistra, Trofeo a destra) */
+        .bg-decorations {
+            position: fixed;
+            top: 64px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            pointer-events: none;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            opacity: 0.15;
+        }
+
+        .decor-left {
+            width: 250px;
+            height: 80%;
+            background: radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.1), transparent 70%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+        }
+
+        .decor-right {
+            width: 300px;
+            height: 80%;
+            background: radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.1), transparent 70%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+            padding: 40px;
+        }
+
+        /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: var(--bg-color);
         }
         ::-webkit-scrollbar-thumb {
             background: var(--panel-border);
-            border-radius: 4px;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--panel-border-hover);
+            background: var(--accent-blue);
         }
 
-        /* Header / Navigation Bar */
+        /* Navbar */
         .navbar {
             position: sticky;
             top: 0;
@@ -69,21 +108,25 @@
             padding: 0 2rem;
         }
 
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
         .navbar-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             text-decoration: none;
             color: var(--text-primary);
             font-weight: 800;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             letter-spacing: -0.5px;
         }
 
-        .navbar-brand span {
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .navbar-brand svg {
+            fill: var(--accent-blue);
         }
 
         .navbar-menu {
@@ -95,9 +138,13 @@
         .navbar-menu a {
             text-decoration: none;
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
-            transition: color var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: color 0.15s;
         }
 
         .navbar-menu a:hover, .navbar-menu a.active {
@@ -107,691 +154,1021 @@
         .navbar-right {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
         }
 
-        .discord-btn {
-            background-color: #5865F2;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: opacity var(--transition-speed);
-        }
-
-        .discord-btn:hover {
-            opacity: 0.9;
-        }
-
-        /* Main Layout Grid */
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 2rem;
-            height: calc(100vh - 64px);
-        }
-
-        /* Colonna di Sinistra: La Lista dei Livelli */
-        .list-sidebar {
+        .user-profile {
             display: flex;
-            flex-direction: column;
-            background-color: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 8px;
-            overflow: hidden;
-            height: 100%;
-        }
-
-        .sidebar-header {
-            padding: 1.25rem;
-            border-bottom: 1px solid var(--panel-border);
-            background-color: rgba(255, 255, 255, 0.01);
-        }
-
-        .search-container {
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            background-color: var(--bg-color);
-            border: 1px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 10px 12px;
+            align-items: center;
+            gap: 8px;
             color: var(--text-primary);
             font-size: 0.9rem;
-            outline: none;
-            transition: border-color var(--transition-speed);
+            font-weight: 500;
+            text-decoration: none;
         }
 
-        .search-input:focus {
-            border-color: var(--accent-color);
-        }
-
-        .sidebar-list {
-            list-style: none;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-
-        .level-item {
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--accent-blue);
             display: flex;
             align-items: center;
-            padding: 1rem 1.25rem;
-            border-bottom: 1px solid var(--panel-border);
-            cursor: pointer;
-            transition: background-color var(--transition-speed);
-            position: relative;
-        }
-
-        .level-item:hover {
-            background-color: rgba(255, 255, 255, 0.02);
-        }
-
-        .level-item.active {
-            background-color: rgba(255, 106, 0, 0.06);
-            border-left: 4px solid var(--accent-color);
-            padding-left: calc(1.25rem - 4px);
-        }
-
-        .level-rank {
-            font-weight: 800;
-            font-size: 1.1rem;
-            min-width: 50px;
-            color: var(--text-secondary);
-        }
-
-        .level-item.active .level-rank {
-            color: var(--accent-color);
-        }
-
-        .level-info-meta {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .level-name {
+            justify-content: center;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.75rem;
+        }
+
+        .nav-icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: color 0.15s;
+        }
+
+        .nav-icon-btn:hover {
             color: var(--text-primary);
         }
 
-        .level-creator {
-            font-size: 0.8rem;
+        /* Layout principale */
+        .app-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* Vista 1: Lista Classica */
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* Cerca e Filtri (Top bar della lista) */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .filter-btn-blue {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .search-wrapper {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
             color: var(--text-secondary);
-            margin-top: 2px;
+            pointer-events: none;
         }
 
-        /* Colonna di Destra: Dettaglio del Livello Selezionato */
-        .content-panel {
-            overflow-y: auto;
-            height: 100%;
-            padding-right: 5px;
+        .main-search-input {
+            width: 100%;
+            height: 42px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 0 14px 0 42px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            outline: none;
         }
 
-        .detail-card {
+        .main-search-input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .view-toggles {
+            display: flex;
             background-color: var(--panel-bg);
             border: 1px solid var(--panel-border);
             border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 4px;
+            gap: 4px;
         }
 
-        .detail-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--panel-border);
-            padding-bottom: 1.5rem;
-        }
-
-        .detail-title h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 5px;
-        }
-
-        .detail-subtitle {
-            font-size: 1.05rem;
+        .toggle-btn {
+            background: none;
+            border: none;
             color: var(--text-secondary);
-        }
-
-        .detail-subtitle span {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .demon-badge {
-            background-color: rgba(255, 62, 62, 0.1);
-            border: 1px solid var(--red-demon);
-            color: var(--red-demon);
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 0.85rem;
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            cursor: pointer;
         }
 
-        /* Video Container (Proporzione 16:9) */
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
-            border-radius: 6px;
-            overflow: hidden;
+        .toggle-btn.active {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
             border: 1px solid var(--panel-border);
-            margin-bottom: 2rem;
+        }
+
+        /* Lista di Card dei Livelli */
+        .levels-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .level-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .level-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .level-thumbnail-container {
+            position: relative;
+            width: 180px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
             background-color: #000;
         }
 
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .level-thumbnail {
             width: 100%;
             height: 100%;
-            border: 0;
+            object-fit: cover;
+            opacity: 0.85;
         }
 
-        /* Griglia delle Informazioni Tecniche */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .info-box {
-            background-color: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 1.25rem;
-            text-align: center;
-        }
-
-        .info-label {
-            font-size: 0.8rem;
+        .badge-new {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background-color: var(--accent-orange);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
         }
 
-        .info-value {
+        .level-details-main {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .level-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .level-rank-num {
+            color: var(--accent-blue);
+        }
+
+        .level-name-txt {
+            color: var(--text-primary);
+        }
+
+        .level-meta-row {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .level-meta-row span.verifier {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .level-meta-row span.points-val {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        /* Vista 2: Stats Viewer */
+        .stats-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .stats-sidebar {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stats-dropdown-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .players-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+
+        .player-item:hover, .player-item.active {
+            border-color: var(--accent-blue);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .player-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-item-rank {
+            color: var(--accent-blue);
+            font-weight: 700;
+            font-size: 0.9rem;
+            min-width: 24px;
+        }
+
+        .player-item-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .player-item-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-item-score {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .flag-icon {
+            font-size: 1.1rem;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .page-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            flex: 1;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: var(--panel-border);
+            color: var(--text-primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Pannello Dettaglio Giocatore */
+        .player-detail-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .player-detail-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .player-detail-flag-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .player-detail-flag {
+            font-size: 2.8rem;
+            line-height: 1;
+        }
+
+        .player-detail-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background-color: var(--accent-orange);
+            color: white;
+            border: 1px solid var(--panel-bg);
+            font-size: 0.55rem;
+            font-weight: 800;
+            padding: 1px 3px;
+            border-radius: 3px;
+        }
+
+        .player-detail-name {
+            font-size: 1.6rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-detail-name svg {
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .player-detail-name svg:hover {
+            color: var(--text-primary);
+        }
+
+        /* Stat Grid dei Giocatori */
+        .player-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .p-stat-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .p-stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .p-stat-icon.orange {
+            background-color: rgba(249, 115, 22, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .p-stat-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .p-stat-val {
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .p-stat-lbl {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hardest Level Banner */
+        .hardest-banner {
+            background-color: rgba(249, 115, 22, 0.05);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: 8px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+
+        .hardest-banner:hover {
+            background-color: rgba(249, 115, 22, 0.08);
+        }
+
+        .hardest-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hardest-icon {
+            color: var(--accent-orange);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .hardest-title-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hardest-lbl {
+            font-size: 0.75rem;
+            color: var(--accent-orange);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .hardest-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .hardest-right {
+            color: var(--text-secondary);
+        }
+
+        /* Sezione Griglia dei Tag */
+        .main-levels-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .box-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .box-title-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-primary);
         }
 
-        /* Sezione Record / Victor */
-        .records-section {
+        .box-title-left svg {
+            color: var(--accent-red);
+        }
+
+        .box-counter {
+            background-color: var(--panel-border);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .level-tag {
             background-color: var(--panel-bg);
             border: 1px solid var(--panel-border);
-            border-radius: 8px;
-            padding: 2rem;
-        }
-
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .records-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        .records-table th, .records-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--panel-border);
-        }
-
-        .records-table th {
             color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
-
-        .records-table tbody tr {
-            transition: background-color var(--transition-speed);
-        }
-
-        .records-table tbody tr:hover {
-            background-color: rgba(255, 255, 255, 0.01);
-        }
-
-        .record-proof-link {
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .record-proof-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Sezione Pulsanti Submitter */
-        .submit-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 1.5rem;
-        }
-
-        .submit-record-btn {
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-            padding: 10px 20px;
+            padding: 6px 12px;
             border-radius: 6px;
+            font-size: 0.8rem;
             font-weight: 600;
-            font-size: 0.9rem;
             cursor: pointer;
-            transition: opacity var(--transition-speed);
+            transition: color 0.15s, border-color 0.15s;
         }
 
-        .submit-record-btn:hover {
-            opacity: 0.9;
+        .level-tag:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
         }
 
         /* Responsività */
-        @media (max-width: 992px) {
-            .main-container {
+        @media (max-width: 900px) {
+            .stats-layout {
                 grid-template-columns: 1fr;
-                height: auto;
+            }
+
+            .app-container {
                 padding: 1rem;
             }
 
-            .list-sidebar {
-                height: 400px;
-            }
-
-            .navbar {
-                padding: 0 1rem;
-            }
-
-            .navbar-menu {
-                display: none; /* In produzione verrebbe sostituito da un menu hamburger */
+            .bg-decorations {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <header class="navbar">
-        <a href="#" class="navbar-brand">
-            <!-- Icona vettoriale di un demone geometrico -->
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L8 6H16L12 2Z" fill="url(#brand-grad)"/>
-                <path d="M4 10L2 14L5 15L4 10Z" fill="url(#brand-grad)"/>
-                <path d="M20 10L22 14L19 15L20 10Z" fill="url(#brand-grad)"/>
-                <rect x="5" y="8" width="14" height="11" rx="2" fill="url(#brand-grad)"/>
-                <path d="M8 12H10" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-                <path d="M14 12H16" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-                <path d="M9 16S10 17 12 17S15 16 15 16" stroke="#000" stroke-width="2"/>
-                <defs>
-                    <linearGradient id="brand-grad" x1="2" y1="2" x2="22" y2="19" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#ff6a00"/>
-                        <stop offset="100%" stop-color="#ee0979"/>
-                    </linearGradient>
-                </defs>
+    <!-- Decorazioni geometriche di sfondo -->
+    <div class="bg-decorations">
+        <!-- SVG Spikes Sinistro -->
+        <div class="decor-left">
+            <svg viewBox="0 0 100 100" fill="#1b2230" width="100%">
+                <polygon points="10,90 30,50 50,90"/>
+                <polygon points="40,90 65,40 90,90"/>
+                <polygon points="75,90 85,70 95,90"/>
+                <!-- Cubo iconico GD -->
+                <rect x="20" y="20" width="20" height="20" rx="3" stroke="#1b2230" stroke-width="3" fill="none" transform="rotate(15 30 30)"/>
             </svg>
-            <span>Zalixlist</span>
-        </a>
-        <nav>
-            <ul class="navbar-menu">
-                <li><a href="#" class="active">Lista Classica</a></li>
-                <li><a href="#">Lista Platformer</a></li>
-                <li><a href="#">Stats Viewer</a></li>
-                <li><a href="#">Linee Guida</a></li>
-                <li><a href="#">Invia Record</a></li>
-            </ul>
-        </nav>
+        </div>
+        <!-- SVG Trofeo Destro -->
+        <div class="decor-right">
+            <svg viewBox="0 0 100 100" fill="#1b2230" width="80%">
+                <path d="M30,20 L70,20 L70,45 C70,55 60,65 50,65 C40,65 30,55 30,45 Z"/>
+                <path d="M50,65 L50,80 L65,80 L65,85 L35,85 L35,80 L50,80 Z"/>
+                <path d="M20,25 C15,25 15,40 30,40 M80,25 C85,25 85,40 70,40" stroke="#1b2230" stroke-width="4" fill="none"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Barra di navigazione -->
+    <header class="navbar">
+        <div class="navbar-left">
+            <a href="#" class="navbar-brand">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <path d="M2 12h20" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                <span>ZALIXLIST</span>
+            </a>
+            <nav>
+                <ul class="navbar-menu">
+                    <li><a id="nav-classic" class="active" onclick="switchView('list')">Lists ▾</a></li>
+                    <li><a onclick="alert('Funzionalità non abilitata per questa demo.')">More ▾</a></li>
+                    <li><a onclick="switchView('stats')">Stats Viewer</a></li>
+                    <li><a onclick="alert('I canali social verranno inseriti a breve.')">Our social ▾</a></li>
+                    <li><a>🌐 ▾</a></li>
+                </ul>
+            </nav>
+        </div>
         <div class="navbar-right">
-            <a href="#" class="discord-btn">Discord</a>
+            <button class="nav-icon-btn">☀️</button>
+            <button class="nav-icon-btn">🔔</button>
+            <a class="user-profile">
+                <div class="user-avatar">Z</div>
+                <span>zZalix</span>
+            </a>
+            <button class="nav-icon-btn">🚪</button>
         </div>
     </header>
 
-    <!-- Main Container Grid -->
-    <main class="main-container">
+    <main class="app-container">
 
-        <!-- Sidebar Sinistra: Lista Demoni -->
-        <aside class="list-sidebar">
-            <div class="sidebar-header">
-                <div class="search-container">
-                    <input type="text" class="search-input" id="search-input" placeholder="Cerca livello o ID...">
+        <!-- VISTA 1: LISTA CLASSICA (LIST) -->
+        <section id="view-list" class="view-section active">
+            <!-- Barra di ricerca e filtri superiore -->
+            <div class="filter-bar">
+                <button class="filter-btn-blue">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="4" y1="21" x2="4" y2="14"/>
+                        <line x1="4" y1="10" x2="4" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12" y2="3"/>
+                        <line x1="20" y1="21" x2="20" y2="16"/>
+                        <line x1="20" y1="12" x2="20" y2="3"/>
+                        <line x1="1" y1="14" x2="7" y2="14"/>
+                        <line x1="9" y1="8" x2="15" y2="8"/>
+                        <line x1="17" y1="16" x2="23" y2="16"/>
+                    </svg>
+                </button>
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="level-search" class="main-search-input" placeholder="Search...">
+                </div>
+                <div class="view-toggles">
+                    <button class="toggle-btn active">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="8" y1="6" x2="21" y2="6"/>
+                            <line x1="8" y1="12" x2="21" y2="12"/>
+                            <line x1="8" y1="18" x2="21" y2="18"/>
+                            <line x1="3" y1="6" x2="3.01" y2="6"/>
+                            <line x1="3" y1="12" x2="3.01" y2="12"/>
+                            <line x1="3" y1="18" x2="3.01" y2="18"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-btn" onclick="alert('Visualizzazione a griglia non implementata.')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
-            <ul class="sidebar-list" id="levels-list-container">
-                <!-- I livelli verranno iniettati dinamicamente dal JavaScript -->
-            </ul>
-        </aside>
 
-        <!-- Sezione Destra: Dettagli del Demone Selezionato -->
-        <section class="content-panel" id="detail-panel">
-            <!-- Il contenuto verrà iniettato dinamicamente in base alla selezione -->
+            <!-- Contenitore delle Card dei Livelli -->
+            <div class="levels-grid" id="levels-container">
+                <!-- Generato tramite JavaScript -->
+            </div>
+        </section>
+
+        <!-- VISTA 2: STATS VIEWER (STATS) -->
+        <section id="view-stats" class="view-section">
+            <div class="stats-layout">
+                
+                <!-- Sidebar sinistra giocatori -->
+                <div class="stats-sidebar">
+                    <button class="stats-dropdown-btn">
+                        <span>All countries</span>
+                        <span>▾</span>
+                    </button>
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="player-search" class="main-search-input" style="height: 38px;" placeholder="Search...">
+                    </div>
+                    
+                    <ul class="players-list" id="players-list-container">
+                        <!-- Generato tramite JavaScript -->
+                    </ul>
+
+                    <div class="pagination-container">
+                        <button class="page-btn" disabled>&lt; Previous</button>
+                        <button class="page-btn" disabled>Next &gt;</button>
+                    </div>
+                </div>
+
+                <!-- Pannello dettagli giocatore a destra -->
+                <div class="player-detail-panel" id="player-detail-container">
+                    <!-- Generato tramite JavaScript -->
+                </div>
+
+            </div>
         </section>
 
     </main>
 
-    <!-- Logica di replica dati e interazione di demonlist.org -->
     <script>
-        // Dati fittizi ma storicamente coerenti presi dalla top demon list globale reale
-        const levelsData = [
+        // Database locale simulato per la Demo (esattamente corrispondente alla lista reale mostrata)
+        const levels = [
             {
                 rank: 1,
                 name: "Society",
                 creator: "Neomarbilan",
                 verifier: "wPopoff",
-                publisher: "Neomarbilan",
-                levelId: "110593411",
-                objects: "184,591",
-                difficulty: "Extreme Demon",
-                points: "250.0",
-                youtubeId: "vB-Wd9g_yD0", // ID di esempio per embed
-                victors: [
-                    { name: "wPopoff", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "Zoink", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "Trick", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" }
-                ]
+                pointsMin: "250.00",
+                pointsMax: "1000.00",
+                isNew: true,
+                thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop" // Estetica astratta scura
             },
             {
                 rank: 2,
                 name: "Thinking Space II",
-                creator: "CairoX & DrCuber",
+                creator: "CairoX",
                 verifier: "Zoink",
-                publisher: "CairoX",
-                levelId: "108342119",
-                objects: "152,440",
-                difficulty: "Extreme Demon",
-                points: "244.5",
-                youtubeId: "say-20FmK_Y",
-                victors: [
-                    { name: "Zoink", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "Doggie", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "wPopoff", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" }
-                ]
+                pointsMin: "240.00",
+                pointsMax: "960.00",
+                isNew: false,
+                thumbnail: "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=300&auto=format&fit=crop" // Spazio/Nebulosa
             },
             {
                 rank: 3,
-                name: "Flamewall",
-                creator: "Narwall",
-                verifier: "Cuatrocientos",
-                publisher: "Narwall",
-                levelId: "105312389",
-                objects: "281,004",
-                difficulty: "Extreme Demon",
-                points: "239.0",
-                youtubeId: "bOWeG9283ka",
-                victors: [
-                    { name: "Cuatrocientos", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "Trick", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" }
-                ]
-            },
-            {
-                rank: 4,
                 name: "Amethyst",
                 creator: "iMist",
                 verifier: "wPopoff",
-                publisher: "iMist",
-                levelId: "98745612",
-                objects: "112,045",
-                difficulty: "Extreme Demon",
-                points: "233.5",
-                youtubeId: "dQw4w9WgXcQ",
-                victors: [
-                    { name: "wPopoff", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "Zoink", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" }
-                ]
+                pointsMin: "230.00",
+                pointsMax: "920.00",
+                isNew: false,
+                thumbnail: "https://images.unsplash.com/photo-1618005198143-d3668f9a239b?q=80&w=300&auto=format&fit=crop" // Viola/Ametista
+            },
+            {
+                rank: 4,
+                name: "Flamewall",
+                creator: "UNarwall",
+                verifier: "CuatrocientosYT",
+                pointsMin: "220.00",
+                pointsMax: "880.00",
+                isNew: false,
+                thumbnail: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?q=80&w=300&auto=format&fit=crop" // Fuoco/Arancione
             },
             {
                 rank: 5,
                 name: "Tidal Wave",
                 creator: "OniLink",
                 verifier: "Zoink",
-                publisher: "OniLink",
-                levelId: "93485012",
-                objects: "138,409",
-                difficulty: "Extreme Demon",
-                points: "228.0",
-                youtubeId: "uOOn4W0rKeQ",
-                victors: [
-                    { name: "Zoink", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "wPopoff", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "Trick", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "Doggie", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" }
-                ]
-            },
-            {
-                rank: 6,
-                name: "ORBIT",
-                creator: "MindCap",
-                verifier: "Trick",
-                publisher: "MindCap",
-                levelId: "112440938",
-                objects: "198,321",
-                difficulty: "Extreme Demon",
-                points: "222.5",
-                youtubeId: "say-ORBIT",
-                victors: [
-                    { name: "Trick", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" }
-                ]
-            },
-            {
-                rank: 7,
-                name: "Nullscapes",
-                creator: "Kiba",
-                verifier: "Zoink",
-                publisher: "Kiba",
-                levelId: "109841294",
-                objects: "245,112",
-                difficulty: "Extreme Demon",
-                points: "217.0",
-                youtubeId: "say-Nullscapes",
-                victors: [
-                    { name: "Zoink", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "wPopoff", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" }
-                ]
-            },
-            {
-                rank: 8,
-                name: "Quanteuse processing",
-                creator: "Renn241",
-                verifier: "Renn241",
-                publisher: "Renn241",
-                levelId: "107321456",
-                objects: "94,152",
-                difficulty: "Extreme Demon",
-                points: "211.5",
-                youtubeId: "say-Quanteuse",
-                victors: []
-            },
-            {
-                rank: 9,
-                name: "BOOBAWAMBA",
-                creator: "Akunakunn",
-                verifier: "Akunakunn",
-                publisher: "Akunakunn",
-                levelId: "102345678",
-                objects: "85,400",
-                difficulty: "Extreme Demon",
-                points: "206.0",
-                youtubeId: "say-Booba",
-                victors: []
-            },
-            {
-                rank: 10,
-                name: "Every End",
-                creator: "MindCap",
-                verifier: "Zoink",
-                publisher: "MindCap",
-                levelId: "95123456",
-                objects: "165,000",
-                difficulty: "Extreme Demon",
-                points: "200.5",
-                youtubeId: "say-EveryEnd",
-                victors: [
-                    { name: "Zoink", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" },
-                    { name: "Trick", progress: "100%", proofUrl: "https://youtube.com", hz: "360Hz" }
-                ]
+                pointsMin: "210.00",
+                pointsMax: "840.00",
+                isNew: false,
+                thumbnail: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?q=80&w=300&auto=format&fit=crop" // Acqua/Oceano
             }
         ];
 
-        let selectedLevelIndex = 0;
+        const players = [
+            {
+                rank: 1,
+                name: "Zoink",
+                score: "20921.29",
+                flag: "🇺🇸",
+                hardest: "Thinking Space II",
+                completed: ["Thinking Space II", "Amethyst", "Flamewall", "Tidal Wave", "ORBIT", "Nullscapes", "BOOBAWAMBA", "Quanteuse processing", "Every End", "Subsuming Vortex", "Silent clubstep", "Ashley Wave Trials", "andromeda", "Anathema", "Avernus", "Spectre", "Menace", "Abyss of Darkness", "Acheron", "Defeated Circles", "Tunnel of Despair", "Kyouki", "Subterminal Point", "Slaughterhouse", "Deimos", "KOCMOC", "The Lightning Rod", "KOSETSU", "Eyes in the Water", "Firework", "Sakupen Circles", "Silentlocked", "Through The Gates", "poocubed", "Saul Goodman", "MINUSdry", "Apocalyptic Trilogy", "Deadlier Clubstep", "The Hallucination", "Sevvend Clubstep", "COMBUSTION"]
+            },
+            {
+                rank: 2,
+                name: "wPopoff",
+                score: "18571.81",
+                flag: "🇺🇸",
+                hardest: "Society",
+                completed: ["Society", "Amethyst", "Flamewall", "Tidal Wave", "Nullscapes", "Every End", "Acheron", "Slaughterhouse", "KOCMOC", "Firework", "Sakupen Circles"]
+            },
+            {
+                rank: 3,
+                name: "Netermind",
+                score: "13192.90",
+                flag: "🇺🇸",
+                hardest: "Amethyst",
+                completed: ["Amethyst", "Flamewall", "Tidal Wave", "ORBIT", "Kyouki", "Slaughterhouse"]
+            },
+            {
+                rank: 4,
+                name: "Trick",
+                score: "11405.02",
+                flag: "🇺🇸",
+                hardest: "Tidal Wave",
+                completed: ["Tidal Wave", "ORBIT", "Nullscapes", "Every End", "Avernus", "Acheron"]
+            },
+            {
+                rank: 5,
+                name: "zLevii",
+                score: "10198.14",
+                flag: "🇦🇺",
+                hardest: "Flamewall",
+                completed: ["Flamewall", "Tidal Wave", "Every End", "KOCMOC", "Firework"]
+            }
+        ];
 
-        // Riferimenti DOM
-        const sidebarContainer = document.getElementById('levels-list-container');
-        const detailPanel = document.getElementById('detail-panel');
-        const searchInput = document.getElementById('search-input');
+        let activePlayerIndex = 0;
 
-        // Render della lista a sinistra
-        function renderSidebar(filteredLevels = levelsData) {
-            sidebarContainer.innerHTML = '';
-            filteredLevels.forEach((level) => {
-                const li = document.createElement('li');
-                li.className = `level-item ${level.rank - 1 === selectedLevelIndex ? 'active' : ''}`;
-                li.innerHTML = `
-                    <div class="level-rank">#${level.rank}</div>
-                    <div class="level-info-meta">
-                        <span class="level-name">${level.name}</span>
-                        <span class="level-creator">di ${level.creator}</span>
+        // Gestore per cambiare vista (SPA)
+        function switchView(viewName) {
+            // Rimuovi classe active da tutte le sezioni
+            document.querySelectorAll('.view-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Rimuovi classe active dai link della navbar
+            document.querySelectorAll('.navbar-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            if (viewName === 'list') {
+                document.getElementById('view-list').classList.add('active');
+                document.getElementById('nav-classic').classList.add('active');
+            } else if (viewName === 'stats') {
+                document.getElementById('view-stats').classList.add('active');
+                renderPlayersList();
+                renderPlayerDetail();
+            }
+        }
+
+        // --- GESTIONE LISTA CLASSICA ---
+        const levelsContainer = document.getElementById('levels-container');
+        const levelSearchInput = document.getElementById('level-search');
+
+        function renderLevels(filteredLevels = levels) {
+            levelsContainer.innerHTML = '';
+            if (filteredLevels.length === 0) {
+                levelsContainer.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Nessun livello trovato.</p>`;
+                return;
+            }
+
+            filteredLevels.forEach(level => {
+                const card = document.createElement('div');
+                card.className = 'level-card';
+                card.innerHTML = `
+                    <div class="level-thumbnail-container">
+                        ${level.isNew ? '<span class="badge-new">New</span>' : ''}
+                        <img class="level-thumbnail" src="${level.thumbnail}" alt="${level.name}">
+                    </div>
+                    <div class="level-details-main">
+                        <div class="level-title-row">
+                            <span class="level-rank-num">#${level.rank}</span>
+                            <span class="level-name-txt">${level.name}</span>
+                        </div>
+                        <div class="level-meta-row">
+                            ${level.creator} | <span class="verifier">${level.verifier}</span> · ${level.pointsMin} — <span class="points-val">${level.pointsMax}</span> points
+                        </div>
                     </div>
                 `;
-                li.addEventListener('click', () => {
-                    // Trova l'indice corretto basato sul livello globale
-                    selectedLevelIndex = level.rank - 1;
-                    renderSidebar(filteredLevels);
-                    renderDetailCard();
-                });
-                sidebarContainer.appendChild(li);
+                levelsContainer.appendChild(card);
             });
         }
 
-        // Render della scheda dettagliata
-        function renderDetailCard() {
-            const level = levelsData[selectedLevelIndex];
-            if (!level) return;
+        // Ricerca livelli in tempo reale
+        levelSearchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const filtered = levels.filter(lvl => 
+                lvl.name.toLowerCase().includes(query) || 
+                lvl.creator.toLowerCase().includes(query) || 
+                lvl.verifier.toLowerCase().includes(query)
+            );
+            renderLevels(filtered);
+        });
 
-            // Generazione della tabella dei victors/record
-            let victorsHtml = '';
-            if (level.victors.length > 0) {
-                victorsHtml = `
-                    <table class="records-table">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Progresso</th>
-                                <th>Frequenza</th>
-                                <th>Prova Video</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${level.victors.map(v => `
-                                <tr>
-                                    <td style="font-weight: 600;">${v.name}</td>
-                                    <td>${v.progress}</td>
-                                    <td style="color: var(--text-secondary);">${v.hz}</td>
-                                    <td><a href="${v.proofUrl}" class="record-proof-link" target="_blank">Guarda</a></td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
+
+        // --- GESTIONE STATS VIEWER ---
+        const playersListContainer = document.getElementById('players-list-container');
+        const playerDetailContainer = document.getElementById('player-detail-container');
+        const playerSearchInput = document.getElementById('player-search');
+
+        function renderPlayersList(filteredPlayers = players) {
+            playersListContainer.innerHTML = '';
+            filteredPlayers.forEach((player, index) => {
+                // Troviamo l'indice reale globale del giocatore per poterlo attivare
+                const globalIndex = players.findIndex(p => p.name === player.name);
+                
+                const li = document.createElement('li');
+                li.className = `player-item ${globalIndex === activePlayerIndex ? 'active' : ''}`;
+                li.innerHTML = `
+                    <div class="player-item-left">
+                        <span class="player-item-rank">#${player.rank}</span>
+                        <span class="player-item-name">${player.name}</span>
+                    </div>
+                    <div class="player-item-right">
+                        <span class="player-item-score">${parseFloat(player.score).toFixed(2)}</span>
+                        <span class="flag-icon">${player.flag}</span>
+                    </div>
                 `;
-            } else {
-                victorsHtml = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem 0;">Nessun record registrato per questo livello.</p>`;
-            }
+                li.addEventListener('click', () => {
+                    activePlayerIndex = globalIndex;
+                    renderPlayersList(filteredPlayers);
+                    renderPlayerDetail();
+                });
+                playersListContainer.appendChild(li);
+            });
+        }
 
-            detailPanel.innerHTML = `
-                <div class="detail-card">
-                    <div class="detail-header">
-                        <div class="detail-title">
-                            <h1>${level.name}</h1>
-                            <p class="detail-subtitle">Sviluppato da <span>${level.creator}</span> e verificato da <span>${level.verifier}</span></p>
-                        </div>
-                        <div class="demon-badge">
-                            <!-- Icona demone in SVG -->
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 2L9 6H15L12 2Z" fill="currentColor"/>
-                                <circle cx="8" cy="13" r="1.5" fill="#000"/>
-                                <circle cx="16" cy="13" r="1.5" fill="#000"/>
-                                <path d="M10 17C10 17 11 18 12 18C13 18 14 17 14 17" stroke="#000" stroke-linecap="round"/>
-                            </svg>
-                            ${level.difficulty}
+        function renderPlayerDetail() {
+            const player = players[activePlayerIndex];
+            if (!player) return;
+
+            playerDetailContainer.innerHTML = `
+                <div class="player-detail-header">
+                    <div class="player-detail-flag-wrapper">
+                        <span class="player-detail-flag">${player.flag}</span>
+                    </div>
+                    <h2 class="player-detail-name">
+                        ${player.name}
+                        <!-- Icona link esterno -->
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                            <polyline points="15 3 21 3 21 9"/>
+                            <line x1="10" y1="14" x2="21" y2="3"/>
+                        </svg>
+                    </h2>
+                </div>
+
+                <div class="player-stats-grid">
+                    <div class="p-stat-box">
+                        <div class="p-stat-icon">🏆</div>
+                        <div class="p-stat-details">
+                            <span class="p-stat-val">#${player.rank}</span>
+                            <span class="p-stat-lbl">Rank</span>
                         </div>
                     </div>
-
-                    <!-- Embed Video Player -->
-                    <div class="video-wrapper">
-                        <!-- Un player YouTube di esempio per simulare i video originali di Pointercrate -->
-                        <iframe src="https://www.youtube.com/embed/${level.youtubeId}" title="YouTube video player" allowfullscreen></iframe>
-                    </div>
-
-                    <!-- Box Dati Livello -->
-                    <div class="info-grid">
-                        <div class="info-box">
-                            <div class="info-label">ID Livello</div>
-                            <div class="info-value">${level.levelId}</div>
-                        </div>
-                        <div class="info-box">
-                            <div class="info-label">Oggetti</div>
-                            <div class="info-value">${level.objects}</div>
-                        </div>
-                        <div class="info-box">
-                            <div class="info-label">Punti Lista</div>
-                            <div class="info-value" style="color: var(--accent-color);">${level.points}</div>
-                        </div>
-                        <div class="info-box">
-                            <div class="info-label">Pubblicato</div>
-                            <div class="info-value" style="font-size: 0.95rem;">${level.publisher}</div>
+                    <div class="p-stat-box">
+                        <div class="p-stat-icon">✨</div>
+                        <div class="p-stat-details">
+                            <span class="p-stat-val">${player.score}</span>
+                            <span class="p-stat-lbl">Score</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Lista Victors -->
-                <div class="records-section">
-                    <div class="section-title">
-                        <span>Record Accettati (${level.victors.length})</span>
+                <div class="hardest-banner" onclick="alert('Navigazione verso: ${player.hardest}')">
+                    <div class="hardest-left">
+                        <span class="hardest-icon">🔥</span>
+                        <div class="hardest-title-group">
+                            <span class="hardest-lbl">Hardest level</span>
+                            <span class="hardest-name">${player.hardest}</span>
+                        </div>
                     </div>
-                    ${victorsHtml}
-                    <div class="submit-container">
-                        <button class="submit-record-btn" onclick="alert('Funzionalità di invio record non configurata su server locale.')">Invia Record</button>
+                    <span class="hardest-right">❯</span>
+                </div>
+
+                <div class="main-levels-box">
+                    <div class="box-title-row">
+                        <div class="box-title-left">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                            <span>Main levels</span>
+                        </div>
+                        <span class="box-counter">${player.completed.length}</span>
+                    </div>
+                    <div class="tags-container">
+                        ${player.completed.map(levelName => `
+                            <span class="level-tag" onclick="alert('Dettagli di: ${levelName}')">${levelName}</span>
+                        `).join('')}
                     </div>
                 </div>
             `;
         }
 
-        // Gestione Ricerca / Filtro
-        searchInput.addEventListener('input', (e) => {
+        // Ricerca giocatori in tempo reale nel pannello statistiche
+        playerSearchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
-            const filtered = levelsData.filter(level => 
-                level.name.toLowerCase().includes(query) || 
-                level.creator.toLowerCase().includes(query) || 
-                level.levelId.includes(query)
-            );
-            renderSidebar(filtered);
+            const filtered = players.filter(p => p.name.toLowerCase().includes(query));
+            renderPlayersList(filtered);
         });
 
-        // Avvio Iniziale della pagina
-        renderSidebar();
-        renderDetailCard();
+        // Avvio Iniziale
+        renderLevels();
     </script>
 </body>
 </html>
