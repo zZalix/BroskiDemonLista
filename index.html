@@ -126,6 +126,7 @@
             font-weight: 800;
             font-size: 1.25rem;
             letter-spacing: -0.5px;
+            cursor: pointer;
         }
 
         .navbar-brand svg {
@@ -136,6 +137,7 @@
             display: flex;
             gap: 20px;
             list-style: none;
+            align-items: center;
         }
 
         .navbar-menu a {
@@ -152,6 +154,45 @@
 
         .navbar-menu a:hover, .navbar-menu a.active {
             color: var(--text-primary);
+        }
+
+        /* TENDINA MENU (Dropdown) */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background-color: var(--navbar-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            list-style: none;
+            padding: 6px 0;
+            min-width: 170px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .dropdown-menu li a {
+            padding: 10px 16px;
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        .dropdown-menu li a:hover {
+            background-color: var(--panel-border);
+            color: var(--text-primary);
+        }
+
+        .dropdown.open .dropdown-menu {
+            display: flex;
         }
 
         .navbar-right {
@@ -291,6 +332,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
         .toggle-btn.active {
@@ -327,7 +369,7 @@
             background-color: var(--panel-border);
         }
 
-        /* MODALITÀ GRIGLIA A 4 COLONNE */
+        /* VISUALIZZAZIONE GRIGLIA A 4 COLONNE */
         .levels-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -388,7 +430,98 @@
             text-transform: uppercase;
         }
 
-        /* DETTAGLIO LIVELLO */
+        /* VISUALIZZAZIONE ELENCO (NORMAL VIEW) */
+        .levels-list-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .level-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .level-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .level-thumbnail-container {
+            position: relative;
+            width: 180px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background-color: #000;
+        }
+
+        .level-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+
+        .badge-new {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background-color: var(--accent-orange);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .level-details-main {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .level-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .level-rank-num {
+            color: var(--accent-blue);
+        }
+
+        .level-name-txt {
+            color: var(--text-primary);
+        }
+
+        .level-meta-row {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .level-meta-row span.verifier {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .level-meta-row span.points-val {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        /* DETTAGLIO LIVELLO SELEZIONATO */
         .detail-layout {
             max-width: 720px;
             margin: 0 auto;
@@ -476,7 +609,7 @@
             border: 0;
         }
 
-        /* Configurazione griglia asimmetrica per i dati del livello */
+        /* Griglia dati del livello */
         .stats-grid-row-1 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -596,7 +729,7 @@
             border-top: 1px solid var(--panel-border);
         }
 
-        /* Pannello dei Record */
+        /* Record */
         .records-container {
             background-color: var(--card-bg);
             border: 1px solid var(--panel-border);
@@ -663,7 +796,7 @@
             cursor: not-allowed;
         }
 
-        /* VISTA STATS VIEWER */
+        /* STATS VIEWER */
         .stats-layout {
             display: grid;
             grid-template-columns: 320px 1fr;
@@ -958,6 +1091,212 @@
             color: var(--text-primary);
         }
 
+
+        /* VISTA LEVEL ROULETTE (CON STILE ESTETICO DELLO SCREENSHOT) */
+        .roulette-layout {
+            max-width: 850px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .roulette-main-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-align: center;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .roulette-card {
+            background-color: #12141c;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 360px 1fr auto;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .roulette-video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--panel-border);
+        }
+
+        .roulette-video iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .roulette-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .roulette-rank {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        .roulette-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 2px;
+        }
+
+        .roulette-id {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .roulette-published {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        .roulette-published span {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .roulette-target-action {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .roulette-target-badge {
+            background-color: #191c26;
+            color: var(--text-secondary);
+            border: 1px solid var(--panel-border);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .roulette-done-btn {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 12px 36px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity var(--transition-speed);
+        }
+
+        .roulette-done-btn:hover {
+            opacity: 0.9;
+        }
+
+        .roulette-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .roulette-btn {
+            border: none;
+            padding: 10px 24px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .reset-btn {
+            background-color: #551515;
+            color: #fca5a5;
+        }
+
+        .menu-btn {
+            background-color: #191c26;
+            color: #ffffff;
+        }
+
+        .history-section {
+            margin-top: 20px;
+        }
+
+        .history-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .history-empty {
+            color: var(--text-secondary);
+            text-align: center;
+            font-style: italic;
+            font-size: 0.9rem;
+            padding: 20px 0;
+        }
+
+        .history-list {
+            background-color: #12141c;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 20px;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1a1e2a;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+
+        /* SISTEMA NOTIFICHE TOAST (NON INVASIVO, SENZA POPUP) */
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--accent-blue);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 9999;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .toast-notification.show {
+            transform: translateY(0);
+        }
+
         /* FOOTER REPLICA */
         .footer {
             background-color: var(--navbar-bg);
@@ -1051,7 +1390,22 @@
             color: var(--text-primary);
         }
 
-        /* Responsività */
+        /* Responsività livello Roulette */
+        @media (max-width: 800px) {
+            .roulette-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 16px;
+            }
+            .roulette-video {
+                max-width: 360px;
+                margin: 0 auto;
+            }
+            .roulette-target-action {
+                align-items: center;
+            }
+        }
+
         @media (max-width: 900px) {
             .levels-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -1113,9 +1467,16 @@
             <nav>
                 <ul class="navbar-menu">
                     <li><a id="nav-classic" class="active" onclick="switchView('grid')">Lists ▾</a></li>
-                    <li><a onclick="alert('Funzionalità More disabilitata.')">More ▾</a></li>
+                    <li class="dropdown" id="dropdown-menu-container">
+                        <a id="nav-more" onclick="toggleDropdown(event)">More ▾</a>
+                        <ul class="dropdown-menu" id="more-dropdown">
+                            <li><a onclick="switchView('roulette')">Level Roulette</a></li>
+                            <li><a onclick="triggerToast('Guidelines coming soon!')">Guidelines</a></li>
+                            <li><a onclick="triggerToast('Time Machine coming soon!')">Time Machine</a></li>
+                        </ul>
+                    </li>
                     <li><a id="nav-stats" onclick="switchView('stats')">Stats Viewer</a></li>
-                    <li><a onclick="alert('I canali social verranno inseriti a breve.')">Our social ▾</a></li>
+                    <li><a onclick="triggerToast('Social links coming soon!')">Our social ▾</a></li>
                     <li><a>🌐 ▾</a></li>
                 </ul>
             </nav>
@@ -1134,7 +1495,7 @@
     <!-- Contenuto Principale della pagina -->
     <main class="app-container">
 
-        <!-- VISTA 1: LA GRIGLIA COMPATTA DEI LIVELLI -->
+        <!-- VISTA 1: LA GRIGLIA COMPATTA O ELENCO DEI LIVELLI -->
         <section id="view-grid" class="view-section active">
             <div class="filter-bar">
                 <button class="filter-btn-blue">
@@ -1150,41 +1511,36 @@
                     <span class="search-icon">🔍</span>
                     <input type="text" id="level-search" class="main-search-input" placeholder="Search...">
                 </div>
+                <!-- Toggle visualizzazione standard vs griglia -->
                 <div class="view-toggles">
-                    <button class="toggle-btn" onclick="alert('Visualizzazione elenco non abilitata.')">
+                    <button class="toggle-btn" id="toggle-list" onclick="setDisplayMode('list')">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
                             <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
                         </svg>
                     </button>
-                    <button class="toggle-btn active">
+                    <button class="toggle-btn active" id="toggle-grid" onclick="setDisplayMode('grid')">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
                             <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
                         </svg>
                     </button>
-                    <button class="toggle-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                    </button>
                 </div>
             </div>
 
-            <!-- Intestazione Categoria (Dinamica in base all'array) -->
+            <!-- Intestazione Categoria -->
             <div class="category-header">
                 <span class="range" id="grid-range">#1 - #5</span>
                 <span class="title">Main List</span>
             </div>
 
-            <!-- Griglia interattiva dei livelli -->
-            <div class="levels-grid" id="levels-grid-container">
+            <!-- Griglia o Lista interattiva dei livelli -->
+            <div id="levels-display-container">
                 <!-- Generato tramite JavaScript -->
             </div>
         </section>
 
-        <!-- VISTA 2: DETTAGLIO LIVELLO SELEZIONATO (SCHERMATA CENTRALE) -->
+        <!-- VISTA 2: DETTAGLIO LIVELLO SELEZIONATO -->
         <section id="view-detail" class="view-section">
             <div class="detail-layout" id="level-detail-content">
                 <!-- Generato dinamicamente -->
@@ -1194,7 +1550,6 @@
         <!-- VISTA 3: STATS VIEWER -->
         <section id="view-stats" class="view-section">
             <div class="stats-layout">
-                <!-- Sidebar sinistra giocatori -->
                 <div class="stats-sidebar">
                     <button class="stats-dropdown-btn">
                         <span>All countries</span>
@@ -1212,16 +1567,41 @@
                         <button class="page-btn" disabled>Next &gt;</button>
                     </div>
                 </div>
-                <!-- Pannello dettagli giocatore a destra -->
                 <div class="player-detail-panel" id="player-detail-container">
                     <!-- Generato tramite JavaScript -->
                 </div>
             </div>
         </section>
 
+        <!-- VISTA 4: LEVEL ROULETTE (REPLICA PERFETTA DELLO SCREENSHOT) -->
+        <section id="view-roulette" class="view-section">
+            <div class="roulette-layout">
+                <h1 class="roulette-main-title">Current Level</h1>
+                
+                <div class="roulette-card" id="roulette-card-container">
+                    <!-- Generato tramite JavaScript -->
+                </div>
+
+                <div class="roulette-controls">
+                    <button class="roulette-btn reset-btn" onclick="resetRoulette()">Reset</button>
+                    <button class="roulette-btn menu-btn" onclick="switchView('grid')">Return to Menu</button>
+                </div>
+
+                <div class="history-section">
+                    <h2 class="history-title">Level History</h2>
+                    <div id="roulette-history-container">
+                        <!-- Cronologia generata tramite JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- FOOTER DI CODA -->
+    <!-- Componente Toast per messaggi non invasivi -->
+    <div class="toast-notification" id="toast-notify">Messaggio</div>
+
+    <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-main">
             <div class="footer-logo">
@@ -1247,103 +1627,35 @@
         </div>
     </footer>
 
-    <!-- Logica di Routing (SPA), Database e Interazione -->
     <script>
-        // ARRAY DI TEMPLATE DEI LIVELLI (Esattamente 5 elementi personalizzabili)
+        // Array dei 5 template dei livelli personalizzabili
         const levels = [
-            { 
-                rank: 1, 
-                name: "Template Level 1",      // Cambia il nome del livello
-                creator: "Creator Name",       // Cambia il creatore
-                verifier: "Verifier Name",     // Cambia il verificatore
-                pointsMin: "250.00",           // Punteggio minimo (es. record al 66%)
-                pointsMax: "1000.00",          // Punteggio massimo (100% completamento)
-                isNew: true,                   // Mostra il badge "NEW" in griglia (true/false)
-                id: "12345678",                // ID del livello in-game
-                password: "Free Copy",         // Password (es. "Free Copy" o numeri)
-                length: "2:15",                // Durata del livello
-                objects: "150,000",            // Numero di oggetti
-                version: "2.2",                // Versione del gioco
-                quote: "Enter your custom level quote here.", // Citazione/Sottotitolo
-                youtubeId: "dQw4w9WgXcQ"       // ID del video YouTube per l'iframe
-            },
-            { 
-                rank: 2, 
-                name: "Template Level 2", 
-                creator: "Creator Name", 
-                verifier: "Verifier Name", 
-                pointsMin: "240.00", 
-                pointsMax: "960.00", 
-                isNew: false, 
-                id: "23456789", 
-                password: "No copy", 
-                length: "1:58", 
-                objects: "120,440", 
-                version: "2.1", 
-                quote: "Second level custom description.", 
-                youtubeId: "dQw4w9WgXcQ" 
-            },
-            { 
-                rank: 3, 
-                name: "Template Level 3", 
-                creator: "Creator Name", 
-                verifier: "Verifier Name", 
-                pointsMin: "230.00", 
-                pointsMax: "920.00", 
-                isNew: false, 
-                id: "34567890", 
-                password: "Free Copy", 
-                length: "2:02", 
-                objects: "112,045", 
-                version: "2.1", 
-                quote: "Third level custom description.", 
-                youtubeId: "dQw4w9WgXcQ" 
-            },
-            { 
-                rank: 4, 
-                name: "Template Level 4", 
-                creator: "Creator Name", 
-                verifier: "Verifier Name", 
-                pointsMin: "220.00", 
-                pointsMax: "880.00", 
-                isNew: false, 
-                id: "45678901", 
-                password: "1234", 
-                length: "2:31", 
-                objects: "281,004", 
-                version: "2.2", 
-                quote: "Fourth level custom description.", 
-                youtubeId: "dQw4w9WgXcQ" 
-            },
-            { 
-                rank: 5, 
-                name: "Template Level 5", 
-                creator: "Creator Name", 
-                verifier: "Verifier Name", 
-                pointsMin: "210.00", 
-                pointsMax: "840.00", 
-                isNew: false, 
-                id: "56789012", 
-                password: "Free Copy", 
-                length: "2:45", 
-                objects: "138,409", 
-                version: "2.1", 
-                quote: "Fifth level custom description.", 
-                youtubeId: "dQw4w9WgXcQ" 
-            }
+            { rank: 1, name: "Template Level 1", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "250.00", pointsMax: "1000.00", isNew: true, id: "12345678", password: "Free Copy", length: "2:15", objects: "150,000", version: "2.2", quote: "This is the first level quote.", youtubeId: "dQw4w9WgXcQ" },
+            { rank: 2, name: "Template Level 2", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "240.00", pointsMax: "960.00", isNew: false, id: "23456789", password: "No copy", length: "1:58", objects: "120,440", version: "2.1", quote: "Second level custom description.", youtubeId: "dQw4w9WgXcQ" },
+            { rank: 3, name: "Template Level 3", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "230.00", pointsMax: "920.00", isNew: false, id: "34567890", password: "Free Copy", length: "2:02", objects: "112,045", version: "2.1", quote: "Third level custom description.", youtubeId: "dQw4w9WgXcQ" },
+            { rank: 4, name: "Template Level 4", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "220.00", pointsMax: "880.00", isNew: false, id: "45678901", password: "1234", length: "2:31", objects: "281,004", version: "2.2", quote: "Fourth level custom description.", youtubeId: "dQw4w9WgXcQ" },
+            { rank: 5, name: "Template Level 5", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "210.00", pointsMax: "840.00", isNew: false, id: "56789012", password: "Free Copy", length: "2:45", objects: "138,409", version: "2.1", quote: "Fifth level custom description.", youtubeId: "dQw4w9WgXcQ" }
         ];
 
-        // Database dei giocatori sincronizzato con i template qui sopra
         const players = [
-            { rank: 1, name: "Zoink", score: "20921.29", flag: "🇺🇸", hardest: "Template Level 1", completed: ["Template Level 1", "Template Level 2", "Template Level 3"] },
-            { rank: 2, name: "wPopoff", score: "18571.81", flag: "🇺🇸", hardest: "Template Level 1", completed: ["Template Level 1", "Template Level 3", "Template Level 4"] },
-            { rank: 3, name: "Netermind", score: "13192.90", flag: "🇺🇸", hardest: "Template Level 2", completed: ["Template Level 2", "Template Level 4", "Template Level 5"] }
+            { rank: 1, name: "Zoink", score: "20921.29", flag: "🇺🇸", hardest: "Template Level 1", completed: ["Template Level 1", "Template Level 2"] },
+            { rank: 2, name: "wPopoff", score: "18571.81", flag: "🇺🇸", hardest: "Template Level 1", completed: ["Template Level 1", "Template Level 3"] },
+            { rank: 3, name: "Netermind", score: "13192.90", flag: "🇺🇸", hardest: "Template Level 2", completed: ["Template Level 2", "Template Level 4"] }
         ];
 
         let activePlayerIndex = 0;
+        let displayMode = 'grid'; // 'grid' o 'list'
 
-        // Routing SPA (Single Page Application)
+        // Stato Level Roulette
+        let rouletteTarget = 1;
+        let rouletteHistory = [];
+        let currentRouletteLevel = null;
+
+        // Gestore Visualizzazione SPA
         function switchView(viewName, parameterId = null) {
+            // Chiudi il menu a tendina se aperto
+            document.getElementById('dropdown-menu-container').classList.remove('open');
+
             document.querySelectorAll('.view-section').forEach(section => {
                 section.classList.remove('active');
             });
@@ -1354,7 +1666,7 @@
             if (viewName === 'grid') {
                 document.getElementById('view-grid').classList.add('active');
                 document.getElementById('nav-classic').classList.add('active');
-                renderGrid();
+                renderDisplay();
             } else if (viewName === 'detail') {
                 document.getElementById('view-detail').classList.add('active');
                 renderDetail(parameterId);
@@ -1363,42 +1675,105 @@
                 document.getElementById('nav-stats').classList.add('active');
                 renderPlayersList();
                 renderPlayerDetail();
+            } else if (viewName === 'roulette') {
+                document.getElementById('view-roulette').classList.add('active');
+                initRoulette();
             }
         }
 
-        // --- SCHERMATA GRIGLIA ---
-        const gridContainer = document.getElementById('levels-grid-container');
+        // Gestore Toast (Sostituto non invasivo dei Popup)
+        function triggerToast(message) {
+            const toast = document.getElementById('toast-notify');
+            toast.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Gestore menu a tendina
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            document.getElementById('dropdown-menu-container').classList.toggle('open');
+        }
+
+        window.addEventListener('click', () => {
+            document.getElementById('dropdown-menu-container').classList.remove('open');
+        });
+
+        // --- SCHERMATA PRINCIPALE (LISTA / GRIGLIA) ---
+        const displayContainer = document.getElementById('levels-display-container');
         const gridRange = document.getElementById('grid-range');
         const searchInput = document.getElementById('level-search');
 
-        function renderGrid(filteredLevels = levels) {
-            // Aggiorna l'intervallo mostrato in base ai livelli reali caricati
-            gridRange.innerText = `#1 - #${levels.length}`;
-
-            gridContainer.innerHTML = '';
-            filteredLevels.forEach(lvl => {
-                const cell = document.createElement('div');
-                cell.className = 'grid-cell';
-                cell.innerHTML = `
-                    ${lvl.isNew ? '<span class="grid-badge-new">New</span>' : ''}
-                    <div class="grid-rank-box">${lvl.rank}</div>
-                    <div class="grid-name">${lvl.name}</div>
-                `;
-                cell.addEventListener('click', () => {
-                    switchView('detail', lvl.rank);
-                });
-                gridContainer.appendChild(cell);
-            });
+        function setDisplayMode(mode) {
+            displayMode = mode;
+            document.getElementById('toggle-list').classList.remove('active');
+            document.getElementById('toggle-grid').classList.remove('active');
+            if (mode === 'list') {
+                document.getElementById('toggle-list').classList.add('active');
+            } else {
+                document.getElementById('toggle-grid').classList.add('active');
+            }
+            renderDisplay();
         }
 
-        // Ricerca dei livelli
+        function renderDisplay(filteredLevels = levels) {
+            gridRange.innerText = `#1 - #${levels.length}`;
+            displayContainer.innerHTML = '';
+
+            if (displayMode === 'grid') {
+                // Visualizzazione Griglia
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'levels-grid';
+                filteredLevels.forEach(lvl => {
+                    const cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    cell.innerHTML = `
+                        ${lvl.isNew ? '<span class="grid-badge-new">New</span>' : ''}
+                        <div class="grid-rank-box">${lvl.rank}</div>
+                        <div class="grid-name">${lvl.name}</div>
+                    `;
+                    cell.addEventListener('click', () => switchView('detail', lvl.rank));
+                    gridDiv.appendChild(cell);
+                });
+                displayContainer.appendChild(gridDiv);
+            } else {
+                // Visualizzazione Elenco Standard
+                const listDiv = document.createElement('div');
+                listDiv.className = 'levels-list-vertical';
+                filteredLevels.forEach(lvl => {
+                    const card = document.createElement('div');
+                    card.className = 'level-card';
+                    card.innerHTML = `
+                        <div class="level-thumbnail-container">
+                            ${lvl.isNew ? '<span class="badge-new">New</span>' : ''}
+                            <img class="level-thumbnail" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop" alt="${lvl.name}">
+                        </div>
+                        <div class="level-details-main">
+                            <div class="level-title-row">
+                                <span class="level-rank-num">#${lvl.rank}</span>
+                                <span class="level-name-txt">${lvl.name}</span>
+                            </div>
+                            <div class="level-meta-row">
+                                ${lvl.creator} | <span class="verifier">${lvl.verifier}</span> · ${lvl.pointsMin} — <span class="points-val">${lvl.pointsMax}</span> points
+                            </div>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => switchView('detail', lvl.rank));
+                    listDiv.appendChild(card);
+                });
+                displayContainer.appendChild(listDiv);
+            }
+        }
+
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
             const filtered = levels.filter(lvl => lvl.name.toLowerCase().includes(query));
-            renderGrid(filtered);
+            renderDisplay(filtered);
         });
 
-        // --- SCHERMATA DI DETTAGLIO LIVELLO ---
+        // --- SCHERMATA DETTAGLIO ---
         const detailContent = document.getElementById('level-detail-content');
 
         function renderDetail(rankId) {
@@ -1406,40 +1781,21 @@
             if (!level) return;
 
             detailContent.innerHTML = `
-                <!-- Link per tornare indietro alla lista -->
                 <a class="back-link" onclick="switchView('grid')">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="19" y1="12" x2="5" y2="12"/>
-                        <polyline points="12 19 5 12 12 5"/>
+                        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
                     </svg>
                     Back to list
                 </a>
-
                 <div class="detail-top">
-                    <h1 class="detail-title-row">
-                        <span>#${level.rank}</span> ${level.name}
-                    </h1>
-                    <div class="detail-creator-row">
-                        created by <strong>${level.creator}</strong>
-                    </div>
+                    <h1 class="detail-title-row"><span>#${level.rank}</span> ${level.name}</h1>
+                    <div class="detail-creator-row">created by <strong>${level.creator}</strong></div>
                 </div>
-
-                <!-- Badge di Verifica -->
-                <div class="verified-badge">
-                    <span>✓ Verified by <strong>${level.verifier}</strong></span>
-                </div>
-
-                <!-- Quote citazione -->
-                <div class="detail-quote">
-                    // ${level.quote} //
-                </div>
-
-                <!-- Video Iframe -->
+                <div class="verified-badge"><span>✓ Verified by <strong>${level.verifier}</strong></span></div>
+                <div class="detail-quote">// ${level.quote} //</div>
                 <div class="detail-video-wrapper">
                     <iframe src="https://www.youtube.com/embed/${level.youtubeId}" title="YouTube video player" allowfullscreen></iframe>
                 </div>
-
-                <!-- Griglia dei Dati Tecnici -->
                 <div class="stats-grid-row-1">
                     <div class="stat-card" onclick="copyId('${level.id}', 'id-val')">
                         <span class="lbl">ID</span>
@@ -1451,51 +1807,37 @@
                         <span class="val">${level.password}</span>
                     </div>
                 </div>
-
                 <div class="stats-grid-row-2">
                     <div class="stat-card">
-                        <span class="lbl">Length</span>
-                        <span class="val">${level.length}</span>
+                        <span class="lbl">Length</span><span class="val">${level.length}</span>
                     </div>
                     <div class="stat-card">
-                        <span class="lbl">Objects</span>
-                        <span class="val">${level.objects}</span>
+                        <span class="lbl">Objects</span><span class="val">${level.objects}</span>
                     </div>
                     <div class="stat-card">
-                        <span class="lbl">Version</span>
-                        <span class="val">${level.version}</span>
+                        <span class="lbl">Version</span><span class="val">${level.version}</span>
                     </div>
                 </div>
-
                 <div class="stats-grid-row-3">
                     <div class="stat-card">
-                        <span class="lbl">Total Score (100%)</span>
-                        <span class="val" style="color: var(--accent-blue);">${level.pointsMax}</span>
+                        <span class="lbl">Total Score (100%)</span><span class="val" style="color: var(--accent-blue);">${level.pointsMax}</span>
                     </div>
                     <div class="stat-card">
-                        <span class="lbl">List Percent Score (66%)</span>
-                        <span class="val">${level.pointsMin}</span>
+                        <span class="lbl">List Percent Score (66%)</span><span class="val">${level.pointsMin}</span>
                     </div>
                 </div>
-
-                <!-- Pulsanti Azione -->
                 <div class="action-buttons-row">
-                    <a class="action-btn" onclick="alert('Riproduzione traccia audio non configurata.')">🎵 Song</a>
-                    <a class="action-btn" onclick="alert('Apertura su GD Browser non configurata.')">🔗 GD Browser</a>
+                    <a class="action-btn" onclick="triggerToast('Audio track is not configured')">🎵 Song</a>
+                    <a class="action-btn" onclick="triggerToast('GD Browser mirror is unavailable')">🔗 GD Browser</a>
                 </div>
-
-                <!-- Posizionamento Storico (Accordion) -->
                 <div class="position-history-accordion">
                     <div class="accordion-header" onclick="toggleAccordion()">
-                        <span>Position history</span>
-                        <span>▼</span>
+                        <span>Position history</span><span>▼</span>
                     </div>
                     <div class="accordion-content" id="accordion-body">
-                        Inserito al posto #${level.rank} della lista globale.
+                        Placed #${level.rank} on demonlist.
                     </div>
                 </div>
-
-                <!-- Pannello Record -->
                 <div class="records-container">
                     <div class="records-header">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1504,38 +1846,103 @@
                         <span>Records</span>
                     </div>
                     <div class="records-sub">0 records in total, 0 of which are 100%</div>
-                    
                     <div class="no-records-box">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
                         </svg>
                         No records yet
                     </div>
-
-                    <div class="records-pagination">
-                        <button class="records-page-btn" disabled>&lt; Previous</button>
-                        <button class="records-page-btn" disabled>Next &gt;</button>
-                    </div>
                 </div>
             `;
         }
 
-        // Funzione per copiare l'ID del livello
         function copyId(id, elementId) {
             navigator.clipboard.writeText(id).then(() => {
                 const el = document.getElementById(elementId);
-                const prevText = el.innerText;
                 el.innerText = "Copied!";
-                setTimeout(() => {
-                    el.innerText = prevText;
-                }, 1500);
+                setTimeout(() => { el.innerText = id; }, 1500);
             });
         }
 
-        // Funzione per l'Accordion
         function toggleAccordion() {
-            const content = document.getElementById('accordion-body');
-            content.classList.toggle('open');
+            document.getElementById('accordion-body').classList.toggle('open');
+        }
+
+        // --- LEVEL ROULETTE LOGIC ---
+        const rouletteCardContainer = document.getElementById('roulette-card-container');
+        const rouletteHistoryContainer = document.getElementById('roulette-history-container');
+
+        function initRoulette() {
+            if (!currentRouletteLevel) {
+                rollNextLevel();
+            }
+            renderRoulette();
+        }
+
+        function rollNextLevel() {
+            // Sceglie un livello a caso tra i 5 disponibili
+            const randomIndex = Math.floor(Math.random() * levels.length);
+            currentRouletteLevel = levels[randomIndex];
+        }
+
+        function renderRoulette() {
+            if (!currentRouletteLevel) return;
+
+            // Render della Card corrente
+            rouletteCardContainer.innerHTML = `
+                <div class="roulette-video">
+                    <iframe src="https://www.youtube.com/embed/${currentRouletteLevel.youtubeId}" allowfullscreen></iframe>
+                </div>
+                <div class="roulette-info">
+                    <div class="roulette-rank">#${currentRouletteLevel.rank}</div>
+                    <div class="roulette-name">${currentRouletteLevel.name}</div>
+                    <div class="roulette-id">(${currentRouletteLevel.id})</div>
+                    <div class="roulette-published">Published by:<br><span>${currentRouletteLevel.creator}</span></div>
+                </div>
+                <div class="roulette-target-action">
+                    <div class="roulette-target-badge">AT LEAST ${rouletteTarget}%</div>
+                    <button class="roulette-done-btn" onclick="completeStep()">Done</button>
+                </div>
+            `;
+
+            // Render della Cronologia
+            if (rouletteHistory.length === 0) {
+                rouletteHistoryContainer.innerHTML = `<div class="history-empty">No levels have been completed yet.</div>`;
+            } else {
+                rouletteHistoryContainer.innerHTML = `
+                    <ul class="history-list">
+                        ${rouletteHistory.map((h, i) => `
+                            <li class="history-item">
+                                <span><strong>${i + 1}.</strong> #${h.level.rank} ${h.level.name}</span>
+                                <span style="color: var(--accent-orange); font-weight: 700;">${h.percentage}%</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+            }
+        }
+
+        function completeStep() {
+            // Salva il livello superato
+            rouletteHistory.push({
+                level: currentRouletteLevel,
+                percentage: rouletteTarget
+            });
+
+            // Incrementa il target e seleziona il prossimo livello
+            rouletteTarget++;
+            rollNextLevel();
+            renderRoulette();
+            triggerToast(`Step completed! Target raised to ${rouletteTarget}%`);
+        }
+
+        function resetRoulette() {
+            rouletteTarget = 1;
+            rouletteHistory = [];
+            currentRouletteLevel = null;
+            rollNextLevel();
+            renderRoulette();
+            triggerToast("Roulette reset successful!");
         }
 
 
@@ -1546,7 +1953,7 @@
 
         function renderPlayersList(filteredPlayers = players) {
             playersListContainer.innerHTML = '';
-            filteredPlayers.forEach((player, index) => {
+            filteredPlayers.forEach((player) => {
                 const globalIndex = players.findIndex(p => p.name === player.name);
                 const li = document.createElement('li');
                 li.className = `player-item ${globalIndex === activePlayerIndex ? 'active' : ''}`;
@@ -1580,30 +1987,25 @@
                         ${player.name}
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                            <polyline points="15 3 21 3 21 9"/>
-                            <line x1="10" y1="14" x2="21" y2="3"/>
+                            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
                         </svg>
                     </h2>
                 </div>
-
                 <div class="player-stats-grid">
                     <div class="p-stat-box">
                         <div class="p-stat-icon">🏆</div>
                         <div class="p-stat-details">
-                            <span class="p-stat-val">#${player.rank}</span>
-                            <span class="p-stat-lbl">Rank</span>
+                            <span class="p-stat-val">#${player.rank}</span><span class="p-stat-lbl">Rank</span>
                         </div>
                     </div>
                     <div class="p-stat-box">
                         <div class="p-stat-icon">✨</div>
                         <div class="p-stat-details">
-                            <span class="p-stat-val">${player.score}</span>
-                            <span class="p-stat-lbl">Score</span>
+                            <span class="p-stat-val">${player.score}</span><span class="p-stat-lbl">Score</span>
                         </div>
                     </div>
                 </div>
-
-                <div class="hardest-banner" onclick="alert('Dettaglio livello: ${player.hardest}')">
+                <div class="hardest-banner" onclick="triggerToast('Selected hardest level detail')">
                     <div class="hardest-left">
                         <span class="hardest-icon">🔥</span>
                         <div class="hardest-title-group">
@@ -1613,7 +2015,6 @@
                     </div>
                     <span class="hardest-right">❯</span>
                 </div>
-
                 <div class="main-levels-box">
                     <div class="box-title-row">
                         <div class="box-title-left">
@@ -1626,7 +2027,7 @@
                     </div>
                     <div class="tags-container">
                         ${player.completed.map(levelName => `
-                            <span class="level-tag" onclick="alert('Informazioni su ${levelName}')">${levelName}</span>
+                            <span class="level-tag" onclick="triggerToast('Tags clicked: ${levelName}')">${levelName}</span>
                         `).join('')}
                     </div>
                 </div>
@@ -1639,8 +2040,8 @@
             renderPlayersList(filtered);
         });
 
-        // Avvio Iniziale
-        renderGrid();
+        // Caricamento Iniziale
+        renderDisplay();
     </script>
 </body>
 </html>
