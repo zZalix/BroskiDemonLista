@@ -115,8 +115,8 @@ const t = {
 
 // DATABASE LOCALE DEI LIVELLI (PRESENTE)
 const levels = [
-    { rank: 1, name: "Template Level 1", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "250.00", pointsMax: "1000.00", isNew: true, id: "12345678", password: "Free Copy", length: "2:15", objects: "150,000", version: "2.2", quote: "This is the first level quote.", youtubeId: "dQw4w9WgXcQ" },
-    { rank: 2, name: "Template Level 2", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "240.00", pointsMax: "960.00", isNew: false, id: "23456789", password: "No copy", length: "1:58", objects: "120,440", version: "2.1", quote: "Second level custom description.", youtubeId: "dQw4w9WgXcQ" },
+    { rank: 1, name: "Cataclysm", creator: "Ggb0y", verifier: "RIOT", pointsMin: "45", pointsMax: "45", isNew: true, id: "3979721", password: "Free Copy", length: "1:27", objects: "15.216", version: "2.2", quote: "Ex Top1", youtubeId: "W7XM0ExJD4c" },
+    { rank: 2, name: "Nine Circles", creator: "Zobros", verifier: "Zobros", pointsMin: "20", pointsMax: "20", isNew: false, id: "4284013", password: "Free copy", length: "1:32", objects: "14.894", version: "2.2", quote: "Zalix died at 85% 5 times", youtubeId: "dOdPoU1ncOc" },
     { rank: 3, name: "Template Level 3", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "230.00", pointsMax: "920.00", isNew: false, id: "34567890", password: "Free Copy", length: "2:02", objects: "112,045", version: "2.1", quote: "Third level custom description.", youtubeId: "dQw4w9WgXcQ" },
     { rank: 4, name: "Template Level 4", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "220.00", pointsMax: "880.00", isNew: false, id: "45678901", password: "1234", length: "2:31", objects: "281,004", version: "2.2", quote: "Fourth level custom description.", youtubeId: "dQw4w9WgXcQ" },
     { rank: 5, name: "Template Level 5", creator: "Creator Name", verifier: "Verifier Name", pointsMin: "210.00", pointsMax: "840.00", isNew: false, id: "56789012", password: "Free Copy", length: "2:45", objects: "138,409", version: "2.1", quote: "Fifth level custom description.", youtubeId: "dQw4w9WgXcQ" }
@@ -124,7 +124,7 @@ const levels = [
 
 // DATABASE DEI LIVELLI (FUTURA)
 const futuraLevels = [
-    { rank: 1, name: "Futura Level 1", creator: "Creatore Futuro", verifier: "Verificatore Futuro", pointsMin: "300.00", pointsMax: "1200.00", isNew: true, id: "99999999", password: "Free Copy", length: "2:00", objects: "90,000", version: "2.2", quote: "Questo è un livello futuro sbloccato modificando la configurazione.", youtubeId: "dQw4w9WgXcQ" }
+    { rank: 1, name: "Shitty GRIEF", creator: "zZalix", verifier: "zZalix", pointsMin: "500", pointsMax: "500", isNew: true, id: "not verified yet", password: "WONT TELL", length: "2:52", objects: "250.000+", version: "2.2", quote: "Giuro che non andrò in Grief", youtubeId: "rGImWWngaBE" }
 ];
 
 // DATABASE DEI GIOCATORI (CON LA TUA STRUTTURA ESATTA)
