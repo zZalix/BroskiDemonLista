@@ -127,76 +127,41 @@ const futuraLevels = [
     { rank: 1, name: "Futura Level 1", creator: "Creatore Futuro", verifier: "Verificatore Futuro", pointsMin: "300.00", pointsMax: "1200.00", isNew: true, id: "99999999", password: "Free Copy", length: "2:00", objects: "90,000", version: "2.2", quote: "Questo è un livello futuro sbloccato modificando la configurazione.", youtubeId: "dQw4w9WgXcQ" }
 ];
 
-// DATABASE DEI GIOCATORI AGGIORNATO CON I TUOI DATI REALI
-const players = [
+// DATABASE DEI GIOCATORI (CON LA TUA STRUTTURA ESATTA)
+const playersData = [
     { 
-        rank: 1, 
-        name: 'zZalix', 
-        score: '525', 
-        flag: '🇮🇹', 
-        state: 'ITALY',
-        hardest: 'Cataclysm', 
-        hz: '144hz',
+        rank: 1, flagText: 'IT', name: 'zZalix', score: '525', state: 'ITALY',
+        hardest: { demon: 'Cataclysm', hz: '144hz' },
         completed: ['Cataclysm', 'Template Level 1', 'Template Level 2'] 
     },
     { 
-        rank: 2, 
-        name: 'robZeph', 
-        score: '185', 
-        flag: '🇮🇹', 
-        state: 'ITALY',
-        hardest: 'tower descent', 
-        hz: '360hz',
+        rank: 2, flagText: 'IT', name: 'robZeph', score: '185', state: 'ITALY',
+        hardest: { demon: 'tower descent', hz: '360hz' },
         completed: ['tower descent', 'Template Level 3'] 
     },
     { 
-        rank: 3, 
-        name: 'klockish', 
-        score: '125', 
-        flag: '🇮🇹', 
-        state: 'ITALY',
-        hardest: 'B', 
-        hz: '240hz',
+        rank: 3, flagText: 'IT', name: 'klockish', score: '125', state: 'ITALY',
+        hardest: { demon: 'B', hz: '240hz' },
         completed: ['B', 'Template Level 4'] 
     },
     { 
-        rank: 4, 
-        name: 'mainsciamn', 
-        score: '85', 
-        flag: '🇮🇹', 
-        state: 'ITALY',
-        hardest: 'B', 
-        hz: '160hz',
+        rank: 4, flagText: 'IT', name: 'mainsciamn', score: '85', state: 'ITALY',
+        hardest: { demon: 'B', hz: '160hz' },
         completed: ['B', 'Template Level 5'] 
     },
     { 
-        rank: 5, 
-        name: 'zleemm', 
-        score: '80', 
-        flag: '🇮🇹', 
-        state: 'ITALY',
-        hardest: 'FlashBang', 
-        hz: '144hz',
+        rank: 5, flagText: 'IT', name: 'zleemm', score: '80', state: 'ITALY',
+        hardest: { demon: 'FlashBang', hz: '144hz' },
         completed: ['FlashBang'] 
     },
     { 
-        rank: 6, 
-        name: 'UniversoMC', 
-        score: '75', 
-        flag: '🇮🇹', 
-        state: 'ITALY',
-        hardest: 'Skeletal Shenanigans', 
-        hz: '165hz',
+        rank: 6, flagText: 'IT', name: 'UniversoMC', score: '75', state: 'ITALY',
+        hardest: { demon: 'Skeletal Shenanigans', hz: '165hz' },
         completed: ['Skeletal Shenanigans'] 
     },
     { 
-        rank: 7, 
-        name: 'b0bX2', 
-        score: '30', 
-        flag: '🇮🇹', 
-        state: 'ITALY',
-        hardest: 'FlashBang', 
-        hz: '360hz',
+        rank: 7, flagText: 'IT', name: 'b0bX2', score: '30', state: 'ITALY',
+        hardest: { demon: 'FlashBang', hz: '360hz' },
         completed: ['FlashBang'] 
     }
 ];
@@ -210,6 +175,13 @@ let activeLevelRank = null; // Memorizza l'ultimo livello aperto per le traduzio
 let rouletteTarget = 1;
 let rouletteHistory = [];
 let currentRouletteLevel = null;
+
+// Helper per mostrare l'emoji della bandiera corretta in base al flagText
+function getFlagDisplay(flagText) {
+    if (flagText === 'IT') return '🇮🇹';
+    if (flagText === 'US') return '🇺🇸';
+    return flagText; // Se è già un'emoji o un altro codice
+}
 
 // Reindirizza al dettaglio di un livello cercandolo per nome
 function goToLevelByName(levelName) {
@@ -636,15 +608,15 @@ function resetRoulette() {
     triggerToast(t[currentLang].rouletteResettata);
 }
 
-// --- STATS VIEWER ---
+// --- STATS VIEWER (CLASSIFICA GIOCATORI) ---
 const playersListContainer = document.getElementById('players-list-container');
 const playerDetailContainer = document.getElementById('player-detail-container');
 const playerSearchInput = document.getElementById('player-search');
 
-function renderPlayersList(filteredPlayers = players) {
+function renderPlayersList(filteredPlayers = playersData) {
     playersListContainer.innerHTML = '';
     filteredPlayers.forEach((player) => {
-        const globalIndex = players.findIndex(p => p.name === player.name);
+        const globalIndex = playersData.findIndex(p => p.name === player.name);
         const li = document.createElement('li');
         li.className = `player-item ${globalIndex === activePlayerIndex ? 'active' : ''}`;
         li.innerHTML = `
@@ -654,7 +626,7 @@ function renderPlayersList(filteredPlayers = players) {
             </div>
             <div class="player-item-right">
                 <span class="player-item-score">${parseFloat(player.score).toFixed(2)}</span>
-                <span class="flag-icon">${player.flag}</span>
+                <span class="flag-icon">${getFlagDisplay(player.flagText)}</span>
             </div>
         `;
         li.addEventListener('click', () => {
@@ -667,12 +639,12 @@ function renderPlayersList(filteredPlayers = players) {
 }
 
 function renderPlayerDetail() {
-    const player = players[activePlayerIndex];
+    const player = playersData[activePlayerIndex];
     if (!player) return;
 
     playerDetailContainer.innerHTML = `
         <div class="player-detail-header">
-            <span class="player-detail-flag">${player.flag}</span>
+            <span class="player-detail-flag">${getFlagDisplay(player.flagText)}</span>
             <h2 class="player-detail-name">
                 ${player.name}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -696,12 +668,12 @@ function renderPlayerDetail() {
             </div>
         </div>
         <!-- Cliccando sul banner del record verrai indirizzato alla sua pagina dettagliata -->
-        <div class="hardest-banner" onclick="goToLevelByName('${player.hardest}')">
+        <div class="hardest-banner" onclick="goToLevelByName('${player.hardest.demon}')">
             <div class="hardest-left">
                 <span class="hardest-icon">🔥</span>
                 <div class="hardest-title-group">
                     <span class="hardest-lbl">${t[currentLang].recordPiuDifficile}</span>
-                    <span class="hardest-name">${player.hardest} ${player.hz ? `(${player.hz})` : ''}</span>
+                    <span class="hardest-name">${player.hardest.demon} ${player.hardest.hz ? `(${player.hardest.hz})` : ''}</span>
                 </div>
             </div>
             <span class="hardest-right">❯</span>
@@ -714,12 +686,12 @@ function renderPlayerDetail() {
                     </svg>
                     <span>${t[currentLang].livelliCompletati}</span>
                 </div>
-                <span class="box-counter">${player.completed.length}</span>
+                <span class="box-counter">${player.completed ? player.completed.length : 0}</span>
             </div>
             <div class="tags-container">
-                ${player.completed.map(levelName => `
+                ${player.completed ? player.completed.map(levelName => `
                     <span class="level-tag" onclick="goToLevelByName('${levelName}')">${levelName}</span>
-                `).join('')}
+                `).join('') : ''}
             </div>
         </div>
     `;
@@ -728,7 +700,7 @@ function renderPlayerDetail() {
 if (playerSearchInput) {
     playerSearchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
-        const filtered = players.filter(p => p.name.toLowerCase().includes(query));
+        const filtered = playersData.filter(p => p.name.toLowerCase().includes(query));
         renderPlayersList(filtered);
     });
 }
@@ -766,7 +738,7 @@ function renderUpdatesPage() {
                         <li>• Swapped all navigation links to native buttons to fully prevent accidental text selection cursor.</li>
                         <li>• Slashed the profile avatar and streamlined the navbar right corner.</li>
                         <li>• Set list view (thumbnails) as the default active display mode on load.</li>
-                        <li>• Fully integrated recent updates page directly connected to the bell icon.</li>
+                    	<li>• Fully integrated recent updates page directly connected to the bell icon.</li>
                         <li>• Handled light/dark mode color inversion using variables instead of blunt styling filters.</li>
                     `}
                 </ul>
