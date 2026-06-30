@@ -121,6 +121,23 @@ const playersData = [
     { 
         rank: 4,
         flagText: 'IT',
+        name: 'DicoDen',
+        score: '105',
+        state: 'ITALY',
+        avatar: '',
+        youtubeChannel: '',
+        hardest: { 
+            demon: 'B', 
+            hz: '160hz' 
+        },
+        completed: [
+            'B', 
+            'Template Level 5'
+        ] 
+    },
+    { 
+        rank: 5,
+        flagText: 'IT',
         name: 'zleemm',
         score: '100',
         state: 'ITALY',
@@ -135,27 +152,10 @@ const playersData = [
         ] 
     },
     { 
-        rank: 5,
-        flagText: 'IT',
-        name: 'mainsciamn',
-        score: '95',
-        state: 'ITALY',
-        avatar: '',
-        youtubeChannel: '',
-        hardest: { 
-            demon: 'B', 
-            hz: '160hz' 
-        },
-        completed: [
-            'B', 
-            'Template Level 5'
-        ] 
-    },
-    { 
         rank: 6,
         flagText: 'IT',
         name: 'UniversoMC',
-        score: '75',
+        score: '85',
         state: 'ITALY',
         avatar: '',
         youtubeChannel: '',
@@ -171,7 +171,7 @@ const playersData = [
         rank: 7,
         flagText: 'IT',
         name: 'b0bX2',
-        score: '30',
+        score: '40',
         state: 'ITALY',
         avatar: '',
         youtubeChannel: '',
