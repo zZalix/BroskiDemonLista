@@ -67,10 +67,10 @@ const playersData = [
         rank: 1,                  
         flagText: 'IT',           
         name: 'zZalix',           
-        score: '525',             
+        score: '570',             
         state: 'ITALY',           
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150', // Immagine profilo
-        youtubeChannel: "https://youtube.com/@zZalixGD",                             // Canale YouTube personale
+        avatar: 'https://yt3.googleusercontent.com/c3gFwhsY6gZRTO3BOhcv_Ojl5x7xCTWf5xMXaYFZak7vs_VzN9ynuBj0fF16sjQHe4UHUXrEjg=s120-c-k-c0x00ffffff-no-rj',
+        youtubeChannel: "https://youtube.com/@notzalix",                             // Canale YouTube personale
         hardest: { 
             demon: 'Cataclysm',   
             hz: '144hz'           
@@ -79,6 +79,7 @@ const playersData = [
             'Cataclysm', 
             'Denouement', 
             'Nine Circles',
+            'Depressure',
             'Skeletal Shenanigans',
             'B'
         ] 
@@ -87,7 +88,7 @@ const playersData = [
         rank: 2,
         flagText: 'IT',
         name: 'robZeph',
-        score: '185',
+        score: '280',
         state: 'ITALY',
         avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150',
         youtubeChannel: "https://youtube.com",
@@ -97,7 +98,7 @@ const playersData = [
         },
         completed: [
             'tower descent', 
-            'Idk'
+            'B'
         ] 
     },
     { 
@@ -109,19 +110,35 @@ const playersData = [
         avatar: '',
         youtubeChannel: '',
         hardest: { 
-            demon: 'B', 
+            demon: 'Depressure', 
             hz: '240hz' 
         },
         completed: [
             'B', 
-            'Template Level 4'
+            'Depressure'
         ] 
     },
     { 
         rank: 4,
         flagText: 'IT',
+        name: 'zleemm',
+        score: '100',
+        state: 'ITALY',
+        avatar: '',
+        youtubeChannel: '',
+        hardest: { 
+            demon: 'Death Moon', 
+            hz: '144hz' 
+        },
+        completed: [
+            'FlashBang'
+        ] 
+    },
+    { 
+        rank: 5,
+        flagText: 'IT',
         name: 'mainsciamn',
-        score: '85',
+        score: '95',
         state: 'ITALY',
         avatar: '',
         youtubeChannel: '',
@@ -132,22 +149,6 @@ const playersData = [
         completed: [
             'B', 
             'Template Level 5'
-        ] 
-    },
-    { 
-        rank: 5,
-        flagText: 'IT',
-        name: 'zleemm',
-        score: '80',
-        state: 'ITALY',
-        avatar: '',
-        youtubeChannel: '',
-        hardest: { 
-            demon: 'FlashBang', 
-            hz: '144hz' 
-        },
-        completed: [
-            'FlashBang'
         ] 
     },
     { 
@@ -181,7 +182,8 @@ const playersData = [
         completed: [
             'FlashBang'
         ] 
-    }
+    },
+    
 ];
 
 
@@ -242,6 +244,23 @@ const levels = [
     },
     {
         rank: 4,
+        name: "Depressure",
+        creator: "Serponge",
+        verifier: "Serponge",
+        pointsMin: "20",
+        pointsMax: "20",
+        isNew: false,
+        id: "45622672",
+        password: "Free Copy",
+        length: "3:50",
+        objects: "4,951",
+        version: "2.2",
+        quote: "Dura un Botto",
+        youtubeId: "BmawW6MlVKI",
+        thumbnail: "https://i.ytimg.com/vi/BmawW6MlVKI/maxresdefault.jpg"
+    },
+    {
+        rank: 5,
         name: "tower descent",
         creator: "pocke",
         verifier: "pocke",
@@ -258,7 +277,24 @@ const levels = [
         thumbnail: "https://i.ytimg.com/vi/QonVCkQAEvc/maxresdefault.jpg"
     },
     {
-        rank: 5,
+        rank: 6,
+        name: "NeonCity",
+        creator: "WSKKung",
+        verifier: "WSKKung",
+        pointsMin: "15",
+        pointsMax: "15",
+        isNew: false,
+        id: "50074797",
+        password: "Free Copy",
+        length: "1:15",
+        objects: "65.535",
+        version: "2.2",
+        quote: "Questo era molto difficile all'inizio",
+        youtubeId: "qpBd5fW8UoE",
+        thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSk1U1zReCLmO5e1AcUre-ceJ_m0W6CwIUwuKX0CRvGI80l9TbJVE9fV8o&s=10"
+    },
+    {
+        rank: 7,
         name: "Skeletal Shenanigans",
         creator: "YoReid & Airzyy",
         verifier: "YoReid",
@@ -268,14 +304,14 @@ const levels = [
         id: "118509879",
         password: "Free Copy",
         length: "3:50",
-        objects: "138,409",
+        objects: "138.409",
         version: "2.2",
-        quote: "I Really Like This One",
+        quote: "Questo mi piace tanto",
         youtubeId: "mgzTHUKATqo",
         thumbnail: "https://i.ytimg.com/vi/mgzTHUKATqo/maxresdefault.jpg"
     },
     {
-        rank: 6,
+        rank: 8,
         name: "B",
         creator: "Motleyorc & ScorchVx",
         verifier: "Motleyorc",
@@ -287,9 +323,26 @@ const levels = [
         length: "1:23",
         objects: "91.000",
         version: "2.2",
-        quote: "Easiest Medium Demon",
+        quote: "Medium Demon più facile",
         youtubeId: "ohKPqGxotao",
         thumbnail: "https://i.ytimg.com/vi/vtLGX7XiAUk/maxresdefault.jpg"
+    },
+    {
+        rank: 9,
+        name: "FlashBang",
+        creator: "SomeRandomCow",
+        verifier: "SomeRandomCow",
+        pointsMin: "10",
+        pointsMax: "10",
+        isNew: false,
+        id: "86871783",
+        password: "Free Copy",
+        length: "1:04",
+        objects: "47.921",
+        version: "2.2",
+        quote: "Moltooooo facile",
+        youtubeId: "9BI6tDn3lys",
+        thumbnail: "https://i.ytimg.com/vi/_TUnN5nl0iQ/maxresdefault.jpg"
     }
 ];
 
@@ -316,7 +369,7 @@ const futuraLevels = [
         thumbnail: "https://i.ytimg.com/vi/rGImWWngaBE/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAOHTAh-9zl6SZH-hS9awFUgRCLgg"
     },
     {
-        rank: 1,                       
+        rank: 2,                       
         name: "Cataclysm",             
         creator: "Ggb0y",              
         verifier: "RIOT",              
