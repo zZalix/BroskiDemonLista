@@ -237,7 +237,7 @@ const levels = [
         objects: "14.894",
         version: "2.2",
         quote: "Zalix died at 85% 5 times",
-        youtubeId: "dQw4w9WgXcQ",
+        youtubeId: "dOdPoU1ncOc",
         thumbnail: "https://pbs.twimg.com/media/GFeOqXWb0AAcuiB.jpg"
     },
     {
@@ -273,6 +273,23 @@ const levels = [
         quote: "I Really Like This One",
         youtubeId: "mgzTHUKATqo",
         thumbnail: "https://i.ytimg.com/vi/mgzTHUKATqo/maxresdefault.jpg"
+    },
+    {
+        rank: 6,
+        name: "B",
+        creator: "Motleyorc & ScorchVx",
+        verifier: "Motleyorc",
+        pointsMin: "15",
+        pointsMax: "15",
+        isNew: false,
+        id: "54415446",
+        password: "Free Copy",
+        length: "1:23",
+        objects: "91.000",
+        version: "2.2",
+        quote: "Easiest Medium Demon",
+        youtubeId: "ohKPqGxotao",
+        thumbnail: "https://i.ytimg.com/vi/vtLGX7XiAUk/maxresdefault.jpg"
     }
 ];
 
@@ -292,11 +309,28 @@ const futuraLevels = [
         id: "not verified yet",
         password: "WONT TELL",
         length: "2:52",
-        objects: "250.000+",
+        objects: "191.846",
         version: "2.2",
         quote: "Giuro che non andrò in Grief",
         youtubeId: "rGImWWngaBE",
-        thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop"
+        thumbnail: "https://i.ytimg.com/vi/rGImWWngaBE/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAOHTAh-9zl6SZH-hS9awFUgRCLgg"
+    },
+    {
+        rank: 1,                       
+        name: "Cataclysm",             
+        creator: "Ggb0y",              
+        verifier: "RIOT",              
+        pointsMin: "45",               
+        pointsMax: "45",               
+        isNew: false,                   
+        id: "3979721",                 
+        password: "Free Copy",         
+        length: "1:27",                
+        objects: "15.216",             
+        version: "2.2",                
+        quote: "Ex Top1",              
+        youtubeId: "W7XM0ExJD4c",      
+        thumbnail: "https://i.ytimg.com/vi/TDK9VpqGFYg/maxresdefault.jpg" 
     }
 ];
 
