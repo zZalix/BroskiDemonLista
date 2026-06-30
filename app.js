@@ -222,8 +222,8 @@ const levels = [
         objects: "10.042",
         version: "2.2",
         quote: "This Was Fun",
-        youtubeId: "ziHvsAriE3s",
-        thumbnail: "https://i.ytimg.com/vi/7byWqbkoEUk/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD0PlV0qBV81PDrY4XohkVIXSqA"
+        youtubeId: "YJKFRP_72JQ",
+        thumbnail: "https://cdn.discordapp.com/attachments/1437060309083881592/1521458516739625020/hq720_3.png?ex=6a44e829&is=6a4396a9&hm=f426513155359e589ac42e0340cc251a84600fd8c6260bdd29c7ffb4ab6a887f&"
     },
     {
         rank: 3,
