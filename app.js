@@ -359,7 +359,7 @@ const levels = [
         version: "2.2",
         quote: "Buono per allenarsi con la ship",
         youtubeId: "rpmMdlDDda0",
-        thumbnail: "https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fbmy6ccgj8jx81.png"
+        thumbnail: "https://i.ytimg.com/vi/rpmMdlDDda0/maxresdefault.jpg"
     },
     {
         rank: 11,
@@ -410,7 +410,7 @@ const levels = [
         version: "2.2",
         quote: "Fallo per abituarti a un gameplay più veloce",
         youtubeId: "R8RsJVKKd8w",
-        thumbnail: "https://www.reddit.com/media?url=https%3A%2F%2Fpreview.redd.it%2Fspeed-racer-thumbnail-d-v0-hull84ppyt7c1.jpeg%3Fwidth%3D1080%26crop%3Dsmart%26auto%3Dwebp%26s%3D4c374e50254a4727189ca9f7a5aae378820a09ab"
+        thumbnail: "https://i.ytimg.com/vi/YHzxQUAkfkU/maxresdefault.jpg"
     },
     {
         rank: 14,
