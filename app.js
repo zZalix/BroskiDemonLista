@@ -1843,3 +1843,38 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavbar();
     renderDisplay();
 });
+// =========================================================================
+// SCRIPT AGGIUNTIVO ANTI-AUDIO (INCOLLA IN FONDO AL FILE)
+// =========================================================================
+(function() {
+    // Memorizza una copia della funzione originale switchView
+    const originalSwitchView = switchView;
+
+    // Sovrascrive switchView aggiungendo il controllo per fermare i video di YouTube
+    switchView = function(viewName, parameterId) {
+        // Se si esce dalla pagina di dettaglio, ferma il video del livello
+        if (viewName !== 'detail') {
+            const detailContent = document.getElementById('level-detail-content');
+            if (detailContent) {
+                const iframe = detailContent.querySelector('iframe');
+                if (iframe) {
+                    iframe.src = ''; 
+                }
+            }
+        }
+
+        // Se si esce dalla Roulette, ferma anche il video della Roulette
+        if (viewName !== 'roulette') {
+            const rouletteCardContainer = document.getElementById('roulette-card-container');
+            if (rouletteCardContainer) {
+                const iframe = rouletteCardContainer.querySelector('iframe');
+                if (iframe) {
+                    iframe.src = ''; 
+                }
+            }
+        }
+
+        // Esegue la logica di switchView originale
+        originalSwitchView(viewName, parameterId);
+    };
+})();
