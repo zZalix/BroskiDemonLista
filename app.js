@@ -802,7 +802,7 @@ const levels = [
         quote: "Layout privato non pubblicato / Work in progress",
         youtubeId: "",
         thumbnail: ""
-    }
+    },
     {
         rank: 37,
         name: "Machina deluxxe",
