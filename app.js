@@ -90,8 +90,8 @@ const playersData = [
         name: 'robZeph',
         score: '280',
         state: 'ITALY',
-        avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150',
-        youtubeChannel: "https://youtube.com",
+        avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNxC5OeMozdSlUyrvYy2nfkuWPGEWOohUDN9tzbvKjWvqNhUfHdUcKDxuC&s=10',
+        youtubeChannel: "https://www.youtube.com/@crazyfrog",
         hardest: { 
             demon: 'tower descent', 
             hz: '360hz' 
@@ -104,28 +104,44 @@ const playersData = [
     { 
         rank: 3,
         flagText: 'IT',
+        name: 'zleemm',
+        score: '100',
+        state: 'ITALY',
+        avatar: 'https://cdn.discordapp.com/attachments/1437060309083881592/1521720802515357746/1C0528F7-082B-4014-AC6A-A74250EA3D80.png?ex=6a45dc6f&is=6a448aef&hm=78c556f4ff8ab026d8fe59f6a473ef0b84c73c98b710acda750a918ba042c876&',
+        youtubeChannel: 'https://www.youtube.com/@DavideCalzi',
+        hardest: { 
+            demon: 'Death Moon', 
+            hz: '144hz' 
+        },
+        completed: [
+            'FlashBang'
+        ] 
+    },
+    { 
+        rank: 4,
+        flagText: 'IT',
         name: 'DicoDen',
         score: '130',
         state: 'ITALY',
-        avatar: '',
-        youtubeChannel: '',
+        avatar: 'https://yt3.googleusercontent.com/rgZO_FKu0G_nwxzU5WSOdJBU_zN2FvUgYoqruSQCbC8QCIjraBE9BXTDsxho9e3REQRiTIVA0lo=s120-c-k-c0x00ffffff-no-rj',
+        youtubeChannel: 'https://www.youtube.com/@MainSciamn',
         hardest: { 
             demon: 'B', 
             hz: '160hz' 
         },
         completed: [
             'B', 
-            'wait ora cambio'
+            'Non mi ricordo farò domani'
         ] 
     },
     { 
-        rank: 4,
+        rank: 5,
         flagText: 'IT',
         name: 'klockish',
         score: '125',
         state: 'ITALY',
-        avatar: '',
-        youtubeChannel: '',
+        avatar: 'https://yt3.googleusercontent.com/oAu-aNGA31yHuVwTqJYTVE_C5QLgIPIFvy1FsxbrYPUmzHKpAMh969tz3ktfD1uxT4D-61xXa4s=s120-c-k-c0x00ffffff-no-rj',
+        youtubeChannel: 'https://youtube.com/@aeveloy',
         hardest: { 
             demon: 'Depressure', 
             hz: '240hz' 
@@ -136,29 +152,13 @@ const playersData = [
         ] 
     },  
     { 
-        rank: 5,
-        flagText: 'IT',
-        name: 'zleemm',
-        score: '100',
-        state: 'ITALY',
-        avatar: '',
-        youtubeChannel: '',
-        hardest: { 
-            demon: 'Death Moon', 
-            hz: '144hz' 
-        },
-        completed: [
-            'FlashBang'
-        ] 
-    },
-    { 
         rank: 6,
         flagText: 'IT',
         name: 'UniversoMC',
         score: '85',
         state: 'ITALY',
-        avatar: '',
-        youtubeChannel: '',
+        avatar: 'https://yt3.googleusercontent.com/D3nuD7NNuVZYuSQqjeuIG61rpXBr5T6JNuobkDor7WJ0vLkqb7WDVzeWzz4JQVvvu7Sqok66og=s120-c-k-c0x00ffffff-no-rj',
+        youtubeChannel: 'https://www.youtube.com/@un1versoMC',
         hardest: { 
             demon: 'Skeletal Shenanigans', 
             hz: '165hz' 
@@ -173,8 +173,8 @@ const playersData = [
         name: 'b0bX2',
         score: '40',
         state: 'ITALY',
-        avatar: '',
-        youtubeChannel: '',
+        avatar: 'https://i.imgur.com/5TkhWsR.jpeg',
+        youtubeChannel: 'https://www.youtube.com/@gabry-mc',
         hardest: { 
             demon: 'FlashBang', 
             hz: '360hz' 
